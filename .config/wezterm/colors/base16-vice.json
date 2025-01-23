@@ -1,0 +1,19 @@
+{
+  "name": "Base16-vice",
+  "foreground": "#8b9cbe",
+  "background": "#17191E",
+  "cursor_bg": "#8b9cbe",
+  "cursor_fg": "#17191E",
+  "cursor_border": "#8b9cbe",
+  "selection_bg": "#383a47",
+  "selection_fg": "#8b9cbe",
+  "ansi": [
+    "#17191E", "#ff87d7", "#0badff", "#f0ffaa", 
+    "#00eaff", "#00f6d9", "#8265ff", "#8b9cbe"
+  ],
+  "brights": [
+    "#383a47", "#ff87d7", "#0badff", "#f0ffaa", 
+    "#00eaff", "#00f6d9", "#8265ff", "#f4f4f7"
+  ]
+}
+
