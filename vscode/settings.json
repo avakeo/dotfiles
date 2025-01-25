@@ -1,0 +1,161 @@
+{
+    // "workbench.colorTheme": "Tenderainbow Light (rainglow)",
+    "terminal.integrated.shell.windows": "C:\\Windows\\system32\\cmd.exe",
+    "editor.accessibilitySupport": "off",
+    "editor.renderLineHighlight": "all",
+    "keyboard.dispatch": "keyCode",
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "explorer.confirmDragAndDrop": false,
+    "window.zoomLevel": 1,
+    "python.terminal.launchArgs": [],
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System33\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        }
+    },
+    "python.defaultInterpreterPath": "C:\\Users\\naoko\\anaconda3\\python.exe",
+    "workbench.editor.empty.hint": "hidden",
+    "security.workspace.trust.untrustedFiles": "open",
+    "ev3devBrowser.additionalDevices": [
+        {
+            "name": "ev3dev",
+            "ipAddress": "192.168.137.3"
+        }
+    ],
+    "window.menuBarVisibility": "compact",
+    "liveServer.settings.donotShowInfoMsg": true,
+    "workbench.startupEditor": "none",
+    // "vim.vimrc.enable": true,
+    // "vim.vimrc.path": "c:\\Users\\naoko\\.vimrc",
+    "editor.fontWeight": "normal",
+    "editor.fontFamily": "Cica",
+    "workbench.settings.applyToAllProfiles": [
+        "editor.fontFamily",
+        "editor.formatOnType"
+    ],
+    "editor.codeLensFontFamily": "Cica-Regular",
+    "terminal.integrated.fontFamily": "Cica",
+    // 検索にマッチした箇所をハイライト
+    "vim.hlsearch": true,
+    // OS のクリップボードと同期
+    "vim.useSystemClipboard": true,
+    // vim.surroundの有効化
+    "vim.surround": true,
+    // モードごとにステータスバーの色
+    "vim.statusBarColorControl": true,
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before" : ["u"],
+            "commands" : ["undo"]
+        },
+        {
+            "before" : ["<C-r>"],
+            "commands" : ["redo"]
+        },
+        { "before": ["H"], "after": ["0"] }, //端に移動
+        { "before": ["L"], "after": ["$"] }, //端に移動
+        
+    ],
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "j"],
+            "after": ["<Esc>"],
+        }
+    ],
+
+    "vim.statusBarColors.normal": [
+        "#4775FF",
+        // "#4766FF",
+        // "#00ffff",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.insert": [
+        "#FF4747",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.visual": [
+        "#FF7547",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.visualline": [
+        "#FF7547",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.visualblock": [
+        "#47FF54",
+        // "#B4BE82",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.replace": [
+        "#E2A478",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.commandlineinprogress": [
+        "#FF47DA",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.searchinprogressmode": [
+        "#FF47DA",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.easymotionmode": [
+        "#FF47DA",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.easymotioninputmode": [
+        "#FF47DA",
+        "#ffffff"
+    ],
+    "vim.statusBarColors.surroundinputmode": [
+        "#FF47DA",
+        "#ffffff"
+    ],
+    // インデントラインの色付け
+    "workbench.colorCustomizations": {
+        "editorIndentGuide.background1": "#b22222",
+        "editorIndentGuide.background2": "#ff4500",
+        "editorIndentGuide.background3": "#ffd700",
+        "editorIndentGuide.background4": "#228b22",
+        "editorIndentGuide.background5": "#000080",
+        "editorIndentGuide.background6": "#8b008b",
+        "editorIndentGuide.activeBackground1": "#ffffff",
+        "editorIndentGuide.activeBackground2": "#ffffff",
+        "editorIndentGuide.activeBackground3": "#ffffff",
+        "editorIndentGuide.activeBackground4": "#ffffff",
+        "editorIndentGuide.activeBackground5": "#ffffff",
+        "editorIndentGuide.activeBackground6": "#ffffff",
+        "statusBar.background": "#4775FF",
+        "statusBar.noFolderBackground": "#4775FF",
+        "statusBar.debuggingBackground": "#4775FF",
+        "statusBar.foreground": "#ffffff",
+        "statusBar.debuggingForeground": "#ffffff"
+    },
+    "workbench.colorTheme": "Ayu Dark",
+    "workbench.preferredLightColorTheme": "Yule (rainglow)",
+    "terminal.integrated.fontWeight": 1,
+    "files.autoSave": "afterDelay",
+    "git.autofetch": true,
+    "editor.wordWrap": "on",
+    "editor.minimap.enabled": false,
+    "arduino.useArduinoCli": true,
+    "C_Cpp.intelliSenseEngine": "Tag Parser",
+    "editor.fontSize": 18,
+    "workbench.iconTheme": "Monokai Pro (Filter Octagon) Icons",
+    "workbench.editor.wrapTabs": true,
+    "git.openRepositoryInParentFolders": "never",
+    "terminal.integrated.defaultProfile.windows": "Git Bash"
+}

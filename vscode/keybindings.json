@@ -1,0 +1,12 @@
+[
+    {
+        "key": "ctrl+w ctrl+w",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+w ctrl+w",
+        "command": "workbench.action.terminal.focus",
+        "when": "editorFocus"
+    }
+]
