@@ -9,23 +9,28 @@ end
 -- カラースキームの設定
 -- config.color_scheme = "Vs Code Dark+ (Gogh)"
 -- config.color_scheme = 'Aco (Gogh)'
--- config.color_scheme = 'Afterglow (Gogh)'
+-- config.color_scheme = 'Apathy (base16)'
+--config.color_scheme = 'Apple System Colors'
 config.color_scheme = 'Argonaut (Gogh)'
-
 
 -- フォントの設定（Cicaを使う場合）
 config.font = wezterm.font("Cica")
 config.font_size = 14.0
 
+-- デフォルトのシェルをPowerShellに設定
+config.default_prog = {"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+
 -- 背景の透明度を少し設定
 config.window_background_opacity = 0.9
 
+-- GUI起動時の設定
 local mux = wezterm.mux
 wezterm.on("gui-startup", function(cmd)
 	local tab, pane, window = mux.spawn_window(cmd or {})
-	window:gui_window():toggle_fullscreen()
+	-- window:gui_window():toggle_fullscreen() -- フルスクリーンの設定をコメントアウト
 end)
 
+-- キー設定
 config.keys = {
 	-- カーソルを一単語後ろに移動
 	{
@@ -54,15 +59,6 @@ config.keys = {
 			mods = "CTRL",
 		}),
 	},
-	-- Ctrl+W でタブを閉じる
-	{
-		key = "w",
-		mods = "CTRL",
-		-- action = wezterm.action.CloseCurrentTab({ confirm = false }),
-		-- action = wezterm.action.CloseCurrentTab({ confirm = true }),
-		-- action = wezterm.action{CloseCurrentPane={confirm=false},
-		action = wezterm.action.CloseCurrentPane({confirm=false}),
-	},
 	-- Ctrl+T で新しいタブを作成
 	{
 		key = "t",
@@ -71,38 +67,23 @@ config.keys = {
 	},
 }
 
+-- タブのタイトルのフォーマット
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
+	local background = "#5c6d74"
+	local foreground = "#FFFFFF"
 
-   local background = "#5c6d74"
-   -- local background = "#00c7db"
+	if tab.is_active then
+		background = "#00b5c7"
+		foreground = "#FFFFFF"
+	end
 
-   local foreground = "#FFFFFF"
+	local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
 
-
-   if tab.is_active then
-
-     -- background = "#ae8b2d"
-     background = "#00b5c7"
-     -- background = "#00909e"
-
-     foreground = "#FFFFFF"
-
-   end
-
-
-   local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
-
-
-   return {
-
-     { Background = { Color = background } },
-
-     { Foreground = { Color = foreground } },
-
-     { Text = title },
-
-   }
-
- end)
+	return {
+		{ Background = { Color = background } },
+		{ Foreground = { Color = foreground } },
+		{ Text = title },
+	}
+end)
 
 return config
