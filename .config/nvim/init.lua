@@ -56,7 +56,7 @@ vim.g.coc_global_extensions = {
 }
 
 -- フォント設定
-vim.opt.guifont = "Cica"  -- "Monaco" フォント、サイズ 14
+vim.opt.guifont = "Cica"
 
 vim.opt.termguicolors = true
 

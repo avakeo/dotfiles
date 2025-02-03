@@ -3,6 +3,10 @@ return {
   "folke/noice.nvim",
   event = "VeryLazy",
   opts = {
+    message = {
+      view = "notify", -- 'mini'
+      timeout = 700,
+    }
     -- add any options here
   },
   dependencies = {
