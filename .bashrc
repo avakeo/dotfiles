@@ -141,3 +141,12 @@ eval "$(pyenv init -)"
 
 eval "$(starship init bash)"
 . "$HOME/.cargo/env"
+
+
+```bash
+if type trash-put &> /dev/null
+then
+    alias rm=trash-put
+fi
+```
+
