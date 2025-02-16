@@ -39,7 +39,6 @@ alias ..='cd ..'
 # Avoid overwriting files with mv and cp
 alias mv='mv -i'
 alias cp='cp -i'
-alias rm='rm -i'
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -56,4 +55,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# export PATH="$HOME/.local/bin:$PATH"
 
