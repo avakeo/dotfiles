@@ -3,6 +3,21 @@ vim.api.nvim_set_keymap("n", "<F3>", ":setlocal relativenumber!<CR>", { noremap 
 
 vim.api.nvim_set_keymap("i", "jj", "<Esc>", { noremap = true, silent = true })
 
+-- vim.keymap.set("n", "tt", "<cmd>tabnew<CR><cmd>terminal<CR>", { silent = true })
+-- vim.keymap.set("n", "tx", "<cmd>belowright new<CR><cmd>terminal<CR>", { silent = true })
+
+vim.api.nvim_set_keymap("n", "tt", "<cmd>tabnew<CR><cmd>terminal<CR>", { silent = true })
+vim.api.nvim_set_keymap("n", "tx", "<cmd>belowright new<CR><cmd>terminal<CR>", { silent = true })
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  pattern = "*",
+  callback = function()
+    vim.cmd("startinsert")
+    vim.opt_local.number = false
+    vim.opt_local.relativenumber = false
+    vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>:q!<CR>", { noremap = true, silent = true })
+  end,
+})
 
 
 vim.api.nvim_set_keymap('n', 'gt', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
