@@ -2,25 +2,12 @@
   "suggest.noselect": false,
   "languageserver": {
     "rust": {
-      "settings": {
-        "rust-analyzer": {
-          "editor.formatOnType": true,
-          "editor.formatOnSave": true,
-          "rustfmt.formatOnSave": true,
-          "rustfmt.config": {
-            "use_tabs": false,
-            "tab_width": 2,
-            "indent_style": "block"
-          }
-        }
-      }
+      "command": "rust-analyzer",
+      "filetypes": ["rust"]
     },
     "jedi": {
-      "enable": true,
-      "startupMessage": false,
-      "executable": {
-        "command": "~/m3hoge/.anyenv/pyenv/neovim/bin/jedi-language-server"
-      }
+      "command": "/home/m3hoge/.anyenv/pyenv/neovim/bin/jedi-language-server",
+      "filetypes": ["python"]
     }
   }
 }
