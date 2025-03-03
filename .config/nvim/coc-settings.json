@@ -1,27 +1,59 @@
 {
   "suggest.noselect": false,
+  "coc.preferences.enableCompletion": true,
   "languageserver": {
+    "python": {
+      "command": "jedi-language-server",
+      "filetypes": ["python"]
+    },
     "rust": {
+      "command": "rust-analyzer",
+      "filetypes": ["rust"],
+      "rootPatterns": ["Cargo.toml"],
       "settings": {
         "rust-analyzer": {
-          "editor.formatOnType": true,
-          "editor.formatOnSave": true,
-          "rustfmt.formatOnSave": true,
-          "rustfmt.config": {
-            "use_tabs": false,
-            "tab_width": 2,
-            "indent_style": "block"
+          "checkOnSave": {
+            "command": "clippy"
           }
         }
       }
     },
-    "jedi": {
-      "enable": true,
-      "startupMessage": false,
-      "executable": {
-        "command": "~/m3hoge/.anyenv/pyenv/neovim/bin/jedi-language-server"
-      }
+    "json": {
+      "command": "vscode-json-language-server",
+      "args": ["--stdio"],
+      "filetypes": ["json", "jsonc"]
+    },
+    "yaml": {
+      "command": "yaml-language-server",
+      "args": ["--stdio"],
+      "filetypes": ["yaml", "yml"]
     }
+  },
+  "rust-analyzer": {
+    "cargo": {
+      "loadOutDirsFromCheck": true
+    },
+    "procMacro": {
+      "enable": true
+    }
+  },
+  "clangd": {
+    "fallbackFlags": ["-std=c++17"]
+  },
+  "tsserver": {
+    "formatOnSave": true
+  },
+  "html": {
+    "formatOnSave": true
+  },
+  "css": {
+    "formatOnSave": true
+  },
+  "json": {
+    "formatOnSave": true
+  },
+  "yaml": {
+    "formatOnSave": true
   }
 }
 
