@@ -16,17 +16,17 @@ return {
   },
 
   {
-  "nvim-tree/nvim-tree.lua",
-  config = function()
-    require("nvim-tree").setup({
-      -- view セクションの設定
-      renderer = {
-        -- グループ化や表示オプションを設定
-        group_empty = true,
-      },
-      -- 画面取得 フル画面なら左4割 フル未満なら固定{}px
-      view = {
-        width = function()
+    "nvim-tree/nvim-tree.lua",
+    config = function()
+      require("nvim-tree").setup({
+        -- view セクションの設定
+        renderer = {
+          -- グループ化や表示オプションを設定
+          group_empty = true,
+        },
+        -- 画面取得 フル画面なら左4割 フル未満なら固定{}px
+        view = {
+          width = function()
             local width = vim.o.columns
             if width < 75 then
               return width
@@ -35,33 +35,33 @@ return {
             else
               return math.floor(width * 0.1)
             end
-        end,
-        side = 'left',  -- 左側に配置
-      },
-      -- ファイル選択時にタブで開く
-      actions = {
-        open_file = {
-          -- quit_on_open = true,  -- ファイルを開いた後も NvimTree を閉じない
-          quit_on_open = function()
-            if vim.o.columns < 75 then
-              return false
-            end
-            return true
           end,
-          focus_file = true, 
+          side = 'left',  -- 左側に配置
         },
-      },
-      -- キーマッピング設定
-      actions = {
-        open_file = {
-          quit_on_open = false,  -- ファイルを開いた後に NvimTree を閉じない
+        -- ファイル選択時にタブで開く
+        actions = {
+          open_file = {
+            -- quit_on_open = true,  -- ファイルを開いた後も NvimTree を閉じない
+            quit_on_open = function()
+              if vim.o.columns < 75 then
+                return false
+              end
+              return true
+            end,
+            focus_file = true, 
+          },
         },
-      },
-    })
-  end,
-},
+        -- キーマッピング設定
+        actions = {
+          open_file = {
+            quit_on_open = false,  -- ファイルを開いた後に NvimTree を閉じない
+          },
+        },
+      })
+    end,
+  },
 
---[[
+  --[[
   -- nvim-tree 設定
   {
     "nvim-tree/nvim-tree.lua",
@@ -78,14 +78,14 @@ return {
           list = {
             -- ファイル選択時にタブで開く
             { key = "<CR>", action = "edit", action_cb = function(node)
-                vim.cmd("tabnew " .. node.absolute_path)  -- タブで開く
-              end,
-            },
+              vim.cmd("tabnew " .. node.absolute_path)  -- タブで開く
+            end,
           },
         },
-      })
-    end,
-  },
-  ]]
+      },
+    })
+  end,
+},
+]]
 }
 
