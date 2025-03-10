@@ -8,20 +8,13 @@
     },
     "rust": {
       "command": "rust-analyzer",
-      "filetypes": ["rust"],
-      "rootPatterns": ["Cargo.toml"],
-      "settings": {
-        "rust-analyzer": {
-          "checkOnSave": {
-            "command": "clippy"
-          }
-        }
-      }
+      "filetypes": ["rust"]
+    },
+    "jedi": {
+      "command": "/home/m3hoge/.anyenv/pyenv/neovim/bin/jedi-language-server",
+      "filetypes": ["python"]
     },
     "json": {
-      "command": "vscode-json-language-server",
-      "args": ["--stdio"],
-      "filetypes": ["json", "jsonc"]
     },
     "yaml": {
       "command": "yaml-language-server",
