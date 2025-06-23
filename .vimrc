@@ -45,4 +45,4 @@ set guioptions+=R
 set clipboard+=unnamedplus
 nnoremap <Esc><Esc> :nohlsearch<CR>
 
-colorscheme "iceberg"
+colorscheme iceberg
