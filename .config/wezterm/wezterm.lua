@@ -1,4 +1,3 @@
---[[
 local wezterm = require("wezterm")
 
 local config = {}
@@ -25,11 +24,8 @@ if target:find("windows") then
 		end
 	else
 		-- デフォルトのシェルをPowerShellに設定
-		-- config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
-        -- config.default_prog = {"wsl.exe", "-d", "Ubuntu-24.04"} 
         config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu-24.04" }
-
-
+		config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
 	end
 elseif target:find("linux") then
 	if wezterm.shell_exists("usr/bin/zsh") then
@@ -107,20 +103,3 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 end)
 
 return config
-]]
-
-local wezterm = require("wezterm")
-
-
-
-return {
-
-      default_prog = { "cmd.exe", "/C", "wsl.exe -d Ubuntu-24.04" },
-
-        font = wezterm.font("Cica"),
-
-          font_size = 14.0,
-
-}
-
-
