@@ -25,7 +25,7 @@ if target:find("windows") then
 	else
 		-- デフォルトのシェルをPowerShellに設定
         config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu-24.04" }
-		config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
+		-- config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
 	end
 elseif target:find("linux") then
 	if wezterm.shell_exists("usr/bin/zsh") then
@@ -48,6 +48,41 @@ end)
 
 -- key config
 config.keys = {
+	 -- Ctrl+w でコマンドモード風にして、以下のキーでペイン操作をする例
+    -- ここではシンプルに Ctrl+w + v で垂直分割、Ctrl+w + s で水平分割を割り当て
+
+    {
+        key = "v",
+        mods = "CTRL|CTRL",  -- Ctrl+w 2回押しのような組み合わせは無理なので、単純化
+        action = wezterm.action.SplitVertical{domain="CurrentPaneDomain"},
+    },
+    {
+        key = "s",
+        mods = "CTRL|CTRL",
+        action = wezterm.action.SplitHorizontal{domain="CurrentPaneDomain"},
+    },
+
+    -- ペイン移動は Ctrl+h/j/k/l に割り当て例
+    {
+        key = "h",
+        mods = "CTRL",
+        action = wezterm.action.ActivatePaneDirection("Left"),
+    },
+    {
+        key = "j",
+        mods = "CTRL",
+        action = wezterm.action.ActivatePaneDirection("Down"),
+    },
+    {
+        key = "k",
+        mods = "CTRL",
+        action = wezterm.action.ActivatePaneDirection("Up"),
+    },
+    {
+        key = "l",
+        mods = "CTRL",
+        action = wezterm.action.ActivatePaneDirection("Right"),
+    },
 	-- カーソルを一単語後ろに移動
 	{
 		key = "LeftArrow",
