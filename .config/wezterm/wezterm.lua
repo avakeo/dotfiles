@@ -1,3 +1,4 @@
+--[[
 local wezterm = require("wezterm")
 
 local config = {}
@@ -7,19 +8,39 @@ if wezterm.config_builder then
 end
 
 -- カラースキームの設定
--- config.color_scheme = "Vs Code Dark+ (Gogh)"
--- config.color_scheme = 'Aco (Gogh)'
--- config.color_scheme = 'Apathy (base16)'
---config.color_scheme = 'Apple System Colors'
 config.color_scheme = 'Argonaut (Gogh)'
 
 -- フォントの設定（Cicaを使う場合）
 config.font = wezterm.font("Cica")
 config.font_size = 14.0
 
--- デフォルトのシェルをPowerShellに設定
-config.default_prog = {"C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"}
+local target = wezterm.target_triple
 
+if target:find("windows") then 
+	if os.getenv("WEZTERM_EXECUTING_IN_WSL") == "1" or os.getenv("WSL_DISTRO_NAME") then
+		if wezterm.shell_exists("usr/bin/zsh") then
+			config.default_prog = {'/usr/bin/zsh'}
+		else
+			config.default_prog = {'/usr/bin/bash'}
+		end
+	else
+		-- デフォルトのシェルをPowerShellに設定
+		-- config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
+        -- config.default_prog = {"wsl.exe", "-d", "Ubuntu-24.04"} 
+        config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu-24.04" }
+
+
+	end
+elseif target:find("linux") then
+	if wezterm.shell_exists("usr/bin/zsh") then
+		config.default_prog = {'/usr/bin/zsh'}
+	else
+		config.default_prog = {'/usr/bin/bash'}
+	end
+else
+	config.default_prog = {'/usr/bin/bash'}
+end
+	
 -- 背景の透明度を少し設定
 config.window_background_opacity = 0.9
 
@@ -27,10 +48,9 @@ config.window_background_opacity = 0.9
 local mux = wezterm.mux
 wezterm.on("gui-startup", function(cmd)
 	local tab, pane, window = mux.spawn_window(cmd or {})
-	-- window:gui_window():toggle_fullscreen() -- フルスクリーンの設定をコメントアウト
 end)
 
--- キー設定
+-- key config
 config.keys = {
 	-- カーソルを一単語後ろに移動
 	{
@@ -87,3 +107,20 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 end)
 
 return config
+]]
+
+local wezterm = require("wezterm")
+
+
+
+return {
+
+      default_prog = { "cmd.exe", "/C", "wsl.exe -d Ubuntu-24.04" },
+
+        font = wezterm.font("Cica"),
+
+          font_size = 14.0,
+
+}
+
+
