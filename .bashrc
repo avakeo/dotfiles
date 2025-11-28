@@ -56,12 +56,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-<<<<<<< HEAD
-eval "$(starship init bash)"
-=======
 # export PATH="$HOME/.local/bin:$PATH"
-
 # starship
 eval "$(starship init bash)"
 
->>>>>>> 40abddf4f491e0dbf716f1c3f219d3d5a9003711
