@@ -1,17 +1,17 @@
-return {
+return  {
   "lewis6991/gitsigns.nvim",
   config = function()
     require("gitsigns").setup({
       signs = {
-        add          = { hl = 'GitSignsAdd'   , text = '│', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'    },
-        change       = { hl = 'GitSignsChange', text = '│', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
-        delete       = { hl = 'GitSignsDelete', text = '_', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn' },
-        topdelete    = { hl = 'GitSignsDelete', text = '‾', numhl='GitSignsDeleteNr', linehl='GitSignsDeleteLn' },
-        changedelete = { hl = 'GitSignsChange', text = '~', numhl='GitSignsChangeNr', linehl='GitSignsChangeLn' },
-        untracked    = { hl = 'GitSignsAdd'   , text = '┆', numhl='GitSignsAddNr'   , linehl='GitSignsAddLn'    },
+        add          = { text = '│' },
+        change       = { text = '│' },
+        delete       = { text = '_' },
+        topdelete    = { text = '‾' },
+        changedelete = { text = '~' },
+        untracked    = { text = '┆' },
       },
       signcolumn = true,
-      numhl      = true,
+      numhl      = false,
       linehl     = false,
       word_diff  = false,
       watch_gitdir = {
@@ -32,16 +32,21 @@ return {
       status_formatter = nil,
       max_file_length = 40000,
       preview_config = {
-        -- Options passed to nvim_open_win
         border = 'single',
         style = 'minimal',
         relative = 'cursor',
         row = 0,
         col = 1
       },
-      yadm = {
-        enable = false
-      },
     })
+
+    -- 新しいハイライト指定 (公式推奨)
+    vim.api.nvim_set_hl(0, 'GitSignsAdd', { link = 'DiffAdd' })
+    vim.api.nvim_set_hl(0, 'GitSignsChange', { link = 'DiffChange' })
+    vim.api.nvim_set_hl(0, 'GitSignsDelete', { link = 'DiffDelete' })
+    vim.api.nvim_set_hl(0, 'GitSignsTopdelete', { link = 'GitSignsDelete' })
+    vim.api.nvim_set_hl(0, 'GitSignsChangedelete', { link = 'GitSignsChange' })
+    vim.api.nvim_set_hl(0, 'GitSignsUntracked', { link = 'GitSignsAdd' })
   end
-  }
+}
+

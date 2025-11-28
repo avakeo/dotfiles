@@ -24,8 +24,9 @@ if target:find("windows") then
 		end
 	else
 		-- デフォルトのシェルをPowerShellに設定
-        config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu-24.04" }
-		-- config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
+        -- config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu-24.04" }
+        -- config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu" }
+		config.default_prog = {"C:\\Program Files\\PowerShell\\7\\pwsh.exe"}
 	end
 elseif target:find("linux") then
 	if wezterm.shell_exists("usr/bin/zsh") then
