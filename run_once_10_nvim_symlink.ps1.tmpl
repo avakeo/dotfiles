@@ -1,0 +1,8 @@
+{{ if eq .chezmoi.os "windows" }}
+$ErrorActionPreference = "Stop"
+$src = Join-Path $HOME ".config\nvim"
+$dst = Join-Path $HOME "AppData\Local\nvim"
+if (-not (Test-Path $dst)) {
+  New-Item -ItemType Junction -Path $dst -Target $src | Out-Null
+}
+{{ end }}
