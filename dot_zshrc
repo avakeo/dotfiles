@@ -1,0 +1,29 @@
+# Minimal, fast zsh config
+
+# History & basic options
+setopt SHARE_HISTORY INC_APPEND_HISTORY TIME_STAMPS
+setopt INTERACTIVE_COMMENTS
+unsetopt BEEP
+
+# Prompt via starship (keep)
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi
+
+# Lightweight plugins only (no oh-my-zsh full set)
+ZSH_PLUGIN_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
+
+# zsh-autosuggestions
+if [ -f "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "$ZSH_PLUGIN_DIR/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+
+# zsh-syntax-highlighting (must be sourced at end)
+if [ -f "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+# Aliases (shared intent with PowerShell)
+alias g='git'
+alias v='nvim'
+alias ll='ls -alF'
