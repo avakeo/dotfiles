@@ -2,19 +2,13 @@
   "suggest.noselect": false,
   "coc.preferences.enableCompletion": true,
   "languageserver": {
-    "python": {
+    "jedi": {
       "command": "jedi-language-server",
       "filetypes": ["python"]
     },
     "rust": {
       "command": "rust-analyzer",
       "filetypes": ["rust"]
-    },
-    "jedi": {
-      "command": "/home/m3hoge/.anyenv/pyenv/neovim/bin/jedi-language-server",
-      "filetypes": ["python"]
-    },
-    "json": {
     },
     "yaml": {
       "command": "yaml-language-server",
@@ -49,4 +43,3 @@
     "formatOnSave": true
   }
 }
-
