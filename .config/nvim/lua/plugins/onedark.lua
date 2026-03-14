@@ -1,4 +1,5 @@
+-- bluloco がアクティブなため現在未使用
 return {
   "olimorris/onedarkpro.nvim",
-  priority = 1000, -- Ensure it loads first
+  enabled = false,
 }
