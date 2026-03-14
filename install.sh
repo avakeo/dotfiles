@@ -1,51 +1,110 @@
-# !/usr/bin/env bash
-set -ue
+#!/usr/bin/env bash
+set -euo pipefail
 
-helpmsg() {
-  command echo "Usage: $0 [--help | -h]" 0>&2
-  command echo ""
+DOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+BACKUP_DIR="$HOME/.dotbackup/$(date +%Y%m%d_%H%M%S)"
+
+# ===== OS detection =====
+
+detect_os() {
+  case "$(uname -s)" in
+    Darwin) echo "macos" ;;
+    Linux)
+      if uname -r | grep -qi microsoft; then
+        echo "wsl"
+      else
+        echo "linux"
+      fi
+      ;;
+    *) echo "unknown" ;;
+  esac
 }
 
-link_to_homedir() {
-  command echo "backup old dotfiles..."
-  if [ ! -d "$HOME/.dotbackup" ];then
-    command echo "$HOME/.dotbackup not found. Auto Make it"
-    command mkdir "$HOME/.dotbackup"
+# ===== Helpers =====
+
+info()    { echo "  $*"; }
+success() { echo -e "  \e[32m✓\e[m $*"; }
+warn()    { echo -e "  \e[33m!\e[m $*"; }
+
+backup_and_link() {
+  local src="$1"
+  local dest="$2"
+
+  if [[ ! -e "$src" ]]; then
+    warn "skip (not found): $src"
+    return
   fi
 
-  local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
-  local dotdir=$(dirname ${script_dir})
-  if [[ "$HOME" != "$dotdir" ]];then
-    for f in $dotdir/.??*; do
-      [[ `basename $f` == ".git" ]] && continue
-      if [[ -L "$HOME/`basename $f`" ]];then
-        command rm -f "$HOME/`basename $f`"
-      fi
-      if [[ -e "$HOME/`basename $f`" ]];then
-        command mv "$HOME/`basename $f`" "$HOME/.dotbackup"
-      fi
-      command ln -snf $f $HOME
-    done
-  else
-    command echo "same install src dest"
+  if [[ -L "$dest" ]]; then
+    rm "$dest"
+  elif [[ -e "$dest" ]]; then
+    mkdir -p "$BACKUP_DIR"
+    mv "$dest" "$BACKUP_DIR/"
+    info "backed up: $(basename "$dest")"
+  fi
+
+  ln -snf "$src" "$dest"
+  success "$(basename "$dest")"
+}
+
+# ===== Link targets =====
+
+link_home() {
+  echo ""
+  echo "Home dotfiles:"
+
+  local files=(.bashrc .zshrc .vimrc .dircolors)
+  for name in "${files[@]}"; do
+    backup_and_link "$DOTDIR/$name" "$HOME/$name"
+  done
+}
+
+link_config() {
+  local os="$1"
+  echo ""
+  echo ".config entries:"
+  mkdir -p "$HOME/.config"
+
+  # 全プラットフォーム共通
+  local entries=(nvim fish git gh starship.toml wezterm)
+  for name in "${entries[@]}"; do
+    backup_and_link "$DOTDIR/.config/$name" "$HOME/.config/$name"
+  done
+
+  # Linux / WSL のみ
+  if [[ "$os" == "linux" || "$os" == "wsl" ]]; then
+    backup_and_link "$DOTDIR/.config/neofetch" "$HOME/.config/neofetch"
   fi
 }
 
-while [ $# -gt 0 ];do
-  case ${1} in
-    --debug|-d)
-      set -uex
-      ;;
-    --help|-h)
-      helpmsg
-      exit 1
-      ;;
-    *)
-      ;;
+post_install() {
+  echo ""
+  echo "Git config:"
+  git config --global include.path "~/.gitconfig_shared"
+  success "include.path set to ~/.gitconfig_shared"
+}
+
+# ===== Main =====
+
+usage() {
+  echo "Usage: $0 [--debug|-d] [--help|-h]"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --debug|-d) set -x ;;
+    --help|-h)  usage; exit 0 ;;
+    *) warn "Unknown option: $1"; usage; exit 1 ;;
   esac
   shift
 done
 
-link_to_homedir
-git config --global include.path "~/.gitconfig_shared"
-command echo -e "\e[1;36m Install completed!!!! \e[m"
+OS=$(detect_os)
+echo "Platform: $OS"
+
+link_home
+link_config "$OS"
+post_install
+
+echo ""
+echo -e "\e[1;36mInstall completed!\e[m"

@@ -16,7 +16,6 @@ inoremap <silent> jj <ESC>
 
 
 " Tab Settings
-set list
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -39,10 +38,10 @@ set display=lastline
 set list
 set listchars=tab:^\ ,trail:~
 set history=10000
-hi Commnet ctermfg=3
+hi Comment ctermfg=3
 set guioptions+=a
 set guioptions+=R
 set clipboard+=unnamedplus
 nnoremap <Esc><Esc> :nohlsearch<CR>
 
-colorscheme iceberg
+" colorscheme iceberg

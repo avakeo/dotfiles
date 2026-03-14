@@ -48,10 +48,8 @@ zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # History configurations
 setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-setopt hist_ignore_dups       # ignore duplicated commands history list
 setopt hist_ignore_space      # ignore commands that start with space
 setopt hist_verify            # show command with history expansion to user before running it
-#setopt share_history         # share command history data
 
 # force zsh to show the complete history
 alias history="history 0"
@@ -184,7 +182,6 @@ toggle_oneline_prompt(){
     zle reset-prompt
 }
 zle -N toggle_oneline_prompt
-bindkey ^P toggle_oneline_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -288,11 +285,11 @@ export PATH="$HOME/.cargo/bin:$PATH"
 eval "$(sheldon source)"
 
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 eval $(dircolors -b ~/.dircolors)
+
+# Machine-local overrides (not committed to git)
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

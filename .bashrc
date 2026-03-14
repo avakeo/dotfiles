@@ -13,11 +13,7 @@ else
     color_prompt=
 fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='\u@\h:\w\$ '
-else
-    PS1='\u@\h:\w\$ '
-fi
+PS1='\u@\h:\w\$ '
 unset color_prompt
 
 # Enable color support for ls and add handy aliases
@@ -40,6 +36,23 @@ alias ..='cd ..'
 alias mv='mv -i'
 alias cp='cp -i'
 
+# Git aliases
+alias g='git'
+alias gs='git status'
+alias gf='git fetch'
+alias gfa='git fetch --all --prune'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gca='git commit --amend'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gb='git branch'
+alias ga='git add'
+alias gaa='git add -A'
+alias gl='git pull'
+alias gp='git push'
+alias gd='git diff'
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
@@ -57,3 +70,10 @@ if ! shopt -oq posix; then
 fi
 
 eval "$(starship init bash)"
+
+. "$HOME/.local/bin/env"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+. "$HOME/.cargo/env"

@@ -1,0 +1,11 @@
+# Backup directory created by install.sh
+.dotbackup/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~

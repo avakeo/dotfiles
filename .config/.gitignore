@@ -6,3 +6,12 @@ debug
 foo.*
 *.log
 data
+
+# GitHub CLI - contains OAuth tokens
+gh/hosts.yml
+
+# Cloudflare Wrangler runtime data
+.wrangler/
+
+# uv installation metadata
+uv/uv-receipt.json
