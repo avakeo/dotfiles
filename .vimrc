@@ -9,6 +9,7 @@ endif
 call plug#begin()
   Plug 'dense-analysis/ale'           " 軽量 LSP / Lint
   Plug 'itchyny/lightline.vim'        " ステータスライン
+  Plug 'maximbaz/lightline-ale'       " lightline に ALE ステータスを表示
   Plug 'tpope/vim-commentary'         " gc でコメントアウト
 call plug#end()
 
