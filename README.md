@@ -4,7 +4,7 @@
 
 ```bash
 # Linux / WSL / macOS
-git clone https://github.com/<your-username>/dotfiles.git ~/dotfiles
+git clone https://github.com/avakeo/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install.sh
 ```
 
