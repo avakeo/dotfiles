@@ -77,6 +77,19 @@ link_config() {
   fi
 }
 
+install_vim_plug() {
+  echo ""
+  echo "vim-plug:"
+  local plug_path="$HOME/.vim/autoload/plug.vim"
+  if [[ ! -f "$plug_path" ]]; then
+    curl -fLo "$plug_path" --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    success "vim-plug installed"
+  else
+    info "vim-plug already exists"
+  fi
+}
+
 post_install() {
   echo ""
   echo "Git config:"
@@ -104,6 +117,7 @@ echo "Platform: $OS"
 
 link_home
 link_config "$OS"
+install_vim_plug
 post_install
 
 echo ""

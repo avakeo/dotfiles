@@ -42,9 +42,16 @@ map("n", "gT", ":BufferLineCyclePrev<CR>", opts)
 map("n", "<C-n>",    [[<cmd>lua require("nvim-tree.api").tree.focus()<CR>]],  opts)
 map("n", "<Leader>t", [[<cmd>lua require("nvim-tree.api").tree.toggle()<CR>]], opts)
 
--- coc.nvim: 補完
-local coc_opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
-vim.keymap.set("i", "<TAB>",   'coc#pum#visible() ? coc#pum#next(1) : "<Tab>"',   coc_opts)
-vim.keymap.set("i", "<S-TAB>", 'coc#pum#visible() ? coc#pum#prev(1) : "<C-h>"',   coc_opts)
-map("i", "<CR>", 'coc#pum#visible() ? coc#pum#confirm() : "<CR>"',
-  { noremap = true, silent = true, expr = true })
+-- LSP: バッファにアタッチされたときのキーマップ
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local bufopts = { noremap = true, silent = true, buffer = args.buf }
+    vim.keymap.set("n", "gd",         vim.lsp.buf.definition,   bufopts)
+    vim.keymap.set("n", "gD",         vim.lsp.buf.declaration,  bufopts)
+    vim.keymap.set("n", "gr",         vim.lsp.buf.references,   bufopts)
+    vim.keymap.set("n", "K",          vim.lsp.buf.hover,        bufopts)
+    vim.keymap.set("n", "<Leader>rn", vim.lsp.buf.rename,       bufopts)
+    vim.keymap.set("n", "<Leader>ca", vim.lsp.buf.code_action,  bufopts)
+    vim.keymap.set("n", "<Leader>f",  function() vim.lsp.buf.format({ async = true }) end, bufopts)
+  end,
+})
