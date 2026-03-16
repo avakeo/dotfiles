@@ -92,6 +92,10 @@ set wrapscan
 set hlsearch
 
 " ===== Keymaps =====
+" ターミナル
+nnoremap tt :tabnew<CR>:terminal<CR>
+nnoremap tx :belowright 10new<CR>:terminal<CR>
+
 nnoremap j gj
 nnoremap k gk
 inoremap <silent> jj <ESC>
