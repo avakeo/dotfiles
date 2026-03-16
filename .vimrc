@@ -59,9 +59,6 @@ set number
 set virtualedit=onemore
 set wildmode=list:longest
 set t_Co=256
-if has('termguicolors')
-  set termguicolors
-endif
 syntax enable
 set noerrorbells
 set showmatch matchtime=1
@@ -73,28 +70,28 @@ set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
 set clipboard+=unnamedplus
 
-" lightline: モード別カラー (nvim lualine と統一)
-" 形式: [guifg, guibg, ctermfg, ctermbg, attr]
+" lightline: モード別カラー (cterm のみ、gui カラーなし)
+" 形式: ['', '', ctermfg, ctermbg, attr]
 let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'inactive': {}, 'tabline': {}}
-let s:p.normal.left   = [['#1e1e1e', '#569cd6', 234, 74, 'bold'], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.insert.left   = [['#1e1e1e', '#f44747', 234, 203, 'bold'], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.replace.left  = [['#1e1e1e', '#f44747', 234, 203, 'bold'], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.visual.left   = [['#1e1e1e', '#ce9178', 234, 173, 'bold'], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.normal.middle = [['#d4d4d4', '#1e1e1e', 188, 234]]
-let s:p.insert.middle = [['#d4d4d4', '#1e1e1e', 188, 234]]
-let s:p.replace.middle= [['#d4d4d4', '#1e1e1e', 188, 234]]
-let s:p.visual.middle = [['#d4d4d4', '#1e1e1e', 188, 234]]
-let s:p.normal.right  = [['#1e1e1e', '#569cd6', 234, 74], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.insert.right  = [['#1e1e1e', '#f44747', 234, 203], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.replace.right = [['#1e1e1e', '#f44747', 234, 203], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.visual.right  = [['#1e1e1e', '#ce9178', 234, 173], ['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.inactive.left   = [['#888888', '#2d2d2d', 102, 236], ['#888888', '#2d2d2d', 102, 236]]
-let s:p.inactive.middle = [['#888888', '#1e1e1e', 102, 234]]
-let s:p.inactive.right  = [['#888888', '#2d2d2d', 102, 236], ['#888888', '#2d2d2d', 102, 236]]
-let s:p.tabline.left   = [['#d4d4d4', '#2d2d2d', 188, 236]]
-let s:p.tabline.tabsel = [['#1e1e1e', '#569cd6', 234, 74]]
-let s:p.tabline.middle = [['#d4d4d4', '#1e1e1e', 188, 234]]
-let s:p.tabline.right  = [['#d4d4d4', '#2d2d2d', 188, 236]]
+let s:p.normal.left   = [['', '', 234, 74,  'bold'], ['', '', 188, 236]]
+let s:p.insert.left   = [['', '', 234, 203, 'bold'], ['', '', 188, 236]]
+let s:p.replace.left  = [['', '', 234, 203, 'bold'], ['', '', 188, 236]]
+let s:p.visual.left   = [['', '', 234, 173, 'bold'], ['', '', 188, 236]]
+let s:p.normal.middle = [['', '', 188, 234]]
+let s:p.insert.middle = [['', '', 188, 234]]
+let s:p.replace.middle= [['', '', 188, 234]]
+let s:p.visual.middle = [['', '', 188, 234]]
+let s:p.normal.right  = [['', '', 234, 74],  ['', '', 188, 236]]
+let s:p.insert.right  = [['', '', 234, 203], ['', '', 188, 236]]
+let s:p.replace.right = [['', '', 234, 203], ['', '', 188, 236]]
+let s:p.visual.right  = [['', '', 234, 173], ['', '', 188, 236]]
+let s:p.inactive.left   = [['', '', 102, 236], ['', '', 102, 236]]
+let s:p.inactive.middle = [['', '', 102, 234]]
+let s:p.inactive.right  = [['', '', 102, 236], ['', '', 102, 236]]
+let s:p.tabline.left   = [['', '', 188, 236]]
+let s:p.tabline.tabsel = [['', '', 234, 74]]
+let s:p.tabline.middle = [['', '', 188, 234]]
+let s:p.tabline.right  = [['', '', 188, 236]]
 let g:lightline#colorscheme#dotfiles#palette = lightline#colorscheme#flatten(s:p)
 
 let g:lightline = {
