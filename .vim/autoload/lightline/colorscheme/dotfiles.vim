@@ -1,32 +1,41 @@
 " lightline カラースキーム: dotfiles
-" gui カラーは NONE、cterm カラーのみ使用
-" Normal=青(74), Insert/Replace=赤(203), Visual=オレンジ(173)
+" Normal=青, Insert/Replace=赤, Visual=オレンジ (nvim lualine と統一)
+" 各色は [guiHex, ctermNum] のペア形式
+
+let s:fg_dark  = ['#1e1e1e', 234]
+let s:fg_light = ['#d4d4d4', 188]
+let s:bg_dark  = ['#1e1e1e', 234]
+let s:bg_mid   = ['#2d2d2d', 236]
+let s:blue     = ['#569cd6', 74]
+let s:red      = ['#f44747', 203]
+let s:orange   = ['#ce9178', 173]
+let s:gray     = ['#888888', 102]
 
 let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'inactive': {}, 'tabline': {}}
 
-let s:p.normal.left   = [['NONE', 'NONE', 234, 74,  'bold'], ['NONE', 'NONE', 188, 236]]
-let s:p.normal.middle = [['NONE', 'NONE', 188, 234]]
-let s:p.normal.right  = [['NONE', 'NONE', 234, 74],  ['NONE', 'NONE', 188, 236]]
+let s:p.normal.left   = [ [s:fg_dark, s:blue, 'bold'], [s:fg_light, s:bg_mid] ]
+let s:p.normal.middle = [ [s:fg_light, s:bg_dark] ]
+let s:p.normal.right  = [ [s:fg_dark, s:blue], [s:fg_light, s:bg_mid] ]
 
-let s:p.insert.left   = [['NONE', 'NONE', 234, 203, 'bold'], ['NONE', 'NONE', 188, 236]]
-let s:p.insert.middle = [['NONE', 'NONE', 188, 234]]
-let s:p.insert.right  = [['NONE', 'NONE', 234, 203], ['NONE', 'NONE', 188, 236]]
+let s:p.insert.left   = [ [s:fg_dark, s:red, 'bold'], [s:fg_light, s:bg_mid] ]
+let s:p.insert.middle = [ [s:fg_light, s:bg_dark] ]
+let s:p.insert.right  = [ [s:fg_dark, s:red], [s:fg_light, s:bg_mid] ]
 
-let s:p.replace.left   = [['NONE', 'NONE', 234, 203, 'bold'], ['NONE', 'NONE', 188, 236]]
-let s:p.replace.middle = [['NONE', 'NONE', 188, 234]]
-let s:p.replace.right  = [['NONE', 'NONE', 234, 203], ['NONE', 'NONE', 188, 236]]
+let s:p.replace.left   = [ [s:fg_dark, s:red, 'bold'], [s:fg_light, s:bg_mid] ]
+let s:p.replace.middle = [ [s:fg_light, s:bg_dark] ]
+let s:p.replace.right  = [ [s:fg_dark, s:red], [s:fg_light, s:bg_mid] ]
 
-let s:p.visual.left   = [['NONE', 'NONE', 234, 173, 'bold'], ['NONE', 'NONE', 188, 236]]
-let s:p.visual.middle = [['NONE', 'NONE', 188, 234]]
-let s:p.visual.right  = [['NONE', 'NONE', 234, 173], ['NONE', 'NONE', 188, 236]]
+let s:p.visual.left   = [ [s:fg_dark, s:orange, 'bold'], [s:fg_light, s:bg_mid] ]
+let s:p.visual.middle = [ [s:fg_light, s:bg_dark] ]
+let s:p.visual.right  = [ [s:fg_dark, s:orange], [s:fg_light, s:bg_mid] ]
 
-let s:p.inactive.left   = [['NONE', 'NONE', 102, 236], ['NONE', 'NONE', 102, 236]]
-let s:p.inactive.middle = [['NONE', 'NONE', 102, 234]]
-let s:p.inactive.right  = [['NONE', 'NONE', 102, 236], ['NONE', 'NONE', 102, 236]]
+let s:p.inactive.left   = [ [s:gray, s:bg_mid], [s:gray, s:bg_mid] ]
+let s:p.inactive.middle = [ [s:gray, s:bg_dark] ]
+let s:p.inactive.right  = [ [s:gray, s:bg_mid], [s:gray, s:bg_mid] ]
 
-let s:p.tabline.left   = [['NONE', 'NONE', 188, 236]]
-let s:p.tabline.tabsel = [['NONE', 'NONE', 234, 74]]
-let s:p.tabline.middle = [['NONE', 'NONE', 188, 234]]
-let s:p.tabline.right  = [['NONE', 'NONE', 188, 236]]
+let s:p.tabline.left   = [ [s:fg_light, s:bg_mid] ]
+let s:p.tabline.tabsel = [ [s:fg_dark,  s:blue] ]
+let s:p.tabline.middle = [ [s:fg_light, s:bg_dark] ]
+let s:p.tabline.right  = [ [s:fg_light, s:bg_mid] ]
 
 let g:lightline#colorscheme#dotfiles#palette = lightline#colorscheme#flatten(s:p)
