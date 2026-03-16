@@ -10,7 +10,7 @@ return {
       v  = "#ce9178", -- Visual  : オレンジ
       V  = "#ce9178", -- V-Line  : オレンジ
       ["\22"] = "#ce9178", -- V-Block: オレンジ
-      c  = "#ff79c6", -- Command : ピンク
+      c  = "#98c379", -- Command : 黄緑
       R  = "#f44747", -- Replace : 赤
       s  = "#ce9178", -- Select  : オレンジ
       S  = "#ce9178", -- S-Line  : オレンジ

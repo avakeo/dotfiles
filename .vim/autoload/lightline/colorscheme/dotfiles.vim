@@ -10,6 +10,7 @@ let s:blue     = ['#569cd6', 74]
 let s:red      = ['#f44747', 203]
 let s:orange   = ['#ce9178', 173]
 let s:gray     = ['#888888', 102]
+let s:green    = ['#98c379', 114]
 
 let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'inactive': {}, 'tabline': {}}
 
@@ -28,6 +29,10 @@ let s:p.replace.right  = [ [s:fg_dark, s:red], [s:fg_light, s:bg_mid] ]
 let s:p.visual.left   = [ [s:fg_dark, s:orange, 'bold'], [s:fg_light, s:bg_mid] ]
 let s:p.visual.middle = [ [s:fg_light, s:bg_dark] ]
 let s:p.visual.right  = [ [s:fg_dark, s:orange], [s:fg_light, s:bg_mid] ]
+
+let s:p.command.left   = [ [s:fg_dark, s:green, 'bold'], [s:fg_light, s:bg_mid] ]
+let s:p.command.middle = [ [s:fg_light, s:bg_dark] ]
+let s:p.command.right  = [ [s:fg_dark, s:green], [s:fg_light, s:bg_mid] ]
 
 let s:p.inactive.left   = [ [s:gray, s:bg_mid], [s:gray, s:bg_mid] ]
 let s:p.inactive.middle = [ [s:gray, s:bg_dark] ]
