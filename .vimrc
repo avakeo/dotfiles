@@ -1,6 +1,12 @@
 " Leader キー
 let mapleader = " "
 
+" dotfiles の .vim を runtimepath に追加 (lightline カラースキーム等)
+let s:dotfiles_vim = expand('~/dotfiles/.vim')
+if isdirectory(s:dotfiles_vim)
+  execute 'set runtimepath+=' . s:dotfiles_vim
+endif
+
 " ===== vim-plug (auto-install) =====
 let data_dir = has('nvim') ? stdpath('data') . '/site' : (has('win32') ? expand('~/vimfiles') : expand('~/.vim'))
 if empty(glob(data_dir . '/autoload/plug.vim'))
