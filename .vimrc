@@ -14,7 +14,12 @@ call plug#begin()
   Plug 'itchyny/lightline.vim'        " ステータスライン
   Plug 'maximbaz/lightline-ale'       " lightline に ALE ステータスを表示
   Plug 'tpope/vim-commentary'         " gc でコメントアウト
+  Plug 'rakr/vim-one'          " nvim の bluloco に近いダークテーマ
 call plug#end()
+
+" テーマ (nvim の bluloco に合わせてダーク系)
+set background=dark
+silent! colorscheme one
 
 " ===== ALE (LSP / Lint) =====
 let g:ale_linters = {
