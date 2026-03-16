@@ -27,6 +27,25 @@ else
 	config.default_prog = { "/bin/zsh" }
 end
 
+-- ===== スマートナビゲーション (vim/nvim ↔ WezTerm ペイン) =====
+-- vim/nvim が動いているときは CTRL+hjkl をそのまま渡し、
+-- それ以外のときは WezTerm のペイン移動として扱う
+local function is_vim(pane)
+	local proc = pane:get_foreground_process_name()
+	return proc:find("[nv]?vim") ~= nil
+end
+
+local function smart_move(direction)
+	local keys = { Left = "h", Down = "j", Up = "k", Right = "l" }
+	return wezterm.action_callback(function(window, pane)
+		if is_vim(pane) then
+			window:perform_action(act.SendKey({ key = keys[direction], mods = "CTRL" }), pane)
+		else
+			window:perform_action(act.ActivatePaneDirection(direction), pane)
+		end
+	end)
+end
+
 -- ===== Leader キー =====
 -- CTRL+B をプレフィックスに。1秒以内に次のキーを押す
 config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -84,11 +103,11 @@ config.keys = {
 	{ key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up")    },
 	{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
 
-	-- ===== ペイン移動 (CTRL+hjkl: Leader なしで素早く) =====
-	{ key = "h", mods = "CTRL", action = act.ActivatePaneDirection("Left")  },
-	{ key = "j", mods = "CTRL", action = act.ActivatePaneDirection("Down")  },
-	{ key = "k", mods = "CTRL", action = act.ActivatePaneDirection("Up")    },
-	{ key = "l", mods = "CTRL", action = act.ActivatePaneDirection("Right") },
+	-- ===== ペイン移動 (CTRL+hjkl: vim/nvim 内はウィンドウ移動、それ以外はペイン移動) =====
+	{ key = "h", mods = "CTRL", action = smart_move("Left")  },
+	{ key = "j", mods = "CTRL", action = smart_move("Down")  },
+	{ key = "k", mods = "CTRL", action = smart_move("Up")    },
+	{ key = "l", mods = "CTRL", action = smart_move("Right") },
 
 	-- ===== タブ =====
 	{

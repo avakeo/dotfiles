@@ -59,6 +59,9 @@ set number
 set virtualedit=onemore
 set wildmode=list:longest
 set t_Co=256
+if has('termguicolors')
+  set termguicolors
+endif
 syntax enable
 set noerrorbells
 set showmatch matchtime=1
