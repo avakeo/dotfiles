@@ -7,13 +7,13 @@ return {
     local mode_colors = {
       n  = "#569cd6", -- Normal  : 青
       i  = "#f44747", -- Insert  : 赤
-      v  = "#c586c0", -- Visual  : 紫
-      V  = "#c586c0", -- V-Line  : 紫
-      ["\22"] = "#c586c0", -- V-Block: 紫
-      c  = "#ce9178", -- Command : オレンジ
+      v  = "#ce9178", -- Visual  : オレンジ
+      V  = "#ce9178", -- V-Line  : オレンジ
+      ["\22"] = "#ce9178", -- V-Block: オレンジ
+      c  = "#ff79c6", -- Command : ピンク
       R  = "#f44747", -- Replace : 赤
-      s  = "#dcdcaa", -- Select  : 黄
-      S  = "#dcdcaa", -- S-Line  : 黄
+      s  = "#ce9178", -- Select  : オレンジ
+      S  = "#ce9178", -- S-Line  : オレンジ
     }
     local function mode_color()
       return { bg = mode_colors[vim.fn.mode()] or "#569cd6", fg = "#1e1e1e", gui = "bold" }
