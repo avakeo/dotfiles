@@ -12,7 +12,7 @@ let s:orange   = ['#ce9178', 173]
 let s:gray     = ['#888888', 102]
 let s:green    = ['#98c379', 114]
 
-let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'inactive': {}, 'tabline': {}}
+let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'command': {}, 'inactive': {}, 'tabline': {}}
 
 let s:p.normal.left   = [ [s:fg_dark, s:blue, 'bold'], [s:fg_light, s:bg_mid] ]
 let s:p.normal.middle = [ [s:fg_light, s:bg_dark] ]
