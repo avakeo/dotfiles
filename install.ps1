@@ -74,6 +74,11 @@ function Link-Home {
   New-Symlink (Join-Path $DotDir ".vimrc")            (Join-Path $HOME ".vimrc")
   New-Symlink (Join-Path $DotDir ".gitconfig_shared") (Join-Path $HOME ".gitconfig_shared")
 
+  # lightline カラースキーム
+  $lcDir = Join-Path $HOME ".vim\autoload\lightline\colorscheme"
+  New-Item -ItemType Directory -Path $lcDir -Force | Out-Null
+  New-Symlink (Join-Path $DotDir ".vim\autoload\lightline\colorscheme\dotfiles.vim") (Join-Path $lcDir "dotfiles.vim")
+
   # PowerShell プロファイル: $PROFILE からドットソース (シンボリックリンク不要)
   $profileDir = Split-Path $PROFILE -Parent
   New-Item -ItemType Directory -Path $profileDir -Force | Out-Null

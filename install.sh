@@ -57,6 +57,11 @@ link_home() {
   for name in "${files[@]}"; do
     backup_and_link "$DOTDIR/$name" "$HOME/$name"
   done
+
+  # lightline カラースキーム
+  local lc_dir="$HOME/.vim/autoload/lightline/colorscheme"
+  mkdir -p "$lc_dir"
+  backup_and_link "$DOTDIR/.vim/autoload/lightline/colorscheme/dotfiles.vim" "$lc_dir/dotfiles.vim"
 }
 
 link_config() {

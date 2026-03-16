@@ -70,9 +70,9 @@ set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
 set clipboard+=unnamedplus
 
-" lightline (wombat はモード別カラーを標準サポート)
+" lightline (外部カラースキーム: ~/.vim/autoload/lightline/colorscheme/dotfiles.vim)
 let g:lightline = {
-  \ 'colorscheme': 'wombat',
+  \ 'colorscheme': 'dotfiles',
   \ 'component_expand': {
   \   'linter_errors':   'lightline#ale#errors',
   \   'linter_warnings': 'lightline#ale#warnings',
