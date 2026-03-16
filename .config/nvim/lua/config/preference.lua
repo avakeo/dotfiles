@@ -28,7 +28,7 @@ opt.inccommand = "split"
 opt.showmatch = true
 opt.matchtime = 1
 opt.list = true
-opt.listchars = { tab = " ", trail = "·" }
+opt.listchars = { tab = "▸ ", trail = "·" }
 opt.linebreak = true
 opt.virtualedit = "onemore"
 opt.display = "lastline"
@@ -63,7 +63,7 @@ opt.fillchars = { fold = " ", eob = " " }
 
 -- fold
 opt.foldmethod = "expr"
-opt.foldexpr = "nvim_treesitter#foldexpr()"
+opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldenable = false
 opt.foldlevel = 99
 

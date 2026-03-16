@@ -16,13 +16,8 @@ config.window_background_opacity = 0.9
 local target = wezterm.target_triple
 
 if target:find("windows") then
-	if os.getenv("WEZTERM_EXECUTING_IN_WSL") == "1" or os.getenv("WSL_DISTRO_NAME") then
-		config.default_prog = wezterm.shell_exists("/usr/bin/zsh")
-			and { "/usr/bin/zsh" }
-			or  { "/usr/bin/bash" }
-	else
-		config.default_prog = { "C:\\Windows\\System32\\wsl.exe", "-d", "Ubuntu-24.04" }
-	end
+	-- PowerShell 7 を優先、なければ WSL2、なければ Windows PowerShell
+	config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }
 elseif target:find("linux") then
 	config.default_prog = wezterm.shell_exists("/usr/bin/zsh")
 		and { "/usr/bin/zsh" }
@@ -32,23 +27,17 @@ else
 	config.default_prog = { "/bin/zsh" }
 end
 
--- ===== 起動時 =====
-wezterm.on("gui-startup", function(cmd)
-	wezterm.mux.spawn_window(cmd or {})
-end)
-
 -- ===== Leader キー =====
--- CTRL+Space をプレフィックスに。1秒以内に次のキーを押す
-config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 1000 }
+-- CTRL+B をプレフィックスに。1秒以内に次のキーを押す
+config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
 
 -- ===== キーバインド =====
 --
---  Leader (CTRL+Space) + ...
---    |  → 左右に分割
---    -  → 上下に分割
+--  Leader (CTRL+B) + ...
+--    v  → 左右に分割
+--    s  → 上下に分割
 --    z  → ペインをズーム/解除
 --    x  → ペインを閉じる
---    c  → 新規タブ
 --    h/j/k/l → ペイン移動
 --    <  → ペインを左へリサイズ
 --    >  → ペインを右へリサイズ
@@ -63,13 +52,13 @@ config.leader = { key = "Space", mods = "CTRL", timeout_milliseconds = 1000 }
 --
 config.keys = {
 
-	-- ===== ペイン分割 (Leader + 記号) =====
+	-- ===== ペイン分割 (Leader + v/s) =====
 	{
-		key = "|", mods = "LEADER|SHIFT",
+		key = "v", mods = "LEADER",
 		action = act.SplitHorizontal { domain = "CurrentPaneDomain" },
 	},
 	{
-		key = "-", mods = "LEADER",
+		key = "s", mods = "LEADER",
 		action = act.SplitVertical { domain = "CurrentPaneDomain" },
 	},
 

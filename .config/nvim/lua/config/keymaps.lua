@@ -4,6 +4,17 @@ local opts = { noremap = true, silent = true }
 -- 編集
 map("i", "jj", "<Esc>", opts)
 
+-- j/k を視覚行移動に (折り返し行も自然に移動)
+map("n", "j", "gj", opts)
+map("n", "k", "gk", opts)
+
+-- 検索ハイライトを消去
+map("n", "<Esc><Esc>", ":nohlsearch<CR>", opts)
+
+-- 診断エラー移動 (vim の [d/]d と統一)
+map("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+map("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+
 -- 相対行番号トグル
 map("n", "<F3>", ":setlocal relativenumber!<CR>", opts)
 
@@ -33,6 +44,23 @@ vim.api.nvim_create_autocmd("TermOpen", {
     map("t", "<Esc>", "<C-\\><C-n>:q!<CR>", opts)
   end,
 })
+
+-- ===== 画面分割 (WezTerm の Leader+v / Leader+s と統一) =====
+map("n", "<Leader>v", ":vsplit<CR>", opts)   -- 左右に分割
+map("n", "<Leader>s", ":split<CR>",  opts)   -- 上下に分割
+map("n", "<Leader>x", ":close<CR>",  opts)   -- 分割を閉じる
+
+-- ウィンドウ移動 (WezTerm の Ctrl+hjkl と統一)
+map("n", "<C-h>", "<C-w>h", opts)
+map("n", "<C-j>", "<C-w>j", opts)
+map("n", "<C-k>", "<C-w>k", opts)
+map("n", "<C-l>", "<C-w>l", opts)
+
+-- ウィンドウリサイズ (WezTerm の Leader+<>/+/_ と統一)
+map("n", "<Leader><", ":vertical resize -5<CR>", opts)
+map("n", "<Leader>>", ":vertical resize +5<CR>", opts)
+map("n", "<Leader>+", ":resize +5<CR>",          opts)
+map("n", "<Leader>_", ":resize -5<CR>",          opts)
 
 -- bufferline タブ切り替え
 map("n", "gt", ":BufferLineCycleNext<CR>", opts)

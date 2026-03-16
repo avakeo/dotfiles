@@ -34,24 +34,35 @@ function New-Symlink($src, $dest) {
     return
   }
 
-  if (Test-Path $dest) {
-    $item = Get-Item $dest -Force
-    if ($item.LinkType -eq "SymbolicLink") {
-      Remove-Item $dest -Force
-    } else {
-      New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
-      Move-Item $dest $BackupDir -Force
-      Write-Info "backed up: $(Split-Path $dest -Leaf)"
-    }
-  }
-
   $isDir = (Get-Item $src -Force) -is [System.IO.DirectoryInfo]
+
   if ($isDir) {
-    New-Item -ItemType SymbolicLink -Path $dest -Target $src | Out-Null
+    # ディレクトリ: 既存のディレクトリシンボリックリンクを削除して実ディレクトリを作成し再帰処理
+    if (Test-Path $dest) {
+      $item = Get-Item $dest -Force
+      if ($item.LinkType -eq "SymbolicLink") {
+        Remove-Item $dest -Force
+      }
+    }
+    New-Item -ItemType Directory -Path $dest -Force | Out-Null
+    Get-ChildItem $src -Force | ForEach-Object {
+      New-Symlink $_.FullName (Join-Path $dest $_.Name)
+    }
   } else {
+    # ファイル: シンボリックリンクを作成
+    if (Test-Path $dest) {
+      $item = Get-Item $dest -Force
+      if ($item.LinkType -eq "SymbolicLink") {
+        Remove-Item $dest -Force
+      } else {
+        New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
+        Move-Item $dest $BackupDir -Force
+        Write-Info "backed up: $(Split-Path $dest -Leaf)"
+      }
+    }
     New-Item -ItemType SymbolicLink -Path $dest -Target $src | Out-Null
+    Write-Success (Split-Path $dest -Leaf)
   }
-  Write-Success (Split-Path $dest -Leaf)
 }
 
 # ===== Link targets =====
@@ -60,10 +71,14 @@ function Link-Home {
   Write-Host ""
   Write-Host "Home dotfiles:"
 
-  $files = @(".vimrc", "Microsoft.PowerShell_profile.ps1")
-  foreach ($name in $files) {
-    New-Symlink (Join-Path $DotDir $name) (Join-Path $HOME $name)
-  }
+  New-Symlink (Join-Path $DotDir ".vimrc") (Join-Path $HOME ".vimrc")
+
+  # PowerShell プロファイル: $PROFILE からドットソース (シンボリックリンク不要)
+  $profileDir = Split-Path $PROFILE -Parent
+  New-Item -ItemType Directory -Path $profileDir -Force | Out-Null
+  $dotfilesProfile = Join-Path $DotDir "Microsoft.PowerShell_profile.ps1"
+  Set-Content -Path $PROFILE -Value ". `"$dotfilesProfile`"" -Encoding UTF8
+  Write-Success "PowerShell profile -> $dotfilesProfile"
 }
 
 function Link-Config {
@@ -82,11 +97,43 @@ function Link-Config {
   }
 }
 
+function Install-Scoop {
+  Write-Host ""
+  Write-Host "Scoop:"
+
+  if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
+    Write-Info "installing scoop..."
+    Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    Invoke-RestMethod -Uri "https://get.scoop.sh" | Invoke-Expression
+    Write-Success "scoop installed"
+  } else {
+    Write-Info "scoop already installed"
+  }
+
+  $packages = @("7zip", "neovim", "vim", "starship")
+  foreach ($pkg in $packages) {
+    $installed = scoop list $pkg 2>$null | Select-String $pkg
+    if ($installed) {
+      Write-Info "already installed: $pkg"
+    } else {
+      Write-Info "installing $pkg..."
+      scoop install $pkg
+      Write-Success $pkg
+    }
+  }
+}
+
 function Post-Install {
   Write-Host ""
   Write-Host "Git config:"
   git config --global include.path "~/.gitconfig_shared"
   Write-Success "include.path set to ~/.gitconfig_shared"
+
+  Write-Host ""
+  Write-Host "WezTerm:"
+  $weztermConfig = Join-Path $DotDir ".config\wezterm\wezterm.lua"
+  [System.Environment]::SetEnvironmentVariable("WEZTERM_CONFIG_FILE", $weztermConfig, "User")
+  Write-Success "WEZTERM_CONFIG_FILE=$weztermConfig"
 }
 
 # ===== Main =====
@@ -94,6 +141,7 @@ function Post-Install {
 Write-Host "Platform: Windows (PowerShell $($PSVersionTable.PSVersion))" -ForegroundColor Cyan
 
 Assert-SymlinkPrivilege
+Install-Scoop
 Link-Home
 Link-Config
 Post-Install

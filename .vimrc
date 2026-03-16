@@ -1,3 +1,6 @@
+" Leader キー
+let mapleader = " "
+
 " ===== vim-plug (auto-install) =====
 let data_dir = has('nvim') ? stdpath('data') . '/site' : (has('win32') ? expand('~/vimfiles') : expand('~/.vim'))
 if empty(glob(data_dir . '/autoload/plug.vim'))
@@ -88,6 +91,23 @@ nnoremap j gj
 nnoremap k gk
 inoremap <silent> jj <ESC>
 nnoremap <Esc><Esc> :nohlsearch<CR>
+
+" 画面分割 (WezTerm / nvim と統一)
+nnoremap <Leader>v :vsplit<CR>
+nnoremap <Leader>s :split<CR>
+nnoremap <Leader>x :close<CR>
+
+" ウィンドウ移動 (WezTerm の Ctrl+hjkl と統一)
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" ウィンドウリサイズ (WezTerm の Leader+<>/+/_ と統一)
+nnoremap <Leader>< :vertical resize -5<CR>
+nnoremap <Leader>> :vertical resize +5<CR>
+nnoremap <Leader>+ :resize +5<CR>
+nnoremap <Leader>_ :resize -5<CR>
 
 " Windows / GUI 用
 set guioptions+=a
