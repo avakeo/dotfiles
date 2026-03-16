@@ -1,5 +1,9 @@
 return {
   "nvim-tree/nvim-tree.lua",
+  keys = {
+    { "<C-n>",    "<cmd>NvimTreeFocus<CR>",  desc = "NvimTree Focus" },
+    { "<Leader>t", "<cmd>NvimTreeToggle<CR>", desc = "NvimTree Toggle" },
+  },
   config = function()
     require("nvim-tree").setup({
       renderer = {

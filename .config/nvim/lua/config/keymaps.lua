@@ -66,10 +66,6 @@ map("n", "<Leader>_", ":resize -5<CR>",          opts)
 map("n", "gt", ":BufferLineCycleNext<CR>", opts)
 map("n", "gT", ":BufferLineCyclePrev<CR>", opts)
 
--- nvim-tree
-map("n", "<C-n>",    [[<cmd>lua require("nvim-tree.api").tree.focus()<CR>]],  opts)
-map("n", "<Leader>t", [[<cmd>lua require("nvim-tree.api").tree.toggle()<CR>]], opts)
-
 -- LSP: バッファにアタッチされたときのキーマップ
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
