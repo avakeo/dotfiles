@@ -70,32 +70,9 @@ set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
 set clipboard+=unnamedplus
 
-" lightline: モード別カラー (cterm のみ、gui カラーなし)
-" 形式: ['', '', ctermfg, ctermbg, attr]
-let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'inactive': {}, 'tabline': {}}
-let s:p.normal.left   = [['', '', 234, 74,  'bold'], ['', '', 188, 236]]
-let s:p.insert.left   = [['', '', 234, 203, 'bold'], ['', '', 188, 236]]
-let s:p.replace.left  = [['', '', 234, 203, 'bold'], ['', '', 188, 236]]
-let s:p.visual.left   = [['', '', 234, 173, 'bold'], ['', '', 188, 236]]
-let s:p.normal.middle = [['', '', 188, 234]]
-let s:p.insert.middle = [['', '', 188, 234]]
-let s:p.replace.middle= [['', '', 188, 234]]
-let s:p.visual.middle = [['', '', 188, 234]]
-let s:p.normal.right  = [['', '', 234, 74],  ['', '', 188, 236]]
-let s:p.insert.right  = [['', '', 234, 203], ['', '', 188, 236]]
-let s:p.replace.right = [['', '', 234, 203], ['', '', 188, 236]]
-let s:p.visual.right  = [['', '', 234, 173], ['', '', 188, 236]]
-let s:p.inactive.left   = [['', '', 102, 236], ['', '', 102, 236]]
-let s:p.inactive.middle = [['', '', 102, 234]]
-let s:p.inactive.right  = [['', '', 102, 236], ['', '', 102, 236]]
-let s:p.tabline.left   = [['', '', 188, 236]]
-let s:p.tabline.tabsel = [['', '', 234, 74]]
-let s:p.tabline.middle = [['', '', 188, 234]]
-let s:p.tabline.right  = [['', '', 188, 236]]
-let g:lightline#colorscheme#dotfiles#palette = lightline#colorscheme#flatten(s:p)
-
+" lightline (wombat はモード別カラーを標準サポート)
 let g:lightline = {
-  \ 'colorscheme': 'dotfiles',
+  \ 'colorscheme': 'wombat',
   \ 'component_expand': {
   \   'linter_errors':   'lightline#ale#errors',
   \   'linter_warnings': 'lightline#ale#warnings',
