@@ -70,8 +70,32 @@ set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
 set clipboard+=unnamedplus
 
-" lightline (ALE ステータスを表示)
+" lightline: モード別カラー (nvim lualine と統一)
+let s:p = {'normal': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'inactive': {}, 'tabline': {}}
+" [foreground, background]
+let s:p.normal.left   = [['#1e1e1e', '#569cd6', 'bold'], ['#d4d4d4', '#2d2d2d']]
+let s:p.insert.left   = [['#1e1e1e', '#f44747', 'bold'], ['#d4d4d4', '#2d2d2d']]
+let s:p.replace.left  = [['#1e1e1e', '#f44747', 'bold'], ['#d4d4d4', '#2d2d2d']]
+let s:p.visual.left   = [['#1e1e1e', '#ce9178', 'bold'], ['#d4d4d4', '#2d2d2d']]
+let s:p.normal.middle = [['#d4d4d4', '#1e1e1e']]
+let s:p.insert.middle = [['#d4d4d4', '#1e1e1e']]
+let s:p.replace.middle= [['#d4d4d4', '#1e1e1e']]
+let s:p.visual.middle = [['#d4d4d4', '#1e1e1e']]
+let s:p.normal.right  = [['#1e1e1e', '#569cd6'], ['#d4d4d4', '#2d2d2d']]
+let s:p.insert.right  = [['#1e1e1e', '#f44747'], ['#d4d4d4', '#2d2d2d']]
+let s:p.replace.right = [['#1e1e1e', '#f44747'], ['#d4d4d4', '#2d2d2d']]
+let s:p.visual.right  = [['#1e1e1e', '#ce9178'], ['#d4d4d4', '#2d2d2d']]
+let s:p.inactive.left = [['#888888', '#2d2d2d'], ['#888888', '#2d2d2d']]
+let s:p.inactive.middle = [['#888888', '#1e1e1e']]
+let s:p.inactive.right  = [['#888888', '#2d2d2d'], ['#888888', '#2d2d2d']]
+let s:p.tabline.left   = [['#d4d4d4', '#2d2d2d']]
+let s:p.tabline.tabsel = [['#1e1e1e', '#569cd6']]
+let s:p.tabline.middle = [['#d4d4d4', '#1e1e1e']]
+let s:p.tabline.right  = [['#d4d4d4', '#2d2d2d']]
+let g:lightline#colorscheme#dotfiles#palette = lightline#colorscheme#flatten(s:p)
+
 let g:lightline = {
+  \ 'colorscheme': 'dotfiles',
   \ 'component_expand': {
   \   'linter_errors':   'lightline#ale#errors',
   \   'linter_warnings': 'lightline#ale#warnings',
