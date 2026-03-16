@@ -123,12 +123,22 @@ set guioptions+=a
 set guioptions+=R
 set shellslash
 
-" Windows: ターミナルを PowerShell に変更
+" Windows: 起動元に応じてターミナルを切り替え
 if has('win32') || has('win64')
-  set shell=pwsh.exe
-  set shellcmdflag=-NoLogo\ -NoProfile\ -ExecutionPolicy\ RemoteSigned\ -Command
-  set shellxquote=
-  set shellquote=
-  set shellpipe=\|\ Out-File\ -Encoding\ UTF8\ %s
-  set shellredir=\|\ Out-File\ -Encoding\ UTF8\ %s
+  if !empty($WSL_DISTRO_NAME)
+    " WSL から起動: zsh or bash
+    if executable('zsh')
+      set shell=zsh
+    else
+      set shell=bash
+    endif
+  else
+    " PowerShell から起動
+    set shell=pwsh.exe
+    set shellcmdflag=-NoLogo\ -NoProfile\ -ExecutionPolicy\ RemoteSigned\ -Command
+    set shellxquote=
+    set shellquote=
+    set shellpipe=\|\ Out-File\ -Encoding\ UTF8\ %s
+    set shellredir=\|\ Out-File\ -Encoding\ UTF8\ %s
+  endif
 endif

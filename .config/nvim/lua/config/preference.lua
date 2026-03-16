@@ -67,14 +67,20 @@ opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldenable = false
 opt.foldlevel = 99
 
--- Windows: ターミナルを PowerShell に変更
+-- Windows: 起動元に応じてターミナルを切り替え
 if vim.fn.has("win32") == 1 then
-  vim.opt.shell      = "pwsh.exe"
-  vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
-  vim.opt.shellxquote  = ""
-  vim.opt.shellquote   = ""
-  vim.opt.shellpipe    = "| Out-File -Encoding UTF8 %s"
-  vim.opt.shellredir   = "| Out-File -Encoding UTF8 %s"
+  if vim.fn.getenv("WSL_DISTRO_NAME") ~= vim.NIL then
+    -- WSL から起動: zsh or bash
+    vim.opt.shell = vim.fn.executable("zsh") == 1 and "zsh" or "bash"
+  else
+    -- PowerShell から起動
+    vim.opt.shell        = "pwsh.exe"
+    vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+    vim.opt.shellxquote  = ""
+    vim.opt.shellquote   = ""
+    vim.opt.shellpipe    = "| Out-File -Encoding UTF8 %s"
+    vim.opt.shellredir   = "| Out-File -Encoding UTF8 %s"
+  end
 end
 
 -- termguicolors / colorscheme
