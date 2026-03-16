@@ -67,6 +67,16 @@ opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 opt.foldenable = false
 opt.foldlevel = 99
 
+-- Windows: ターミナルを PowerShell に変更
+if vim.fn.has("win32") == 1 then
+  vim.opt.shell      = "pwsh.exe"
+  vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
+  vim.opt.shellxquote  = ""
+  vim.opt.shellquote   = ""
+  vim.opt.shellpipe    = "| Out-File -Encoding UTF8 %s"
+  vim.opt.shellredir   = "| Out-File -Encoding UTF8 %s"
+end
+
 -- termguicolors / colorscheme
 opt.termguicolors = true
 vim.cmd("colorscheme bluloco")

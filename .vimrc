@@ -122,3 +122,13 @@ nnoremap <Leader>_ :resize -5<CR>
 set guioptions+=a
 set guioptions+=R
 set shellslash
+
+" Windows: ターミナルを PowerShell に変更
+if has('win32') || has('win64')
+  set shell=pwsh.exe
+  set shellcmdflag=-NoLogo\ -NoProfile\ -ExecutionPolicy\ RemoteSigned\ -Command
+  set shellxquote=
+  set shellquote=
+  set shellpipe=\|\ Out-File\ -Encoding\ UTF8\ %s
+  set shellredir=\|\ Out-File\ -Encoding\ UTF8\ %s
+endif
