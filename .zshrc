@@ -291,5 +291,16 @@ export NVM_DIR="$HOME/.nvm"
 
 eval $(dircolors -b ~/.dircolors)
 
+# fzf
+if command -v fzf &>/dev/null; then
+  eval "$(fzf --zsh)"
+fi
+
+# zoxide (smart cd)
+if command -v zoxide &>/dev/null; then
+  eval "$(zoxide init zsh)"
+  alias cd='z'
+fi
+
 # Machine-local overrides (not committed to git)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

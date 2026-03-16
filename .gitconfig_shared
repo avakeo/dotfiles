@@ -1,0 +1,23 @@
+[alias]
+	lg  = log --oneline --graph --decorate --all
+	st  = status -s
+	co  = checkout
+	br  = branch
+	df  = diff
+	dfs = diff --staged
+	acm = !git add -A && git commit -m
+
+[pull]
+	rebase = true
+
+[push]
+	default = current
+
+[diff]
+	colorMoved = zebra
+
+[merge]
+	conflictstyle = diff3
+
+[rerere]
+	enabled = true

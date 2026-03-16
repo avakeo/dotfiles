@@ -36,6 +36,8 @@ vim +PlugInstall +qa
 | [WezTerm](https://wezfurlong.org/wezterm/) | ターミナル | 公式サイト参照 |
 | [Neovim](https://neovim.io) v0.9+ | エディタ | `apt/brew install neovim` |
 | [Cica](https://github.com/miiton/Cica) | フォント | GitHub からダウンロード |
+| [fzf](https://github.com/junegunn/fzf) | ファジーファインダー | `install.sh` が自動インストール |
+| [zoxide](https://github.com/ajeetdsouza/zoxide) | スマート cd | `install.sh` が自動インストール |
 
 ### Linux / WSL
 ```bash
@@ -50,6 +52,9 @@ brew install zsh git neovim fish starship sheldon
 ### Windows 備考
 - `install.ps1` が `WEZTERM_CONFIG_FILE` 環境変数を自動設定する
 - PowerShell プロファイルは `$PROFILE` から dotfiles をドットソースする形式
+
+### Windows 追加パッケージ (scoop)
+`install.ps1` が自動インストール: `7zip` `neovim` `vim` `starship` `fzf` `zoxide`
 
 ### nvim LSP サーバー (mason で自動インストールされる)
 `pyright` `ts_ls` `rust_analyzer` `lua_ls` `jsonls` `yamlls` `html` `cssls`
@@ -123,6 +128,24 @@ Leader = `Space`
 | `Leader` + `fr` | 最近開いたファイル |
 | `Leader` + `fw` | カーソル下の単語を grep |
 | `Leader` + `fh` | ヘルプ検索 |
+| `Leader` + `ft` | TODO コメント一覧 |
+
+**Trouble（エラー一覧）**
+
+| キー | 動作 |
+|---|---|
+| `Leader` + `xx` | 全 diagnostics 表示 |
+| `Leader` + `xb` | バッファの diagnostics |
+| `Leader` + `xl` | Location list |
+| `Leader` + `xq` | Quickfix list |
+
+**TODO コメント**
+
+| キー | 動作 |
+|---|---|
+| `]t` / `[t` | 次/前の TODO へ移動 |
+
+**which-key**: `Space` を押すと使えるキー一覧がポップアップ表示される
 
 **編集**
 
@@ -188,6 +211,7 @@ dotfiles/
 ├── .zshrc
 ├── .vimrc
 ├── .dircolors
+├── .gitconfig_shared
 ├── Microsoft.PowerShell_profile.ps1
 ├── install.sh          # Linux / WSL / macOS 用
 ├── install.ps1         # Windows 用

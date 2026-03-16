@@ -85,6 +85,21 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
 }
 
+# ===== zoxide (smart cd) =====
+if (Get-Command zoxide -ErrorAction SilentlyContinue) {
+  Invoke-Expression (& { (zoxide init powershell | Out-String) })
+  Set-Alias -Name cd -Value z -Option AllScope
+}
+
+# ===== fzf =====
+if (Get-Command fzf -ErrorAction SilentlyContinue) {
+  if (Get-Module -ListAvailable -Name PSFzf) {
+    Import-Module PSFzf
+    Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+t'
+    Set-PsFzfOption -PSReadlineChordReverseHistory 'Ctrl+r'
+  }
+}
+
 # ===== starship =====
 if (Get-Command starship -ErrorAction SilentlyContinue) {
   Invoke-Expression (&starship init powershell)

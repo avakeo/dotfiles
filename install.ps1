@@ -71,7 +71,8 @@ function Link-Home {
   Write-Host ""
   Write-Host "Home dotfiles:"
 
-  New-Symlink (Join-Path $DotDir ".vimrc") (Join-Path $HOME ".vimrc")
+  New-Symlink (Join-Path $DotDir ".vimrc")            (Join-Path $HOME ".vimrc")
+  New-Symlink (Join-Path $DotDir ".gitconfig_shared") (Join-Path $HOME ".gitconfig_shared")
 
   # PowerShell プロファイル: $PROFILE からドットソース (シンボリックリンク不要)
   $profileDir = Split-Path $PROFILE -Parent
@@ -110,7 +111,7 @@ function Install-Scoop {
     Write-Info "scoop already installed"
   }
 
-  $packages = @("7zip", "neovim", "vim", "starship")
+  $packages = @("7zip", "neovim", "vim", "starship", "fzf", "zoxide")
   foreach ($pkg in $packages) {
     $installed = scoop list $pkg 2>$null | Select-String $pkg
     if ($installed) {

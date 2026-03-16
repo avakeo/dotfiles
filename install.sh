@@ -53,7 +53,7 @@ link_home() {
   echo ""
   echo "Home dotfiles:"
 
-  local files=(.bashrc .zshrc .vimrc .dircolors)
+  local files=(.bashrc .zshrc .vimrc .dircolors .gitconfig_shared)
   for name in "${files[@]}"; do
     backup_and_link "$DOTDIR/$name" "$HOME/$name"
   done
@@ -90,6 +90,27 @@ install_vim_plug() {
   fi
 }
 
+install_tools() {
+  echo ""
+  echo "Tools:"
+
+  # fzf
+  if ! command -v fzf &>/dev/null; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install --all --no-bash --no-fish
+    success "fzf installed"
+  else
+    info "fzf already installed"
+  fi
+
+  # zoxide
+  if ! command -v zoxide &>/dev/null; then
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+    success "zoxide installed"
+  else
+    info "zoxide already installed"
+  fi
+}
+
 post_install() {
   echo ""
   echo "Git config:"
@@ -118,6 +139,7 @@ echo "Platform: $OS"
 link_home
 link_config "$OS"
 install_vim_plug
+install_tools
 post_install
 
 echo ""
