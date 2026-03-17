@@ -39,7 +39,7 @@ Debian = "  " # nf-linux-debian
 style = "fg:#2E3440 bg:#88C0D0 bold"
 format = "[ $path ]($style)"
 truncation_length = 10
-truncate_to_repo = false
+truncate_to_repo = true
 truncation_symbol = "…/"
 
 [directory.substitutions]
