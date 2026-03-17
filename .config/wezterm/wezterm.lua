@@ -13,13 +13,22 @@ config.font_size = 14.0
 config.window_background_opacity = 0.9
 
 -- ===== デフォルトシェル =====
+local function file_exists(path)
+	local f = io.open(path, "r")
+	if f then f:close() return true end
+	return false
+end
+
 local target = wezterm.target_triple
 
 if target:find("windows") then
-	-- PowerShell 7 を優先、なければ WSL2、なければ Windows PowerShell
 	config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }
+	config.launch_menu = {
+		{ label = "PowerShell 7",           args = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" } },
+		{ label = "Windows PowerShell 5.1", args = { "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" } },
+	}
 elseif target:find("linux") then
-	config.default_prog = wezterm.shell_exists("/usr/bin/zsh")
+	config.default_prog = file_exists("/usr/bin/zsh")
 		and { "/usr/bin/zsh" }
 		or  { "/usr/bin/bash" }
 else
