@@ -73,13 +73,14 @@ if vim.fn.has("win32") == 1 then
     -- WSL から起動: zsh or bash
     vim.opt.shell = vim.fn.executable("zsh") == 1 and "zsh" or "bash"
   else
-    -- PowerShell から起動
-    vim.opt.shell        = "pwsh.exe"
-    vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command"
-    vim.opt.shellxquote  = ""
+    -- shell は cmd.exe のまま (lazy.nvim 等プラグインの互換性のため)
+    -- :terminal は :terminal pwsh -NoLogo で PowerShell を起動
+    vim.opt.shell = "cmd.exe"
+    vim.opt.shellcmdflag = "/s /c"
+    vim.opt.shellxquote  = "\""
     vim.opt.shellquote   = ""
-    vim.opt.shellpipe    = "| Out-File -Encoding UTF8 %s"
-    vim.opt.shellredir   = "| Out-File -Encoding UTF8 %s"
+    vim.opt.shellpipe    = ">%s 2>&1"
+    vim.opt.shellredir   = ">%s 2>&1"
   end
 end
 

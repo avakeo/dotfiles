@@ -8,6 +8,7 @@ if isdirectory(s:dotfiles_vim)
 endif
 
 " ===== vim-plug (auto-install) =====
+
 let data_dir = has('nvim') ? stdpath('data') . '/site' : (has('win32') ? expand('~/vimfiles') : expand('~/.vim'))
 if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo ' . data_dir . '/autoload/plug.vim --create-dirs
@@ -20,12 +21,11 @@ call plug#begin()
   Plug 'itchyny/lightline.vim'        " ステータスライン
   Plug 'maximbaz/lightline-ale'       " lightline に ALE ステータスを表示
   Plug 'tpope/vim-commentary'         " gc でコメントアウト
-  Plug 'rakr/vim-one'          " nvim の bluloco に近いダークテーマ
+  Plug 'cocopon/iceberg.vim'          " ダークブルー系テーマ
 call plug#end()
 
-" テーマ (nvim の bluloco に合わせてダーク系)
-set background=dark
-silent! colorscheme one
+
+" テーマは syntax enable の後に設定
 
 " ===== ALE (LSP / Lint) =====
 let g:ale_linters = {
@@ -66,6 +66,8 @@ set virtualedit=onemore
 set wildmode=list:longest
 set t_Co=256
 syntax enable
+set background=dark
+colorscheme iceberg
 set noerrorbells
 set showmatch matchtime=1
 set laststatus=2
@@ -100,8 +102,13 @@ set hlsearch
 
 " ===== Keymaps =====
 " ターミナル
-nnoremap tt :tabnew<CR>:terminal<CR>
-nnoremap tx :belowright 10new<CR>:terminal<CR>
+if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
+  nnoremap tt :tab terminal pwsh.exe -NoLogo<CR>
+  nnoremap tx :belowright terminal ++rows=10 pwsh.exe -NoLogo<CR>
+else
+  nnoremap tt :tab terminal<CR>
+  nnoremap tx :belowright terminal ++rows=10<CR>
+endif
 
 nnoremap j gj
 nnoremap k gk
@@ -118,19 +125,27 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
+tnoremap <C-h> <C-w>h
+tnoremap <C-j> <C-w>j
+tnoremap <C-k> <C-w>k
+tnoremap <C-l> <C-w>l
 
-" ウィンドウリサイズ (WezTerm の Leader+<>/+/_ と統一)
-nnoremap <Leader>< :vertical resize -5<CR>
-nnoremap <Leader>> :vertical resize +5<CR>
-nnoremap <Leader>+ :resize +5<CR>
-nnoremap <Leader>_ :resize -5<CR>
+" ウィンドウリサイズ (Ctrl+矢印)
+nnoremap <C-Left>  :vertical resize -5<CR>
+nnoremap <C-Right> :vertical resize +5<CR>
+nnoremap <C-Up>    :resize +5<CR>
+nnoremap <C-Down>  :resize -5<CR>
+tnoremap <C-Left>  <C-w>:vertical resize -5<CR>
+tnoremap <C-Right> <C-w>:vertical resize +5<CR>
+tnoremap <C-Up>    <C-w>:resize +5<CR>
+tnoremap <C-Down>  <C-w>:resize -5<CR>
 
 " Windows / GUI 用
 set guioptions+=a
 set guioptions+=R
 set shellslash
 
-" Windows: 起動元に応じてターミナルを切り替え
+" Windows: 起動元に応じてシェルを切り替え
 if has('win32') || has('win64')
   if !empty($WSL_DISTRO_NAME)
     " WSL から起動: zsh or bash
@@ -140,12 +155,10 @@ if has('win32') || has('win64')
       set shell=bash
     endif
   else
-    " PowerShell から起動
-    set shell=pwsh.exe
-    set shellcmdflag=-NoLogo\ -NoProfile\ -ExecutionPolicy\ RemoteSigned\ -Command
-    set shellxquote=
-    set shellquote=
-    set shellpipe=\|\ Out-File\ -Encoding\ UTF8\ %s
-    set shellredir=\|\ Out-File\ -Encoding\ UTF8\ %s
+    " shell は cmd.exe のまま (vim-plug 等の互換性のため)
+    " :terminal だけ PowerShell を使う
+    " shell は cmd.exe のまま (vim-plug 等の互換性のため)
+    " :terminal は pwsh を明示的に起動
+    set termwintype=conpty
   endif
 endif

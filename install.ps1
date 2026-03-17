@@ -72,6 +72,7 @@ function Link-Home {
   Write-Host "Home dotfiles:"
 
   New-Symlink (Join-Path $DotDir ".vimrc")            (Join-Path $HOME ".vimrc")
+  New-Symlink (Join-Path $DotDir ".vimrc")            (Join-Path $HOME "_vimrc")   # Windows vim は _vimrc を読む
   New-Symlink (Join-Path $DotDir ".gitconfig_shared") (Join-Path $HOME ".gitconfig_shared")
 
   # lightline カラースキーム

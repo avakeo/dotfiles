@@ -18,4 +18,4 @@ vim.opt.rtp:prepend(lazypath)
 
 require("config.lazy")
 require("config.preference")
-require("config.keymaps")
+pcall(require, "config.keymaps")
