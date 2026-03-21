@@ -59,6 +59,16 @@ brew install zsh git neovim fish starship sheldon
 ### nvim LSP サーバー (mason で自動インストールされる)
 `pyright` `ts_ls` `rust_analyzer` `lua_ls` `jsonls` `yamlls` `html` `cssls`
 
+### GitHub Copilot
+初回のみ認証が必要:
+```bash
+# Neovim
+nvim +'Copilot auth'
+
+# Vim
+vim +'Copilot setup'
+```
+
 ### Claude 統合 (codecompanion.nvim)
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...   # ~/.zshrc.local に書く
@@ -144,6 +154,25 @@ Leader = `Space`
 | キー | 動作 |
 |---|---|
 | `]t` / `[t` | 次/前の TODO へ移動 |
+
+**Copilot Chat**
+
+| キー | 動作 |
+|---|---|
+| `Leader` + `cc` | Copilot Chat 開閉 |
+| `Leader` + `ce` | コード説明（ビジュアル選択） |
+| `Leader` + `cf` | バグ修正提案（ビジュアル選択） |
+| `Leader` + `cr` | コードレビュー（ビジュアル選択） |
+| `Leader` + `co` | 最適化提案（ビジュアル選択） |
+| `Leader` + `ct` | テスト生成（ビジュアル選択） |
+
+**CodeCompanion (Claude)**
+
+| キー | 動作 |
+|---|---|
+| `Leader` + `ac` | CodeCompanion Chat |
+| `Leader` + `aa` | CodeCompanion Actions |
+| `Leader` + `ai` | CodeCompanion Inline |
 
 **which-key**: `Space` を押すと使えるキー一覧がポップアップ表示される
 

@@ -22,6 +22,7 @@ call plug#begin()
   Plug 'maximbaz/lightline-ale'       " lightline に ALE ステータスを表示
   Plug 'tpope/vim-commentary'         " gc でコメントアウト
   Plug 'cocopon/iceberg.vim'          " ダークブルー系テーマ
+  Plug 'github/copilot.vim'           " GitHub Copilot
 call plug#end()
 
 

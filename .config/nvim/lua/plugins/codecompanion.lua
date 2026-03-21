@@ -20,8 +20,8 @@ return {
     },
   },
   keys = {
-    { "<Leader>cc", "<cmd>CodeCompanionChat Toggle<CR>",  desc = "CodeCompanion Chat" },
-    { "<Leader>ca", "<cmd>CodeCompanionActions<CR>",      desc = "CodeCompanion Actions" },
-    { "<Leader>ci", "<cmd>CodeCompanion<CR>",             desc = "CodeCompanion Inline" },
+    { "<Leader>ac", "<cmd>CodeCompanionChat Toggle<CR>",  desc = "CodeCompanion Chat" },
+    { "<Leader>aa", "<cmd>CodeCompanionActions<CR>",      desc = "CodeCompanion Actions" },
+    { "<Leader>ai", "<cmd>CodeCompanion<CR>",             desc = "CodeCompanion Inline" },
   },
 }
