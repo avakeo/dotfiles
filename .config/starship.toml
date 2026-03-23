@@ -23,12 +23,12 @@ $os\
 [](fg:os_bg)\
 \n$character"""
 
+# コマンドラインに1行分のスペースを入れない
+add_newline = false
+
 [character]
 success_symbol = "[❯](bold #6BCB77)"
 error_symbol = "[❯](bold #FF6B6B)"
-
-# コマンドラインに1行分のスペースを入れない
-add_newline = false
 
 # left_promptとright_promptの間を何で埋めるか設定
 [fill]
@@ -105,31 +105,33 @@ style = "bg:time_bg"
 format = '[[  $time ](fg:time_fg bg:time_bg)]($style)'
 
 # パレット定義: デバイスごとのカラーテーマ
-# Windows: Pop Candy (カラフルポップ)
+# 左側 (accent, git) は共通、右側 (mem, lang, time, os) はデバイスごとに変更
+
+# Windows: Pop Candy (暖色系の右側)
 [palettes.windows]
 accent = "#FF6B6B"
 accent_fg = "#FFFFFF"
 git_bg = "#FFD93D"
 git_fg = "#333333"
-lang_bg = "#6BCB77"
-lang_fg = "#1A3C1A"
 mem_bg = "#4D96FF"
 mem_fg = "#FFFFFF"
+lang_bg = "#6BCB77"
+lang_fg = "#1A3C1A"
 time_bg = "#C084FC"
 time_fg = "#FFFFFF"
 os_bg = "#4D96FF"
 os_fg = "#FFFFFF"
 
-# WSL/Ubuntu: Pop Candy Cool (カラフルポップ寒色寄り)
+# WSL/Ubuntu: Pop Candy Cool (寒色系の右側)
 [palettes.wsl]
-accent = "#06D6A0"
+accent = "#FF6B6B"
 accent_fg = "#FFFFFF"
-git_bg = "#FFD166"
+git_bg = "#FFD93D"
 git_fg = "#333333"
-lang_bg = "#118AB2"
-lang_fg = "#FFFFFF"
 mem_bg = "#EF476F"
 mem_fg = "#FFFFFF"
+lang_bg = "#118AB2"
+lang_fg = "#FFFFFF"
 time_bg = "#8338EC"
 time_fg = "#FFFFFF"
 os_bg = "#FF8C42"
