@@ -42,8 +42,8 @@ disabled = false
 [os.symbols]
 Windows = "󰍲 "
 Macos = "󰅹 " # nf-fa-apple
-Ubuntu = "󰌛 " # nf-linux-ubuntu
-Debian = "󰌆 " # nf-linux-debian
+Ubuntu = " " # nf-linux-ubuntu
+Debian = " " # nf-linux-debian
 
 [directory]
 style = "fg:accent_fg bg:accent bold"
