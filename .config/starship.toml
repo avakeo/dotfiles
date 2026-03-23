@@ -1,21 +1,24 @@
+# デバイスごとにカラーテーマを変更 (windows=Nord, wsl=Catppuccin Macchiato)
+palette = "windows"
+
 # promptのカラーを設定しています、$変数は後述で設定している変数が差し込まれます
 format = """
 $directory\
-[](fg:#88C0D0 bg:#394260)\
+[](fg:accent bg:git_bg)\
 $git_branch\
 $git_status\
-[](fg:#394260)\
+[](fg:git_bg)\
 $fill\
-[](fg:#212736)\
+[](fg:lang_bg)\
 $nodejs\
 $rust\
 $golang\
 $php\
-[](fg:#1d2230 bg:#212736)\
+[](fg:time_bg bg:lang_bg)\
 $time\
-[](fg:#88C0D0 bg:#1d2230)\
+[](fg:accent bg:time_bg)\
 $os\
-[](fg:#88C0D0)\
+[](fg:accent)\
 \n$character"""
 
 # コマンドラインに1行分のスペースを入れない
@@ -27,7 +30,7 @@ symbol = ' '
 
 [os]
 format = "[$symbol]($style)"
-style = "fg:#2E3440 bg:#88C0D0 bold"
+style = "fg:accent_fg bg:accent bold"
 disabled = false
 
 [os.symbols]
@@ -36,7 +39,7 @@ Ubuntu = "  " # nf-linux-ubuntu
 Debian = "  " # nf-linux-debian
 
 [directory]
-style = "fg:#2E3440 bg:#88C0D0 bold"
+style = "fg:accent_fg bg:accent bold"
 format = "[ $path ]($style)"
 truncation_length = 10
 truncate_to_repo = true
@@ -55,35 +58,56 @@ disabled = true
 
 [git_branch]
 symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+style = "bg:git_bg"
+format = '[[ $symbol $branch ](fg:git_fg bg:git_bg)]($style)'
 
 [git_status]
-style = "bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+style = "bg:git_bg"
+format = '[[($all_status$ahead_behind )](fg:git_fg bg:git_bg)]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:lang_bg"
+format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
 
 [rust]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:lang_bg"
+format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:lang_bg"
+format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
 
 [php]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "bg:lang_bg"
+format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
 
 [time]
 disabled = false
 time_format = "%R" # Hour:Minute Format
-style = "bg:#1d2230"
-format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
+style = "bg:time_bg"
+format = '[[  $time ](fg:time_fg bg:time_bg)]($style)'
+
+# パレット定義: デバイスごとのカラーテーマ
+# Windows: Nord
+[palettes.windows]
+accent = "#88C0D0"
+accent_fg = "#2E3440"
+git_bg = "#394260"
+git_fg = "#769ff0"
+lang_bg = "#212736"
+time_bg = "#1d2230"
+time_fg = "#a0a9cb"
+
+# WSL/Ubuntu: Catppuccin Macchiato
+[palettes.wsl]
+accent = "#c6a0f6"
+accent_fg = "#181926"
+git_bg = "#363a4f"
+git_fg = "#b7bdf8"
+lang_bg = "#1e2030"
+time_bg = "#181926"
+time_fg = "#a5adcb"

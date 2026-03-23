@@ -69,6 +69,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
+# WSL環境ではstarshipのパレットをwslに切り替え
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  _starship_src="${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
+  export STARSHIP_CONFIG="/tmp/starship-${USER}.toml"
+  sed 's/^palette = "windows"/palette = "wsl"/' "$_starship_src" > "$STARSHIP_CONFIG"
+fi
 eval "$(starship init bash)"
 
 . "$HOME/.local/bin/env"

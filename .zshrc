@@ -264,6 +264,12 @@ if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
 
+# WSL環境ではstarshipのパレットをwslに切り替え
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  _starship_src="${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
+  export STARSHIP_CONFIG="/tmp/starship-${USER}.toml"
+  sed 's/^palette = "windows"/palette = "wsl"/' "$_starship_src" > "$STARSHIP_CONFIG"
+fi
 eval "$(starship init zsh)"
 
 
