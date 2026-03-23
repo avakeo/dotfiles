@@ -1,4 +1,4 @@
-# デバイスごとにカラーテーマを変更 (windows=Nord, wsl=Catppuccin Macchiato)
+# デバイスごとにカラーテーマを変更 (windows=M365Princess, wsl=M365Princess Cool)
 palette = "windows"
 
 # promptのカラーを設定しています、$変数は後述で設定している変数が差し込まれます
@@ -9,16 +9,18 @@ $git_branch\
 $git_status\
 [](fg:git_bg)\
 $fill\
-[](fg:lang_bg)\
+[](fg:mem_bg)\
+$memory_usage\
+[](fg:lang_bg bg:mem_bg)\
 $nodejs\
 $rust\
 $golang\
 $php\
 [](fg:time_bg bg:lang_bg)\
 $time\
-[](fg:accent bg:time_bg)\
+[](fg:os_bg bg:time_bg)\
 $os\
-[](fg:accent)\
+[](fg:os_bg)\
 \n$character"""
 
 # コマンドラインに1行分のスペースを入れない
@@ -30,13 +32,14 @@ symbol = ' '
 
 [os]
 format = "[$symbol]($style)"
-style = "fg:accent_fg bg:accent bold"
+style = "fg:os_fg bg:os_bg bold"
 disabled = false
 
 [os.symbols]
-Macos = "  " # nf-fa-apple
-Ubuntu = "  " # nf-linux-ubuntu
-Debian = "  " # nf-linux-debian
+Windows = "󰍲 "
+Macos = "  " # nf-fa-apple
+Ubuntu = "  " # nf-linux-ubuntu
+Debian = "  " # nf-linux-debian
 
 [directory]
 style = "fg:accent_fg bg:accent bold"
@@ -47,9 +50,9 @@ truncation_symbol = "…/"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
 
 [aws]
 disabled = true
@@ -57,7 +60,7 @@ disabled = true
 disabled = true
 
 [git_branch]
-symbol = ""
+symbol = ""
 style = "bg:git_bg"
 format = '[[ $symbol $branch ](fg:git_fg bg:git_bg)]($style)'
 
@@ -65,49 +68,65 @@ format = '[[ $symbol $branch ](fg:git_fg bg:git_bg)]($style)'
 style = "bg:git_bg"
 format = '[[($all_status$ahead_behind )](fg:git_fg bg:git_bg)]($style)'
 
+[memory_usage]
+disabled = false
+threshold = 0
+style = "bg:mem_bg"
+format = '[[ RAM $ram_pct ](fg:mem_fg bg:mem_bg)]($style)'
+
 [nodejs]
-symbol = ""
+symbol = ""
 style = "bg:lang_bg"
-format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
+format = '[[ $symbol ($version) ](fg:lang_fg bg:lang_bg)]($style)'
 
 [rust]
-symbol = ""
+symbol = ""
 style = "bg:lang_bg"
-format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
+format = '[[ $symbol ($version) ](fg:lang_fg bg:lang_bg)]($style)'
 
 [golang]
-symbol = ""
+symbol = ""
 style = "bg:lang_bg"
-format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
+format = '[[ $symbol ($version) ](fg:lang_fg bg:lang_bg)]($style)'
 
 [php]
-symbol = ""
+symbol = ""
 style = "bg:lang_bg"
-format = '[[ $symbol ($version) ](fg:git_fg bg:lang_bg)]($style)'
+format = '[[ $symbol ($version) ](fg:lang_fg bg:lang_bg)]($style)'
 
 [time]
 disabled = false
 time_format = "%R" # Hour:Minute Format
 style = "bg:time_bg"
-format = '[[  $time ](fg:time_fg bg:time_bg)]($style)'
+format = '[[  $time ](fg:time_fg bg:time_bg)]($style)'
 
 # パレット定義: デバイスごとのカラーテーマ
-# Windows: Nord
+# Windows: Pop Candy (カラフルポップ)
 [palettes.windows]
-accent = "#88C0D0"
-accent_fg = "#2E3440"
-git_bg = "#394260"
-git_fg = "#769ff0"
-lang_bg = "#212736"
-time_bg = "#1d2230"
-time_fg = "#a0a9cb"
+accent = "#FF6B6B"
+accent_fg = "#FFFFFF"
+git_bg = "#FFD93D"
+git_fg = "#333333"
+lang_bg = "#6BCB77"
+lang_fg = "#1A3C1A"
+mem_bg = "#4D96FF"
+mem_fg = "#FFFFFF"
+time_bg = "#C084FC"
+time_fg = "#FFFFFF"
+os_bg = "#4D96FF"
+os_fg = "#FFFFFF"
 
-# WSL/Ubuntu: Catppuccin Macchiato
+# WSL/Ubuntu: Pop Candy Cool (カラフルポップ寒色寄り)
 [palettes.wsl]
-accent = "#c6a0f6"
-accent_fg = "#181926"
-git_bg = "#363a4f"
-git_fg = "#b7bdf8"
-lang_bg = "#1e2030"
-time_bg = "#181926"
-time_fg = "#a5adcb"
+accent = "#06D6A0"
+accent_fg = "#FFFFFF"
+git_bg = "#FFD166"
+git_fg = "#333333"
+lang_bg = "#118AB2"
+lang_fg = "#FFFFFF"
+mem_bg = "#EF476F"
+mem_fg = "#FFFFFF"
+time_bg = "#8338EC"
+time_fg = "#FFFFFF"
+os_bg = "#FF8C42"
+os_fg = "#FFFFFF"

@@ -7,7 +7,7 @@ if wezterm.config_builder then
 end
 
 -- ===== 外観 =====
-config.color_scheme = "Argonaut (Gogh)"
+config.color_scheme = "Pop Candy"
 config.font = wezterm.font("Cica")
 config.font_size = 14.0
 config.window_background_opacity = 0.9
@@ -157,7 +157,7 @@ config.keys = {
 
 -- ===== タブタイトル =====
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local bg = tab.is_active and "#00b5c7" or "#5c6d74"
+	local bg = tab.is_active and "#FF6B6B" or "#3D3E5C"
 	local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
 	return {
 		{ Background = { Color = bg } },
