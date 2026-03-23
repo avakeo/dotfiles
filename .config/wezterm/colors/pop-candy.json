@@ -2,9 +2,9 @@
   "name": "Pop Candy",
   "foreground": "#E8E8E8",
   "background": "#1A1B2F",
-  "cursor_bg": "#FF6B6B",
-  "cursor_fg": "#1A1B2F",
-  "cursor_border": "#FF6B6B",
+  "cursor_bg": "#4D96FF",
+  "cursor_fg": "#FFFFFF",
+  "cursor_border": "#4D96FF",
   "selection_bg": "#3D3E5C",
   "selection_fg": "#E8E8E8",
   "ansi": [

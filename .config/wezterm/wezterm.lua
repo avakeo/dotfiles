@@ -8,9 +8,10 @@ end
 
 -- ===== 外観 =====
 config.color_scheme = "Pop Candy"
-config.font = wezterm.font("Cica")
+config.font = wezterm.font("Cica", { weight = "Medium" })
 config.font_size = 14.0
-config.window_background_opacity = 0.9
+config.window_background_opacity = 0.7
+config.window_decorations = "RESIZE"
 
 -- ===== デフォルトシェル =====
 local function file_exists(path)

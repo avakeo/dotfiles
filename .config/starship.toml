@@ -23,6 +23,10 @@ $os\
 [](fg:os_bg)\
 \n$character"""
 
+[character]
+success_symbol = "[❯](bold #6BCB77)"
+error_symbol = "[❯](bold #FF6B6B)"
+
 # コマンドラインに1行分のスペースを入れない
 add_newline = false
 
