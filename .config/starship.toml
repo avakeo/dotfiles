@@ -35,7 +35,7 @@ error_symbol = "[❯](bold #FF6B6B)"
 symbol = ' '
 
 [os]
-format = "[$symbol]($style)"
+format = "[ $symbol]($style)"
 style = "fg:os_fg bg:os_bg bold"
 disabled = false
 
@@ -134,5 +134,5 @@ lang_bg = "#118AB2"
 lang_fg = "#FFFFFF"
 time_bg = "#8338EC"
 time_fg = "#FFFFFF"
-os_bg = "#FF8C42"
-os_fg = "#FFFFFF"
+os_bg = "#FFFFFF"
+os_fg = "#E95420"
