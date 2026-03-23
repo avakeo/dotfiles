@@ -128,6 +128,10 @@ config.keys = {
 		action = act.SpawnTab("CurrentPaneDomain"),
 	},
 	{
+		key = "w", mods = "CTRL",
+		action = act.CloseCurrentTab { confirm = true },
+	},
+	{
 		key = "Tab", mods = "CTRL",
 		action = act.ActivateTabRelative(1),
 	},

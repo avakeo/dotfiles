@@ -77,7 +77,7 @@ set display=lastline
 set list
 set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
-set clipboard+=unnamedplus
+set clipboard+=unnamed,unnamedplus
 
 " lightline (外部カラースキーム: ~/.vim/autoload/lightline/colorscheme/dotfiles.vim)
 let g:lightline = {

@@ -75,11 +75,6 @@ link_config() {
   for name in "${entries[@]}"; do
     backup_and_link "$DOTDIR/.config/$name" "$HOME/.config/$name"
   done
-
-  # Linux / WSL のみ
-  if [[ "$os" == "linux" || "$os" == "wsl" ]]; then
-    backup_and_link "$DOTDIR/.config/neofetch" "$HOME/.config/neofetch"
-  fi
 }
 
 install_vim_plug() {
@@ -113,6 +108,18 @@ install_tools() {
     success "zoxide installed"
   else
     info "zoxide already installed"
+  fi
+
+  # fastfetch (system info)
+  if ! command -v fastfetch &>/dev/null; then
+    if command -v apt &>/dev/null; then
+      sudo apt install -y fastfetch 2>/dev/null || warn "fastfetch not available in apt, install manually"
+    elif command -v brew &>/dev/null; then
+      brew install fastfetch
+    fi
+    command -v fastfetch &>/dev/null && success "fastfetch installed"
+  else
+    info "fastfetch already installed"
   fi
 }
 

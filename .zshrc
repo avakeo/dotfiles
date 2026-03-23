@@ -282,8 +282,6 @@ bindkey "^N" history-beginning-search-forward-end
 bindkey "^P" history-beginning-search-backward-end
 
 export PATH="$HOME/.cargo/bin:$PATH"
-eval "$(sheldon source)"
-
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"

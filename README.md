@@ -32,21 +32,21 @@ vim +PlugInstall +qa
 | ツール | 用途 | インストール |
 |---|---|---|
 | [Starship](https://starship.rs) | プロンプト | `curl -sS https://starship.rs/install.sh \| sh` |
-| [sheldon](https://sheldon.cli.rs) | zsh プラグイン管理 | `cargo install sheldon` |
 | [WezTerm](https://wezfurlong.org/wezterm/) | ターミナル | 公式サイト参照 |
 | [Neovim](https://neovim.io) v0.9+ | エディタ | `apt/brew install neovim` |
 | [Cica](https://github.com/miiton/Cica) | フォント | GitHub からダウンロード |
 | [fzf](https://github.com/junegunn/fzf) | ファジーファインダー | `install.sh` が自動インストール |
 | [zoxide](https://github.com/ajeetdsouza/zoxide) | スマート cd | `install.sh` が自動インストール |
+| [fastfetch](https://github.com/fastfetch-cli/fastfetch) | システム情報表示 | `install.sh` が自動インストール |
 
 ### Linux / WSL
 ```bash
-sudo apt install zsh git curl vim neovim fish neofetch
+sudo apt install zsh git curl vim neovim fish fastfetch
 ```
 
 ### macOS
 ```bash
-brew install zsh git neovim fish starship sheldon
+brew install zsh git neovim fish starship fastfetch
 ```
 
 ### Windows 備考
@@ -54,7 +54,9 @@ brew install zsh git neovim fish starship sheldon
 - PowerShell プロファイルは `$PROFILE` から dotfiles をドットソースする形式
 
 ### Windows 追加パッケージ (scoop)
-`install.ps1` が自動インストール: `7zip` `neovim` `vim` `starship` `fzf` `zoxide`
+`install.ps1` が自動インストール: `7zip` `neovim` `vim` `starship` `fzf` `zoxide` `win32yank`
+
+> `win32yank` は vim / nvim のヤンクをシステムクリップボードに連携するために必要
 
 ### nvim LSP サーバー (mason で自動インストールされる)
 `pyright` `ts_ls` `rust_analyzer` `lua_ls` `jsonls` `yamlls` `html` `cssls`
@@ -99,6 +101,7 @@ Leader = `CTRL+B`
 | `CTRL` + `h/j/k/l` | ペイン移動（Leader なし） |
 | `Leader` + `</>/+/_` | ペインリサイズ |
 | `CTRL+t` | 新規タブ |
+| `CTRL+w` | タブを閉じる（確認あり） |
 | `CTRL+Tab` / `CTRL+Shift+Tab` | タブ切り替え |
 | `CTRL+←/→` | 単語単位で移動 |
 | `CTRL+BS` | 単語削除 |

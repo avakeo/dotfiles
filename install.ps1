@@ -96,7 +96,7 @@ function Link-Config {
   New-Item -ItemType Directory -Path $configDir -Force | Out-Null
 
   # Windows で使う設定のみ
-  $entries = @("nvim", "scoop", "wezterm", "fish", "starship.toml")
+  $entries = @("nvim", "wezterm", "fish", "git", "gh", "starship.toml")
   foreach ($name in $entries) {
     $src  = Join-Path $DotDir ".config\$name"
     $dest = Join-Path $configDir $name
@@ -117,7 +117,7 @@ function Install-Scoop {
     Write-Info "scoop already installed"
   }
 
-  $packages = @("7zip", "neovim", "vim", "starship", "fzf", "zoxide")
+  $packages = @("7zip", "neovim", "vim", "starship", "fzf", "zoxide", "win32yank")
   foreach ($pkg in $packages) {
     $installed = scoop list $pkg 2>$null | Select-String $pkg
     if ($installed) {
