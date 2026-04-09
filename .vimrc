@@ -144,11 +144,42 @@ autocmd BufEnter * if tabpagenr('$') == 1
 " ターミナル
 if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
   nnoremap tt :tab terminal pwsh.exe -NoLogo<CR>
-  nnoremap tx :belowright terminal ++rows=10 pwsh.exe -NoLogo<CR>
 else
   nnoremap tt :tab terminal<CR>
-  nnoremap tx :belowright terminal ++rows=10<CR>
 endif
+
+" トグルターミナル (tx): 同じセッションを下部に表示/非表示
+let s:term_buf = 0
+let s:term_win = 0
+
+function! s:ToggleTerm()
+  if win_gotoid(s:term_win)
+    " 表示中 → ウィンドウを閉じる（セッションは保持）
+    hide
+  else
+    botright new
+    resize 12
+    try
+      " 既存バッファを再利用
+      exec "buffer " . s:term_buf
+      let s:term_win = win_getid()
+      startinsert
+    catch
+      " 初回: 新規ターミナルを起動
+      if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
+        terminal pwsh.exe -NoLogo
+      else
+        terminal
+      endif
+      let s:term_buf = bufnr("")
+      let s:term_win = win_getid()
+    endtry
+  endif
+endfunction
+
+nnoremap <silent> tx :call <SID>ToggleTerm()<CR>
+" ターミナル内からも tx でトグルできる
+tnoremap <silent> tx <C-w>:call <SID>ToggleTerm()<CR>
 
 nnoremap j gj
 nnoremap k gk
