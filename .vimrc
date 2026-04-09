@@ -150,30 +150,28 @@ endif
 
 " トグルターミナル (tx): 同じセッションを下部に表示/非表示
 let s:term_buf = 0
-let s:term_win = 0
 
 function! s:ToggleTerm()
-  if win_gotoid(s:term_win)
+  if s:term_buf > 0 && bufwinnr(s:term_buf) > 0
     " 表示中 → ウィンドウを閉じる（セッションは保持）
+    exec bufwinnr(s:term_buf) . "wincmd w"
     hide
-  else
+  elseif s:term_buf > 0 && bufexists(s:term_buf)
+    " バッファはあるがウィンドウにない → 下部に再表示
     botright new
     resize 12
-    try
-      " 既存バッファを再利用
-      exec "buffer " . s:term_buf
-      let s:term_win = win_getid()
-      startinsert
-    catch
-      " 初回: 新規ターミナルを起動
-      if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
-        terminal pwsh.exe -NoLogo
-      else
-        terminal
-      endif
-      let s:term_buf = bufnr("")
-      let s:term_win = win_getid()
-    endtry
+    exec "buffer " . s:term_buf
+    startinsert
+  else
+    " 初回: 新規ターミナルを起動
+    botright new
+    resize 12
+    if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
+      terminal pwsh.exe -NoLogo
+    else
+      terminal
+    endif
+    let s:term_buf = bufnr("")
   endif
 endfunction
 
