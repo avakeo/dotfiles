@@ -47,8 +47,14 @@ end
 -- vim/nvim が動いているときは CTRL+hjkl をそのまま渡し、
 -- それ以外のときは WezTerm のペイン移動として扱う
 local function is_vim(pane)
-	local proc = pane:get_foreground_process_name()
-	return proc:find("[nv]?vim") ~= nil
+	-- vim が t_ti/t_te で設定する UserVar を優先チェック
+	-- (vim の :terminal 内では前景プロセスが pwsh/bash になるため)
+	if pane:get_user_vars().IS_VIM == "true" then
+		return true
+	end
+	-- フォールバック: プロセス名チェック (vim, nvim, /usr/bin/vim など)
+	local proc = pane:get_foreground_process_name() or ""
+	return proc:find("n?vim") ~= nil
 end
 
 local function smart_move(direction)

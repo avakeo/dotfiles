@@ -23,6 +23,9 @@ call plug#begin()
   Plug 'tpope/vim-commentary'         " gc でコメントアウト
   Plug 'cocopon/iceberg.vim'          " ダークブルー系テーマ
   Plug 'github/copilot.vim'           " GitHub Copilot
+  Plug 'preservim/nerdtree'           " ファイルツリー
+  Plug 'Xuyuanp/nerdtree-git-plugin'  " NERDTree に git ステータス表示
+  Plug 'ryanoasis/vim-devicons'       " ファイルアイコン (Nerd Font 必須)
 call plug#end()
 
 
@@ -100,6 +103,42 @@ set smartcase
 set incsearch
 set wrapscan
 set hlsearch
+
+" ===== WezTerm スマートナビゲーション =====
+" vim 起動中は IS_VIM=true を WezTerm に通知する
+" (base64("true") = "dHJ1ZQ==")
+" これにより vim 内の :terminal でも Ctrl+hjkl でウィンドウ移動できる
+if !empty($WEZTERM_PANE)
+  let &t_ti = "\e]1337;SetUserVar=IS_VIM=dHJ1ZQ==\007" . &t_ti
+  let &t_te = &t_te . "\e]1337;SetUserVar=IS_VIM=\007"
+endif
+
+" ===== NERDTree =====
+nnoremap <C-n> :NERDTreeFocus<CR>
+nnoremap <Leader>t :NERDTreeToggle<CR>
+nnoremap <Leader>tf :NERDTreeFind<CR>
+
+" netrw を無効化して NERDTree を使う
+let g:NERDTreeHijackNetrw = 1
+
+" dotfiles も表示
+let g:NERDTreeShowHidden = 1
+
+" .git は表示しない
+let g:NERDTreeIgnore = ['^\.git$']
+
+" ウィンドウ幅
+let g:NERDTreeWinSize = 30
+
+" ファイルを開いたらツリーにフォーカスを戻さない
+let g:NERDTreeQuitOnOpen = 0
+
+" 最後のウィンドウが NERDTree だけなら自動終了
+autocmd BufEnter * if tabpagenr('$') == 1
+  \ && winnr('$') == 1
+  \ && exists('b:NERDTree')
+  \ && b:NERDTree.isTabTree()
+  \ | quit | endif
 
 " ===== Keymaps =====
 " ターミナル
