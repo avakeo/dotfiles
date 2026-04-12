@@ -12,11 +12,36 @@ config.font = wezterm.font("Cica", { weight = "Medium" })
 config.font_size = 14.0
 config.window_background_opacity = 0.75
 config.window_decorations = "RESIZE"
+config.use_fancy_tab_bar = false
+config.show_new_tab_button_in_tab_bar = false
 
--- ===== ペイン境界 =====
--- 境界線の色を目立たせる (Pop Candy に合わせたアクセントカラー)
+-- ===== ペイン境界 / タブバー色 =====
 config.colors = {
 	split = "#FF6B6B",
+	tab_bar = {
+		background = "#A0522D",       -- 空白部分（タブのない領域）
+		active_tab = {
+			bg_color = "#FF8C00",     -- アクティブタブ: 明るいオレンジで目立たせる
+			fg_color = "#FFFFFF",
+			intensity = "Bold",
+		},
+		inactive_tab = {
+			bg_color = "#A0522D",     -- 非アクティブタブ: 背景と同化させて沈める
+			fg_color = "#CCCCCC",
+		},
+		inactive_tab_hover = {
+			bg_color = "#C46A28",
+			fg_color = "#FFFFFF",
+		},
+		new_tab = {
+			bg_color = "#A0522D",
+			fg_color = "#CCCCCC",
+		},
+		new_tab_hover = {
+			bg_color = "#C46A28",
+			fg_color = "#FFFFFF",
+		},
+	},
 }
 
 -- ===== デフォルトシェル =====
@@ -281,72 +306,101 @@ local function format_hints(hints)
 	local elements = {}
 	for i, h in ipairs(hints) do
 		if i > 1 then
-			table.insert(elements, { Text = "  " })
+			table.insert(elements, { Foreground = { Color = "#555555" } })
+			table.insert(elements, { Text = " · " })
 		end
 		table.insert(elements, { Foreground = { Color = "#FFFFFF" } })
 		table.insert(elements, { Attribute = { Intensity = "Bold" } })
 		table.insert(elements, { Text = h.key })
 		table.insert(elements, { Attribute = { Intensity = "Normal" } })
-		table.insert(elements, { Foreground = { Color = "#AAAAAA" } })
+		table.insert(elements, { Foreground = { Color = "#888888" } })
 		table.insert(elements, { Text = ":" .. h.desc })
 	end
 	return elements
 end
 
+-- Leader キーが押されたときに表示するヒント
+local leader_hints = {
+	{ key = "r", desc = "resize" },
+	{ key = "o", desc = "opacity" },
+	{ key = "f", desc = "font" },
+	{ key = "[", desc = "copy" },
+}
+
+local function separator(elements)
+	table.insert(elements, { Background = { Color = "#A0522D" } })
+	table.insert(elements, { Foreground = { Color = "#E07B39" } })
+	table.insert(elements, { Text = " ┃ " })
+	table.insert(elements, { Background = { Color = "#A0522D" } })
+end
+
 wezterm.on("update-right-status", function(window, _)
 	local table_name = window:active_key_table()
 	local info = mode_info[table_name]
+
 	if info then
-		local elements = format_hints(info.hints)
-		table.insert(elements, { Text = "  " })
+		-- モード中: ヒント + モード名バッジ
+		local elements = {}
+		separator(elements)
+		for _, e in ipairs(format_hints(info.hints)) do
+			table.insert(elements, e)
+		end
+		table.insert(elements, { Text = " " })
 		table.insert(elements, { Background = { Color = "#FF6B6B" } })
 		table.insert(elements, { Foreground = { Color = "#FFFFFF" } })
 		table.insert(elements, { Attribute = { Intensity = "Bold" } })
-		table.insert(elements, { Text = "  " .. info.label .. "  " })
+		table.insert(elements, { Text = " " .. info.label .. " " })
 		window:set_right_status(wezterm.format(elements))
+
+	elseif window:leader_is_active() then
+		-- Leader 押下中: 使えるキー一覧を表示
+		local elements = {}
+		separator(elements)
+		for _, e in ipairs(format_hints(leader_hints)) do
+			table.insert(elements, e)
+		end
+		table.insert(elements, { Text = " " })
+		table.insert(elements, { Background = { Color = "#FFD93D" } })
+		table.insert(elements, { Foreground = { Color = "#333333" } })
+		table.insert(elements, { Attribute = { Intensity = "Bold" } })
+		table.insert(elements, { Text = " LEADER " })
+		window:set_right_status(wezterm.format(elements))
+
 	else
-		window:set_right_status(wezterm.format({
-			{ Foreground = { Color = "#FFFFFF" } },
-			{ Attribute = { Intensity = "Bold" } },
-			{ Text = "r" },
-			{ Attribute = { Intensity = "Normal" } },
-			{ Foreground = { Color = "#AAAAAA" } },
-			{ Text = ":resize  " },
-			{ Foreground = { Color = "#FFFFFF" } },
-			{ Attribute = { Intensity = "Bold" } },
-			{ Text = "o" },
-			{ Attribute = { Intensity = "Normal" } },
-			{ Foreground = { Color = "#AAAAAA" } },
-			{ Text = ":opacity  " },
-			{ Foreground = { Color = "#FFFFFF" } },
-			{ Attribute = { Intensity = "Bold" } },
-			{ Text = "f" },
-			{ Attribute = { Intensity = "Normal" } },
-			{ Foreground = { Color = "#AAAAAA" } },
-			{ Text = ":font  " },
-			{ Foreground = { Color = "#FFFFFF" } },
-			{ Attribute = { Intensity = "Bold" } },
-			{ Text = "[" },
-			{ Attribute = { Intensity = "Normal" } },
-			{ Foreground = { Color = "#AAAAAA" } },
-			{ Text = ":copy  " },
-			{ Background = { Color = "#FF6B6B" } },
-			{ Foreground = { Color = "#FFFFFF" } },
-			{ Attribute = { Intensity = "Bold" } },
-			{ Text = "  NORMAL  " },
-		}))
+		-- 通常時: 何も表示しない
+		window:set_right_status("")
 	end
 end)
 
--- ===== タブタイトル =====
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local bg = tab.is_active and "#FF6B6B" or "#3D3E5C"
-	local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
-	return {
-		{ Background = { Color = bg } },
-		{ Foreground = { Color = "#FFFFFF" } },
-		{ Text = title },
-	}
+
+-- ===== タブタイトル (starship の directory 表示に合わせる) =====
+-- starship: [ $path ] 形式 / truncation_length=10, truncate_to_repo=true
+wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
+	local cwd_uri = tab.active_pane.current_working_dir
+	local short
+
+	if cwd_uri then
+		-- "file://host/path" → パス部分だけ取り出す
+		local path = cwd_uri.file_path or cwd_uri.path or tostring(cwd_uri)
+		-- ホームディレクトリを ~ に置換
+		local home = os.getenv("HOME") or os.getenv("USERPROFILE") or ""
+		path = path:gsub("^" .. home:gsub("([\\^$()%.%[%]*+?|])", "%%%1"), "~")
+		-- 末尾スラッシュ除去
+		path = path:gsub("[/\\]$", "")
+		-- 末尾のディレクトリ名だけ取る（starship の truncation と同様）
+		short = path:match("[/\\]([^/\\]+)$") or path
+	else
+		-- fallback: タイトルから取る
+		short = tab.active_pane.title:match("[/\\]([^/\\]+)%s*$")
+			or tab.active_pane.title
+	end
+
+	-- 16文字超えは切り捨て（starship の truncation_symbol "…/" に合わせる）
+	if #short > 16 then
+		short = "…" .. short:sub(-15)
+	end
+
+	return string.format("  %s  ", short)
 end)
 
 return config
