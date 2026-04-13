@@ -17,28 +17,28 @@ config.show_new_tab_button_in_tab_bar = false
 
 -- ===== ペイン境界 / タブバー色 =====
 config.colors = {
-	split = "#FF6B6B",
+	split = "#00CED1",
 	tab_bar = {
-		background = "#A0522D",       -- 空白部分（タブのない領域）
+		background = "#0D3B47",       -- 空白部分（タブのない領域）
 		active_tab = {
-			bg_color = "#FF8C00",     -- アクティブタブ: 明るいオレンジで目立たせる
+			bg_color = "#00B4D8",     -- アクティブタブ: 明るい水色で目立たせる
 			fg_color = "#FFFFFF",
 			intensity = "Bold",
 		},
 		inactive_tab = {
-			bg_color = "#A0522D",     -- 非アクティブタブ: 背景と同化させて沈める
-			fg_color = "#CCCCCC",
+			bg_color = "#164E63",     -- 非アクティブタブ
+			fg_color = "#8ECAE6",
 		},
 		inactive_tab_hover = {
-			bg_color = "#C46A28",
+			bg_color = "#0077A8",
 			fg_color = "#FFFFFF",
 		},
 		new_tab = {
-			bg_color = "#A0522D",
-			fg_color = "#CCCCCC",
+			bg_color = "#0D3B47",
+			fg_color = "#8ECAE6",
 		},
 		new_tab_hover = {
-			bg_color = "#C46A28",
+			bg_color = "#0077A8",
 			fg_color = "#FFFFFF",
 		},
 	},
@@ -328,10 +328,10 @@ local leader_hints = {
 }
 
 local function separator(elements)
-	table.insert(elements, { Background = { Color = "#A0522D" } })
-	table.insert(elements, { Foreground = { Color = "#E07B39" } })
+	table.insert(elements, { Background = { Color = "#0D3B47" } })
+	table.insert(elements, { Foreground = { Color = "#00B4D8" } })
 	table.insert(elements, { Text = " ┃ " })
-	table.insert(elements, { Background = { Color = "#A0522D" } })
+	table.insert(elements, { Background = { Color = "#0D3B47" } })
 end
 
 wezterm.on("update-right-status", function(window, _)
@@ -373,34 +373,55 @@ wezterm.on("update-right-status", function(window, _)
 end)
 
 
--- ===== タブタイトル (starship の directory 表示に合わせる) =====
--- starship: [ $path ] 形式 / truncation_length=10, truncate_to_repo=true
+-- ===== タブタイトル (丸みのある形) =====
+-- Nerd Font の丸いキャップ文字でタブを pill 形に見せる
+local TAB_BG      = "#0D3B47"   -- バー背景（タブ外側）
+local ACTIVE_BG   = "#00B4D8"   -- アクティブタブ背景
+local ACTIVE_FG   = "#FFFFFF"
+local INACTIVE_BG = "#164E63"   -- 非アクティブタブ背景
+local INACTIVE_FG = "#8ECAE6"
+
 wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 	local cwd_uri = tab.active_pane.current_working_dir
 	local short
 
 	if cwd_uri then
-		-- "file://host/path" → パス部分だけ取り出す
 		local path = cwd_uri.file_path or cwd_uri.path or tostring(cwd_uri)
-		-- ホームディレクトリを ~ に置換
 		local home = os.getenv("HOME") or os.getenv("USERPROFILE") or ""
 		path = path:gsub("^" .. home:gsub("([\\^$()%.%[%]*+?|])", "%%%1"), "~")
-		-- 末尾スラッシュ除去
 		path = path:gsub("[/\\]$", "")
-		-- 末尾のディレクトリ名だけ取る（starship の truncation と同様）
 		short = path:match("[/\\]([^/\\]+)$") or path
 	else
-		-- fallback: タイトルから取る
 		short = tab.active_pane.title:match("[/\\]([^/\\]+)%s*$")
 			or tab.active_pane.title
 	end
 
-	-- 16文字超えは切り捨て（starship の truncation_symbol "…/" に合わせる）
 	if #short > 16 then
 		short = "…" .. short:sub(-15)
 	end
 
-	return string.format("  %s  ", short)
+	local tab_bg = tab.is_active and ACTIVE_BG or INACTIVE_BG
+	local tab_fg = tab.is_active and ACTIVE_FG or INACTIVE_FG
+	local intensity = tab.is_active and "Bold" or "Normal"
+
+	return {
+		-- 左丸キャップ
+		{ Background = { Color = TAB_BG } },
+		{ Foreground = { Color = tab_bg } },
+		{ Text = "\u{e0b6}" },
+		-- タブ本文
+		{ Background = { Color = tab_bg } },
+		{ Foreground = { Color = tab_fg } },
+		{ Attribute = { Intensity = intensity } },
+		{ Text = " " .. short .. " " },
+		-- 右丸キャップ
+		{ Background = { Color = TAB_BG } },
+		{ Foreground = { Color = tab_bg } },
+		{ Text = "\u{e0b4}" },
+		-- タブ間スペース
+		{ Background = { Color = TAB_BG } },
+		{ Text = " " },
+	}
 end)
 
 return config
