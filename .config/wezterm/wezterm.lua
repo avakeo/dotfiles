@@ -373,8 +373,8 @@ wezterm.on("update-right-status", function(window, _)
 end)
 
 
--- ===== タブタイトル (丸みのある形) =====
--- Nerd Font の丸いキャップ文字でタブを pill 形に見せる
+-- ===== タブタイトル (台形・Chrome 風) =====
+-- Nerd Font の斜めキャップ文字でタブを台形に見せる
 local TAB_BG      = "#0D3B47"   -- バー背景（タブ外側）
 local ACTIVE_BG   = "#00B4D8"   -- アクティブタブ背景
 local ACTIVE_FG   = "#FFFFFF"
@@ -405,19 +405,19 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 	local intensity = tab.is_active and "Bold" or "Normal"
 
 	return {
-		-- 左丸キャップ
+		-- 左斜めキャップ（/ 側）
 		{ Background = { Color = TAB_BG } },
 		{ Foreground = { Color = tab_bg } },
-		{ Text = "\u{e0b6}" },
+		{ Text = "\u{e0be}" },
 		-- タブ本文
 		{ Background = { Color = tab_bg } },
 		{ Foreground = { Color = tab_fg } },
 		{ Attribute = { Intensity = intensity } },
 		{ Text = " " .. short .. " " },
-		-- 右丸キャップ
+		-- 右斜めキャップ（\ 側）
 		{ Background = { Color = TAB_BG } },
 		{ Foreground = { Color = tab_bg } },
-		{ Text = "\u{e0b4}" },
+		{ Text = "\u{e0bc}" },
 		-- タブ間スペース
 		{ Background = { Color = TAB_BG } },
 		{ Text = " " },
