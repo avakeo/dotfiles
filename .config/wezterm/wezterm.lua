@@ -405,22 +405,20 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 	local intensity = tab.is_active and "Bold" or "Normal"
 
 	return {
-		-- 左斜めキャップ（/ 側）
+		-- 左丸キャップ
 		{ Background = { Color = TAB_BG } },
 		{ Foreground = { Color = tab_bg } },
-		{ Text = "\u{e0be}" },
+		{ Text = "\u{e0b6}" },
 		-- タブ本文
 		{ Background = { Color = tab_bg } },
 		{ Foreground = { Color = tab_fg } },
 		{ Attribute = { Intensity = intensity } },
-		{ Text = " " .. short .. " " },
-		-- 右斜めキャップ（\ 側）
+		{ Text = short .. " " },
+		-- 右丸キャップ
 		{ Background = { Color = TAB_BG } },
 		{ Foreground = { Color = tab_bg } },
-		{ Text = "\u{e0bc}" },
-		-- タブ間スペース
-		{ Background = { Color = TAB_BG } },
-		{ Text = " " },
+		{ Text = "\u{e0b4}" },
+		-- タブ間スペースなし
 	}
 end)
 
