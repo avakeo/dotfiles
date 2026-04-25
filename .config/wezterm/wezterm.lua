@@ -11,7 +11,7 @@ config.color_scheme = "Pop Candy"
 config.font = wezterm.font("Cica", { weight = "Medium" })
 config.font_size = 14.0
 config.window_background_opacity = 0.75
-config.window_decorations = "RESIZE"
+config.window_decorations = "NONE"
 config.use_fancy_tab_bar = false
 config.show_new_tab_button_in_tab_bar = false
 

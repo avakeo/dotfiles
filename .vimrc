@@ -26,6 +26,7 @@ call plug#begin()
   Plug 'preservim/nerdtree'           " ファイルツリー
   Plug 'Xuyuanp/nerdtree-git-plugin'  " NERDTree に git ステータス表示
   Plug 'ryanoasis/vim-devicons'       " ファイルアイコン (Nerd Font 必須)
+  Plug 'wakatime/vim-wakatime'
 call plug#end()
 
 
