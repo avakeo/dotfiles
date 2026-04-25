@@ -52,12 +52,6 @@ truncation_length = 10
 truncate_to_repo = true
 truncation_symbol = "…/"
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-
 [aws]
 disabled = true
 [gcloud]
