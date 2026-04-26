@@ -53,6 +53,13 @@ alias gl='git pull'
 alias gp='git push'
 alias gd='git diff'
 
+# nautilus
+alias explore='nautilus'
+
+# pbcopy
+alias clip='xsel --clipboard --input'
+
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
@@ -93,3 +100,5 @@ alias vim='/usr/bin/vim.basic'
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init - bash)"
+
+

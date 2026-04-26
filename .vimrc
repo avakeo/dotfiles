@@ -159,13 +159,13 @@ function! s:ToggleTerm()
     hide
   elseif s:term_buf > 0 && bufexists(s:term_buf)
     " バッファはあるがウィンドウにない → 下部に再表示
-    botright new
+    noautocmd botright new
     resize 12
-    exec "buffer " . s:term_buf
+    noautocmd exec "buffer " . s:term_buf
     startinsert
   else
     " 初回: 新規ターミナルを起動
-    botright new
+    noautocmd botright new
     resize 12
     if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
       terminal pwsh.exe -NoLogo
@@ -195,10 +195,16 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-tnoremap <C-h> <C-w>h
-tnoremap <C-j> <C-w>j
-tnoremap <C-k> <C-w>k
-tnoremap <C-l> <C-w>l
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
+
+" ターミナル内: Esc でエディターに戻る（ターミナルは閉じない）
+tnoremap <Esc> <C-\><C-n><C-w>p
+
+" ターミナルウィンドウに戻ったとき自動で insert モードに
+autocmd WinEnter * if &buftype ==# 'terminal' | startinsert | endif
 
 " ウィンドウリサイズ (Ctrl+矢印)
 nnoremap <C-Left>  :vertical resize -5<CR>

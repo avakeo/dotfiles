@@ -20,10 +20,10 @@ map("n", "<C-h>", "<C-w>h")
 map("n", "<C-j>", "<C-w>j")
 map("n", "<C-k>", "<C-w>k")
 map("n", "<C-l>", "<C-w>l")
-map("t", "<C-h>", "<C-w>h")
-map("t", "<C-j>", "<C-w>j")
-map("t", "<C-k>", "<C-w>k")
-map("t", "<C-l>", "<C-w>l")
+map("t", "<C-h>", "<C-\\><C-n><C-w>h", { silent = true })
+map("t", "<C-j>", "<C-\\><C-n><C-w>j", { silent = true })
+map("t", "<C-k>", "<C-\\><C-n><C-w>k", { silent = true })
+map("t", "<C-l>", "<C-\\><C-n><C-w>l", { silent = true })
 
 -- ウィンドウリサイズ (Ctrl+矢印)
 map("n", "<C-Left>",  ":vertical resize -5<CR>", { silent = true })
@@ -47,15 +47,19 @@ local function toggle_term()
     vim.cmd(win .. "wincmd w")
     vim.cmd("hide")
   elseif term_buf > 0 and vim.fn.bufexists(term_buf) == 1 then
-    vim.cmd("botright new")
+    vim.cmd("noautocmd botright new")
     vim.cmd("resize 12")
-    vim.cmd("buffer " .. term_buf)
+    vim.cmd("noautocmd buffer " .. term_buf)
     vim.cmd("startinsert")
   else
-    vim.cmd("botright new")
+    vim.cmd("noautocmd botright new")
     vim.cmd("resize 12")
+    local stray = vim.fn.bufnr("")
     vim.cmd("terminal")
     term_buf = vim.fn.bufnr("")
+    if stray ~= term_buf then
+      pcall(vim.api.nvim_buf_delete, stray, { force = true })
+    end
   end
 end
 
@@ -64,3 +68,14 @@ map("t", "tx", function()
   vim.cmd("stopinsert")
   toggle_term()
 end, { silent = true })
+
+-- ターミナル内: Esc でエディターに戻る（ターミナルは閉じない）
+map("t", "<Esc>", "<C-\\><C-n><C-w>p", { silent = true })
+
+-- ターミナルウィンドウにフォーカスが戻ったとき自動でinsertモードに
+vim.api.nvim_create_autocmd("WinEnter", {
+  pattern = "*",
+  callback = function()
+    if vim.bo.buftype == "terminal" then vim.cmd("startinsert") end
+  end,
+})
