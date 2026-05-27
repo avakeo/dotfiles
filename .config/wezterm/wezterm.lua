@@ -13,6 +13,8 @@ config.font_size = 14.0
 config.window_background_opacity = 0.75
 if wezterm.target_triple:find("windows") then
 	config.window_decorations = "RESIZE"
+elseif wezterm.target_triple:find("darwin") then
+	config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 else
 	config.window_decorations = "NONE"
 end
@@ -337,6 +339,15 @@ local function separator(elements)
 	table.insert(elements, { Text = " ┃ " })
 	table.insert(elements, { Background = { Color = "#0D3B47" } })
 end
+
+-- ===== 左ステータス (INTEGRATED_BUTTONS の右隣) =====
+wezterm.on("update-left-status", function(window, _)
+	window:set_left_status(wezterm.format({
+		{ Background = { Color = "#0D3B47" } },
+		{ Foreground = { Color = "#8ECAE6" } },
+		{ Text = "  " .. wezterm.hostname() .. "  " },
+	}))
+end)
 
 wezterm.on("update-right-status", function(window, _)
 	local table_name = window:active_key_table()

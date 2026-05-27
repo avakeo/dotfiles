@@ -54,7 +54,7 @@ TERM xterm*
 #NORMAL 00 # no color code at all
 #FILE 00 # regular file: use no color at all
 RESET 0 # reset to "normal" color
-DIR 01;38;2;77;150;255 # directory (blue #4D96FF)
+DIR 01;38;2;45;250;38 # directory (green #2DFA26)
 LINK 01;38;2;6;214;160 # symbolic link (cyan-green #06D6A0)
 MULTIHARDLINK 00 # regular file with more than one link
 FIFO 40;38;2;255;217;61 # pipe (yellow #FFD93D)

@@ -41,7 +41,7 @@ disabled = false
 
 [os.symbols]
 Windows = "󰍲 "
-Macos = "󰅹 " # nf-fa-apple
+Macos = " " # nf-fa-apple (U+F179, Cica対応)
 Ubuntu = " " # nf-linux-ubuntu
 Debian = " " # nf-linux-debian
 
@@ -114,6 +114,21 @@ lang_fg = "#1A3C1A"
 time_bg = "#C084FC"
 time_fg = "#FFFFFF"
 os_bg = "#4D96FF"
+os_fg = "#FFFFFF"
+
+# macOS: Apple dark mode system colors
+[palettes.macos]
+accent = "#FF6B6B"
+accent_fg = "#FFFFFF"
+git_bg = "#FFD93D"
+git_fg = "#333333"
+mem_bg = "#0A84FF"
+mem_fg = "#FFFFFF"
+lang_bg = "#30D158"
+lang_fg = "#003300"
+time_bg = "#BF5AF2"
+time_fg = "#FFFFFF"
+os_bg = "#FF9F0A"
 os_fg = "#FFFFFF"
 
 # WSL/Ubuntu: Pop Candy Cool (寒色系の右側)
