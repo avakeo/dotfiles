@@ -100,12 +100,12 @@ local function smart_move(direction)
 end
 
 -- ===== Leader キー =====
--- CTRL+B をプレフィックスに。1秒以内に次のキーを押す
-config.leader = { key = "b", mods = "CTRL", timeout_milliseconds = 1000 }
+-- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
+config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 
 -- ===== キーバインド =====
 --
---  Leader (CTRL+B) + ...
+--  Leader (CTRL+\) + ...
 --    v  → 左右に分割
 --    s  → 上下に分割
 --    z  → ペインをズーム/解除
