@@ -6,7 +6,7 @@ return {
   config = function()
     require("bufferline").setup({
       options = {
-        numbers = "none",
+        numbers = "ordinal",
         diagnostics = "nvim_lsp",
         show_buffer_icons = true,
       },

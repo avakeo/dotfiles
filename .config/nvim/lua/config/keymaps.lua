@@ -7,6 +7,11 @@ map("i", "jj", "<ESC>", { silent = true })
 map("n", "j", "gj")
 map("n", "k", "gk")
 
+-- バッファ切り替え (gt/gT でタブ移動と同じ感覚)
+map("n", "gt", ":BufferLineCycleNext<CR>", { silent = true })
+map("n", "gT", ":BufferLineCyclePrev<CR>", { silent = true })
+map("n", "<Leader>q", ":bp | bd #<CR>",    { silent = true })
+
 -- 検索ハイライト解除
 map("n", "<Esc><Esc>", ":nohlsearch<CR>", { silent = true })
 
