@@ -81,7 +81,24 @@ set display=lastline
 set list
 set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
-set clipboard+=unnamed,unnamedplus
+
+" クリップボード
+" SSH 接続中(リモート: Ubuntu 等)は OSC 52 経由でローカル端末
+" (WezTerm)のクリップボードに同期する。ローカル実行時は OS の
+" クリップボードを直接使う。
+if !empty($SSH_TTY) || !empty($SSH_CONNECTION)
+  function! s:Osc52Yank() abort
+    let l:enc = system('base64 | tr -d "\n"', @0)
+    let l:seq = "\033]52;c;" . l:enc . "\007"
+    call writefile([l:seq], '/dev/tty', 'b')
+  endfunction
+  augroup osc52_yank
+    autocmd!
+    autocmd TextYankPost * if v:event.operator ==# 'y' | call s:Osc52Yank() | endif
+  augroup END
+else
+  set clipboard+=unnamed,unnamedplus
+endif
 
 " lightline (外部カラースキーム: ~/.vim/autoload/lightline/colorscheme/dotfiles.vim)
 let g:lightline = {

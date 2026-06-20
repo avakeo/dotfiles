@@ -7,6 +7,19 @@ opt.updatetime = 100
 opt.textwidth = 0
 opt.signcolumn = "auto"
 opt.background = "dark"
+
+-- クリップボード
+-- SSH 接続中(リモート: Ubuntu 等)は OSC 52 経由でローカル端末
+-- (WezTerm)のクリップボードに同期する。ローカル実行時は OS の
+-- クリップボードを直接使う (pbcopy 等)。
+if vim.env.SSH_TTY or vim.env.SSH_CONNECTION then
+  local osc52 = require("vim.ui.clipboard.osc52")
+  vim.g.clipboard = {
+    name = "OSC 52",
+    copy = { ["+"] = osc52.copy("+"), ["*"] = osc52.copy("*") },
+    paste = { ["+"] = osc52.paste("+"), ["*"] = osc52.paste("*") },
+  }
+end
 opt.clipboard = { "unnamed", "unnamedplus" }
 
 -- タブ

@@ -71,7 +71,7 @@ link_config() {
   mkdir -p "$HOME/.config"
 
   # 全プラットフォーム共通
-  local entries=(nvim fish git gh starship.toml wezterm)
+  local entries=(nvim fish git gh starship.toml wezterm tmux)
   for name in "${entries[@]}"; do
     backup_and_link "$DOTDIR/.config/$name" "$HOME/.config/$name"
   done
