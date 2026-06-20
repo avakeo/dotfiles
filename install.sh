@@ -53,7 +53,7 @@ link_home() {
   echo ""
   echo "Home dotfiles:"
 
-  local files=(.bashrc .zshrc .vimrc .dircolors .gitconfig_shared)
+  local files=(.bashrc .zshrc .vimrc .tmux.conf .dircolors .gitconfig_shared)
   for name in "${files[@]}"; do
     backup_and_link "$DOTDIR/$name" "$HOME/$name"
   done
@@ -71,7 +71,7 @@ link_config() {
   mkdir -p "$HOME/.config"
 
   # 全プラットフォーム共通
-  local entries=(nvim fish git gh starship.toml wezterm tmux)
+  local entries=(nvim fish git gh starship.toml wezterm)
   for name in "${entries[@]}"; do
     backup_and_link "$DOTDIR/.config/$name" "$HOME/.config/$name"
   done
