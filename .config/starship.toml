@@ -18,7 +18,9 @@ $golang\
 $php\
 [](fg:time_bg bg:lang_bg)\
 $time\
-[](fg:os_bg bg:time_bg)\
+[](fg:user_bg bg:time_bg)\
+$username\
+[](fg:os_bg bg:user_bg)\
 $os\
 [](fg:os_bg)\
 \n$character"""
@@ -65,6 +67,11 @@ format = '[[ $symbol $branch ](fg:git_fg bg:git_bg)]($style)'
 [git_status]
 style = "bg:git_bg"
 format = '[[($all_status$ahead_behind )](fg:git_fg bg:git_bg)]($style)'
+
+[username]
+show_always = true
+style_user = "bg:user_bg"
+format = '[[ $user ](fg:user_fg bg:user_bg)]($style)'
 
 [memory_usage]
 disabled = false
@@ -113,6 +120,8 @@ lang_bg = "#6BCB77"
 lang_fg = "#1A3C1A"
 time_bg = "#C084FC"
 time_fg = "#FFFFFF"
+user_bg = "#FF9F1C"
+user_fg = "#FFFFFF"
 os_bg = "#4D96FF"
 os_fg = "#FFFFFF"
 
@@ -128,6 +137,8 @@ lang_bg = "#30D158"
 lang_fg = "#003300"
 time_bg = "#BF5AF2"
 time_fg = "#FFFFFF"
+user_bg = "#FF9F0A"
+user_fg = "#FFFFFF"
 os_bg = "#FF9F0A"
 os_fg = "#FFFFFF"
 
@@ -143,5 +154,7 @@ lang_bg = "#118AB2"
 lang_fg = "#FFFFFF"
 time_bg = "#8338EC"
 time_fg = "#FFFFFF"
+user_bg = "#06D6A0"
+user_fg = "#FFFFFF"
 os_bg = "#E95420"
 os_fg = "#FFFFFF"
