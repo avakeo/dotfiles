@@ -21,12 +21,6 @@ end
 config.use_fancy_tab_bar = false
 config.show_new_tab_button_in_tab_bar = false
 
--- ===== クリップボード =====
--- OSC 52 経由のクリップボード読み込み(ペースト)を許可する
--- (デフォルトは書き込み=コピーのみ許可。リモート(SSH先)の vim/tmux からの
---  ペースト要求もこちら側のクリップボードを参照できるようにする)
-config.set_clipboard_capabilities = "ClipboardAndPrimarySelection"
-
 -- ===== ペイン境界 / タブバー色 =====
 config.colors = {
 	split = "#00CED1",
@@ -228,6 +222,14 @@ config.keys = {
 	{
 		key = "Backspace", mods = "CTRL",
 		action = act.SendKey { key = "w", mods = "CTRL" },
+	},
+
+	-- ===== クリップボード貼り付け =====
+	-- OSC52クエリ非対応のため、ローカルのクリップボード内容をキー入力として送る
+	-- (CTRL+SHIFT+V は Maccy のショートカットと衝突するため Leader 配下に)
+	{
+		key = "p", mods = "LEADER",
+		action = act.PasteFrom("Clipboard"),
 	},
 }
 
