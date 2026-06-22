@@ -43,36 +43,7 @@ map("t", "<C-Down>",  "<C-w>:resize -5<CR>",          { silent = true })
 -- ターミナル: 新規タブで開く
 map("n", "tt", ":tab terminal<CR>")
 
--- トグルターミナル (tx): 同じセッションを下部に表示/非表示
-local term_buf = 0
-
-local function toggle_term()
-  if term_buf > 0 and vim.fn.bufwinnr(term_buf) > 0 then
-    local win = vim.fn.bufwinnr(term_buf)
-    vim.cmd(win .. "wincmd w")
-    vim.cmd("hide")
-  elseif term_buf > 0 and vim.fn.bufexists(term_buf) == 1 then
-    vim.cmd("noautocmd botright new")
-    vim.cmd("resize 12")
-    vim.cmd("noautocmd buffer " .. term_buf)
-    vim.cmd("startinsert")
-  else
-    vim.cmd("noautocmd botright new")
-    vim.cmd("resize 12")
-    local stray = vim.fn.bufnr("")
-    vim.cmd("terminal")
-    term_buf = vim.fn.bufnr("")
-    if stray ~= term_buf then
-      pcall(vim.api.nvim_buf_delete, stray, { force = true })
-    end
-  end
-end
-
-map("n", "tx", toggle_term, { silent = true })
-map("t", "tx", function()
-  vim.cmd("stopinsert")
-  toggle_term()
-end, { silent = true })
+-- トグルターミナル (tx) とファイル実行 (<Leader>r) は toggleterm.nvim 側で定義 (plugins/toggleterm.lua)
 
 -- ターミナル内: Esc でエディターに戻る（ターミナルは閉じない）
 map("t", "<Esc>", "<C-\\><C-n><C-w>p", { silent = true })

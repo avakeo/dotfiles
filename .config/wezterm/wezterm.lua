@@ -125,6 +125,12 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --
 config.keys = {
 
+	-- ===== Shift+Enter: Claude Code 等の TUI で改行として認識させる =====
+	{
+		key = "Enter", mods = "SHIFT",
+		action = act.SendString("\x1b\r"),
+	},
+
 	-- ===== ペイン分割 (Leader + v/s) =====
 	{
 		key = "v", mods = "LEADER",

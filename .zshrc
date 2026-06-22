@@ -259,6 +259,11 @@ alias ..='cd ..'
 alias mv='mv -i'
 alias cp='cp -i'
 
+# ディレクトリを作成して移動する
+mkdircd() {
+  mkdir -p -- "$1" && cd -- "$1"
+}
+
 alias nivm='nvim'
 
 alias clip='pbcopy'

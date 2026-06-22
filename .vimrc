@@ -27,6 +27,7 @@ call plug#begin()
   Plug 'Xuyuanp/nerdtree-git-plugin'  " NERDTree に git ステータス表示
   Plug 'ryanoasis/vim-devicons'       " ファイルアイコン (Nerd Font 必須)
   Plug 'wakatime/vim-wakatime'
+  Plug 'voldikss/vim-floaterm'        " フロートターミナル (toggleterm.nvim 相当)
 call plug#end()
 
 
@@ -166,36 +167,51 @@ else
   nnoremap tt :tab terminal<CR>
 endif
 
-" トグルターミナル (tx): 同じセッションを下部に表示/非表示
-let s:term_buf = 0
+" タブを閉じる (tt で開いたターミナルタブ用)
+nnoremap tq :tabclose<CR>
+tnoremap tq <C-\><C-n>:tabclose<CR>
 
-function! s:ToggleTerm()
-  if s:term_buf > 0 && bufwinnr(s:term_buf) > 0
-    " 表示中 → ウィンドウを閉じる（セッションは保持）
-    exec bufwinnr(s:term_buf) . "wincmd w"
-    hide
-  elseif s:term_buf > 0 && bufexists(s:term_buf)
-    " バッファはあるがウィンドウにない → 下部に再表示
-    noautocmd botright new
-    resize 12
-    noautocmd exec "buffer " . s:term_buf
-    startinsert
-  else
-    " 初回: 新規ターミナルを起動
-    noautocmd botright new
-    resize 12
-    if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
-      terminal pwsh.exe -NoLogo
-    else
-      terminal
-    endif
-    let s:term_buf = bufnr("")
+" トグルターミナル (tx): vim-floaterm のフロートウィンドウを表示/非表示
+let g:floaterm_width = 0.8
+let g:floaterm_height = 0.6
+let g:floaterm_title = ''
+if (has('win32') || has('win64')) && empty($WSL_DISTRO_NAME)
+  let g:floaterm_shell = 'pwsh.exe -NoLogo'
+endif
+
+nnoremap <silent> tx :FloatermToggle<CR>
+tnoremap <silent> tx <C-\><C-n>:FloatermToggle<CR>
+
+" アルゴリズム学習用: カレントファイルをさっと実行 (<Leader>r)
+let s:runners = {
+  \ 'python':     'python3 %s',
+  \ 'cpp':        'g++ -std=c++17 -O2 -o /tmp/%s %s && /tmp/%s',
+  \ 'c':          'gcc -O2 -o /tmp/%s %s && /tmp/%s',
+  \ 'rust':       'rustc -O -o /tmp/%s %s && /tmp/%s',
+  \ 'go':         'go run %s',
+  \ 'javascript': 'node %s',
+  \ 'typescript': 'ts-node %s',
+  \ }
+
+function! s:RunCurrentFile()
+  let l:ft = &filetype
+  if !has_key(s:runners, l:ft)
+    echohl WarningMsg | echom "RunCurrentFile: '" . l:ft . "' の実行コマンドが未設定です" | echohl None
+    return
   endif
+  write
+  let l:file = expand('%:p')
+  let l:name = expand('%:t:r')
+  let l:tpl = s:runners[l:ft]
+  if count(l:tpl, '%s') == 3
+    let l:cmd = printf(l:tpl, l:name, l:file, l:name)
+  else
+    let l:cmd = printf(l:tpl, l:file)
+  endif
+  execute 'FloatermNew --autoclose=0 ' . l:cmd
 endfunction
 
-nnoremap <silent> tx :call <SID>ToggleTerm()<CR>
-" ターミナル内からも tx でトグルできる
-tnoremap <silent> tx <C-w>:call <SID>ToggleTerm()<CR>
+nnoremap <silent> <Leader>r :call <SID>RunCurrentFile()<CR>
 
 nnoremap j gj
 nnoremap k gk
