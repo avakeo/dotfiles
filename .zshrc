@@ -196,6 +196,10 @@ xterm*|rxvt*|Eterm|aterm|kterm|gnome*|alacritty)
 esac
 
 precmd() {
+    # Notify WezTerm (and other terminals) of the current working directory via OSC 7.
+    # This keeps tab titles in sync whenever the prompt renders (after every cd/command).
+    printf "\e]7;file://%s%s\a" "$HOST" "$PWD"
+
     # Print the previously configured title
     print -Pnr -- "$TERM_TITLE"
 
@@ -260,8 +264,18 @@ alias mv='mv -i'
 alias cp='cp -i'
 
 # ディレクトリを作成して移動する
-mkdircd() {
+mkdirc() {
   mkdir -p -- "$1" && cd -- "$1"
+}
+
+# ディレクトリを作成して main.py を作成する
+mkdirpy() {
+  mkdir -p -- "$1" && touch -- "$1/main.py"
+}
+
+# ディレクトリを作成して main.py を作成し、そのディレクトリに移動する
+mkdircpy() {
+  mkdir -p -- "$1" && touch -- "$1/main.py" && cd -- "$1"
 }
 
 alias nivm='nvim'
