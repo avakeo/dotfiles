@@ -1,4 +1,8 @@
 #Requires -Version 5.1
+param(
+  [Alias('d')] [switch]$DebugMode,
+  [Alias('h')] [switch]$Help
+)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
@@ -7,9 +11,13 @@ $BackupDir = Join-Path $HOME ".dotbackup\$(Get-Date -Format 'yyyyMMdd_HHmmss')"
 
 # ===== Helpers =====
 
-function Write-Success($msg) { Write-Host "  v $msg" -ForegroundColor Green }
+function Write-Success($msg) { Write-Host "  ✓ $msg" -ForegroundColor Green }
 function Write-Info($msg)    { Write-Host "  - $msg" -ForegroundColor Gray }
 function Write-Warn($msg)    { Write-Host "  ! $msg" -ForegroundColor Yellow }
+
+function Show-Usage {
+  Write-Host "Usage: $PSCommandPath [-DebugMode|-d] [-Help|-h]"
+}
 
 function Assert-SymlinkPrivilege {
   # Developer Mode が有効か、管理者権限があるかチェック
@@ -34,35 +42,19 @@ function New-Symlink($src, $dest) {
     return
   }
 
-  $isDir = (Get-Item $src -Force) -is [System.IO.DirectoryInfo]
-
-  if ($isDir) {
-    # ディレクトリ: 既存のディレクトリシンボリックリンクを削除して実ディレクトリを作成し再帰処理
-    if (Test-Path $dest) {
-      $item = Get-Item $dest -Force
-      if ($item.LinkType -eq "SymbolicLink") {
-        Remove-Item $dest -Force
-      }
+  if (Test-Path $dest) {
+    $item = Get-Item $dest -Force
+    if ($item.LinkType -eq "SymbolicLink") {
+      Remove-Item $dest -Force
+    } else {
+      New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
+      Move-Item $dest $BackupDir -Force
+      Write-Info "backed up: $(Split-Path $dest -Leaf)"
     }
-    New-Item -ItemType Directory -Path $dest -Force | Out-Null
-    Get-ChildItem $src -Force | ForEach-Object {
-      New-Symlink $_.FullName (Join-Path $dest $_.Name)
-    }
-  } else {
-    # ファイル: シンボリックリンクを作成
-    if (Test-Path $dest) {
-      $item = Get-Item $dest -Force
-      if ($item.LinkType -eq "SymbolicLink") {
-        Remove-Item $dest -Force
-      } else {
-        New-Item -ItemType Directory -Path $BackupDir -Force | Out-Null
-        Move-Item $dest $BackupDir -Force
-        Write-Info "backed up: $(Split-Path $dest -Leaf)"
-      }
-    }
-    New-Item -ItemType SymbolicLink -Path $dest -Target $src | Out-Null
-    Write-Success (Split-Path $dest -Leaf)
   }
+
+  New-Item -ItemType SymbolicLink -Path $dest -Target $src | Out-Null
+  Write-Success (Split-Path $dest -Leaf)
 }
 
 # ===== Link targets =====
@@ -104,9 +96,24 @@ function Link-Config {
   }
 }
 
-function Install-Scoop {
+function Install-VimPlug {
   Write-Host ""
-  Write-Host "Scoop:"
+  Write-Host "vim-plug:"
+
+  $plugPath = Join-Path $HOME ".vim\autoload\plug.vim"
+  if (-not (Test-Path $plugPath)) {
+    New-Item -ItemType Directory -Path (Split-Path $plugPath -Parent) -Force | Out-Null
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" `
+      -OutFile $plugPath -UseBasicParsing
+    Write-Success "vim-plug installed"
+  } else {
+    Write-Info "vim-plug already exists"
+  }
+}
+
+function Install-Tools {
+  Write-Host ""
+  Write-Host "Tools:"
 
   if (-not (Get-Command scoop -ErrorAction SilentlyContinue)) {
     Write-Info "installing scoop..."
@@ -145,12 +152,22 @@ function Post-Install {
 
 # ===== Main =====
 
+if ($Help) {
+  Show-Usage
+  exit 0
+}
+
+if ($DebugMode) {
+  Set-PSDebug -Trace 1
+}
+
 Write-Host "Platform: Windows (PowerShell $($PSVersionTable.PSVersion))" -ForegroundColor Cyan
 
 Assert-SymlinkPrivilege
-Install-Scoop
 Link-Home
 Link-Config
+Install-VimPlug
+Install-Tools
 Post-Install
 
 Write-Host ""
