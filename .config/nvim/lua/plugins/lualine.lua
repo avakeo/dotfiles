@@ -27,7 +27,7 @@ return {
       },
       sections = {
         lualine_a = { { "mode", color = mode_color } },
-        lualine_b = { "filename", "branch" },
+        lualine_b = { { "filename", path = 1 }, "branch" },
         lualine_c = {
           {
             "diff",

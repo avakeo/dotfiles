@@ -77,6 +77,8 @@ colorscheme iceberg
 set noerrorbells
 set showmatch matchtime=1
 set laststatus=2
+" カレントディレクトリからの相対パスを表示
+set statusline=%f\ %m%r%h%w\ %=%l,%c%V\ %P
 set showcmd
 set display=lastline
 set list
@@ -104,6 +106,9 @@ endif
 " lightline (外部カラースキーム: ~/.vim/autoload/lightline/colorscheme/dotfiles.vim)
 let g:lightline = {
   \ 'colorscheme': 'dotfiles',
+  \ 'active': {
+  \   'right': [ [ 'lineinfo' ], [ 'percent' ], [ 'fileformat', 'fileencoding', 'filetype', 'relativepath' ] ],
+  \ },
   \ 'component_expand': {
   \   'linter_errors':   'lightline#ale#errors',
   \   'linter_warnings': 'lightline#ale#warnings',
@@ -168,8 +173,18 @@ else
 endif
 
 " タブを閉じる (tt で開いたターミナルタブ用)
-nnoremap tq :tabclose<CR>
-tnoremap tq <C-\><C-n>:tabclose<CR>
+" 最後の1タブだと :tabclose は E784 で失敗するため、ターミナルバッファのときだけバッファを潰す
+function! s:CloseTermTab()
+  if tabpagenr('$') > 1
+    tabclose
+  elseif &buftype ==# 'terminal'
+    bdelete!
+  else
+    echohl WarningMsg | echom 'tq: 最後のタブは閉じられません (ターミナル以外)' | echohl None
+  endif
+endfunction
+nnoremap <silent> tq :call <SID>CloseTermTab()<CR>
+tnoremap <silent> tq <C-\><C-n>:call <SID>CloseTermTab()<CR>
 
 " トグルターミナル (tx): vim-floaterm のフロートウィンドウを表示/非表示
 let g:floaterm_width = 0.8
