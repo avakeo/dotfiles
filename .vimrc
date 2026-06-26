@@ -28,6 +28,7 @@ call plug#begin()
   Plug 'ryanoasis/vim-devicons'       " ファイルアイコン (Nerd Font 必須)
   Plug 'wakatime/vim-wakatime'
   Plug 'voldikss/vim-floaterm'        " フロートターミナル (toggleterm.nvim 相当)
+  Plug 'jiangmiao/auto-pairs'         " 括弧・引用符の自動補完
 call plug#end()
 
 
