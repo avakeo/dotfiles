@@ -49,6 +49,8 @@ let g:ale_fixers = {
   \ 'rust':       ['rustfmt'],
   \ }
 let g:ale_fix_on_save = 1
+let g:ale_set_signs = 0
+let g:ale_virtualtext_cursor = 'disabled'
 let g:ale_completion_enabled = 1
 set omnifunc=ale#completion#OmniFunc
 
@@ -58,6 +60,21 @@ nmap <silent> K  <Plug>(ale_hover)
 nmap <silent> <Leader>rn <Plug>(ale_rename)
 nmap <silent> [d <Plug>(ale_previous_wrap)
 nmap <silent> ]d <Plug>(ale_next_wrap)
+
+nnoremap <silent> <Leader>ud :ALEToggle<CR>
+
+let s:matchparen_on = 1
+function! s:ToggleMatchParen()
+  let s:matchparen_on = !s:matchparen_on
+  if s:matchparen_on
+    DoMatchParen
+    echo 'Bracket highlight ON'
+  else
+    NoMatchParen
+    echo 'Bracket highlight OFF'
+  endif
+endfunction
+nnoremap <silent> <Leader>ui :call <SID>ToggleMatchParen()<CR>
 
 " ===== General =====
 set encoding=utf-8
@@ -78,6 +95,9 @@ colorscheme iceberg
 set noerrorbells
 set showmatch matchtime=1
 set laststatus=2
+" WezTerm 等の undercurl 対応ターミナル向け
+let &t_Cs = "\e[4:3m"
+let &t_Ce = "\e[4:0m"
 " カレントディレクトリからの相対パスを表示
 set statusline=%f\ %m%r%h%w\ %=%l,%c%V\ %P
 set showcmd
@@ -85,6 +105,16 @@ set display=lastline
 set list
 set listchars=tab:^\ ,trail:~
 hi Comment ctermfg=3
+" ALE 診断の下線を undercurl（波線）に変更
+function! s:AleUndercurl()
+  hi ALEError        cterm=undercurl gui=undercurl guisp=#e27878
+  hi ALEWarning      cterm=undercurl gui=undercurl guisp=#e2a478
+  hi ALEInfo         cterm=undercurl gui=undercurl guisp=#84a0c6
+  hi ALEStyleError   cterm=undercurl gui=undercurl guisp=#e27878
+  hi ALEStyleWarning cterm=undercurl gui=undercurl guisp=#e2a478
+endfunction
+autocmd ColorScheme * call s:AleUndercurl()
+call s:AleUndercurl()
 
 " クリップボード
 " SSH 接続中(リモート: Ubuntu 等)は OSC 52 経由でローカル端末

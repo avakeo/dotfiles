@@ -8,6 +8,30 @@ return {
       "hrsh7th/cmp-nvim-lsp",
     },
     config = function()
+      vim.diagnostic.config({ virtual_text = false, signs = false, underline = true })
+
+      -- 診断の下線を undercurl（波線）に変更（カラースキームの色を流用）
+      local function set_diag_undercurl()
+        for _, sev in ipairs({ "Error", "Warn", "Info", "Hint" }) do
+          local src = vim.api.nvim_get_hl(0, { name = "Diagnostic" .. sev, link = false })
+          vim.api.nvim_set_hl(0, "DiagnosticUnderline" .. sev, {
+            undercurl = true,
+            sp = src.fg and string.format("#%06x", src.fg) or nil,
+          })
+        end
+      end
+      vim.api.nvim_create_autocmd("ColorScheme", { callback = set_diag_undercurl })
+      set_diag_undercurl()
+
+      local diag_on = true
+      vim.api.nvim_create_user_command("DiagToggle", function()
+        diag_on = not diag_on
+        vim.diagnostic.config({ virtual_text = false, signs = false, underline = diag_on })
+        if diag_on then set_diag_undercurl() end
+        vim.notify("Diagnostics " .. (diag_on and "ON" or "OFF"))
+      end, {})
+      vim.keymap.set("n", "<Leader>ud", "<Cmd>DiagToggle<CR>", { desc = "Toggle diagnostics" })
+
       require("mason").setup()
 
       local lspconfig = require("lspconfig")
