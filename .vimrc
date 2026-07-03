@@ -29,6 +29,7 @@ call plug#begin()
   Plug 'wakatime/vim-wakatime'
   Plug 'voldikss/vim-floaterm'        " フロートターミナル (toggleterm.nvim 相当)
   Plug 'jiangmiao/auto-pairs'         " 括弧・引用符の自動補完
+  Plug 'machakann/vim-highlightedyank' " ヤンク時に範囲をハイライト (nvim の on_yank 相当)
 call plug#end()
 
 
@@ -92,6 +93,12 @@ set t_Co=256
 syntax enable
 set background=dark
 colorscheme iceberg
+
+" ヤンクハイライト (nvim 側 preference.lua の on_yank と同じ見た目に揃える)
+" iceberg は IncSearch/Visual とも cterm=reverse で区別がつかないため、
+" bluloco の IncSearch 相当の黄色を明示指定する
+let g:highlightedyank_highlight_duration = 300
+highlight HighlightedyankRegion ctermfg=234 ctermbg=178 guifg=#161821 guibg=#e3b80d
 set noerrorbells
 set showmatch matchtime=1
 set laststatus=2
