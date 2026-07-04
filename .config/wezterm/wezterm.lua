@@ -99,6 +99,16 @@ local function smart_move(direction)
 	end)
 end
 
+-- ===== ペインが複数あればペインだけ、1つならタブごと閉じる =====
+local close_pane_or_tab = wezterm.action_callback(function(window, pane)
+	local tab = window:active_tab()
+	if #tab:panes() > 1 then
+		window:perform_action(act.CloseCurrentPane { confirm = true }, pane)
+	else
+		window:perform_action(act.CloseCurrentTab { confirm = true }, pane)
+	end
+end)
+
 -- ===== Leader キー =====
 -- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
 config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -117,7 +127,7 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    [  → コピーモード (vim風: hjkl移動, v選択, y コピー, Escで抜ける)
 --
 --  CTRL + h/j/k/l → ペイン移動 (Leader なしで素早く移動)
---  CTRL + w       → ペインを閉じる (分割あり) / タブを閉じる (分割なし)
+--  CTRL + w / CMD + w → ペインを閉じる (分割あり) / タブを閉じる (分割なし)
 --  CTRL + Tab     → 次のタブ
 --  CTRL + t       → 新規タブ
 --  CTRL + ←/→    → 単語単位で移動
@@ -198,14 +208,11 @@ config.keys = {
 	},
 	{
 		key = "w", mods = "CTRL",
-		action = wezterm.action_callback(function(window, pane)
-			local tab = window:active_tab()
-			if #tab:panes() > 1 then
-				window:perform_action(act.CloseCurrentPane { confirm = true }, pane)
-			else
-				window:perform_action(act.CloseCurrentTab { confirm = true }, pane)
-			end
-		end),
+		action = close_pane_or_tab,
+	},
+	{
+		key = "w", mods = "CMD",
+		action = close_pane_or_tab,
 	},
 	{
 		key = "Tab", mods = "CTRL",
