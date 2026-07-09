@@ -102,9 +102,6 @@ highlight HighlightedyankRegion ctermfg=234 ctermbg=178 guifg=#161821 guibg=#e3b
 set noerrorbells
 set showmatch matchtime=1
 set laststatus=2
-" WezTerm 等の undercurl 対応ターミナル向け
-let &t_Cs = "\e[4:3m"
-let &t_Ce = "\e[4:0m"
 " カレントディレクトリからの相対パスを表示
 set statusline=%f\ %m%r%h%w\ %=%l,%c%V\ %P
 set showcmd
