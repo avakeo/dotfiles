@@ -11,8 +11,11 @@ config.color_scheme = "Pop Candy"
 config.font = wezterm.font("Cica", { weight = "Medium" })
 config.font_size = 14.0
 config.window_background_opacity = 0.75
+-- 透過背景をすりガラス状にぼかして視認性を上げる
+config.macos_window_background_blur = 20
 if wezterm.target_triple:find("windows") then
 	config.window_decorations = "RESIZE"
+	config.win32_system_backdrop = "Acrylic"
 elseif wezterm.target_triple:find("darwin") then
 	config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 else
