@@ -127,6 +127,7 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    [  → コピーモード (vim風: hjkl移動, v選択, y コピー, Escで抜ける)
 --
 --  CTRL + h/j/k/l → ペイン移動 (Leader なしで素早く移動)
+--  CTRL + SHIFT + h/j/k/l → ペイン移動 (CTRL+SHIFT+矢印 と同じ。CTRL+SHIFT+L のデバッグオーバーレイは無効化)
 --  CTRL + w / CMD + w → ペインを閉じる (分割あり) / タブを閉じる (分割なし)
 --  CTRL + Tab     → 次のタブ
 --  CTRL + t       → 新規タブ
@@ -196,6 +197,13 @@ config.keys = {
 	{ key = "j", mods = "CTRL", action = smart_move("Down")  },
 	{ key = "k", mods = "CTRL", action = smart_move("Up")    },
 	{ key = "l", mods = "CTRL", action = smart_move("Right") },
+
+	-- ===== ペイン移動 (CTRL+SHIFT+hjkl: 矢印キー版と同じ) =====
+	-- CTRL+SHIFT+L はデフォルトでデバッグオーバーレイが開くが、この割り当てで上書き無効化される
+	{ key = "h", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Left")  },
+	{ key = "j", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Down")  },
+	{ key = "k", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Up")    },
+	{ key = "l", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Right") },
 
 	-- ===== タブ =====
 	{
