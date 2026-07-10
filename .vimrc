@@ -120,6 +120,18 @@ endfunction
 autocmd ColorScheme * call s:AleUndercurl()
 call s:AleUndercurl()
 
+" 背景透過 (WezTerm の window_background_opacity に合わせる)
+function! s:TransparentBg()
+  hi Normal      ctermbg=NONE guibg=NONE
+  hi NonText     ctermbg=NONE guibg=NONE
+  hi EndOfBuffer ctermbg=NONE guibg=NONE
+  hi LineNr      ctermbg=NONE guibg=NONE
+  hi SignColumn  ctermbg=NONE guibg=NONE
+  hi Folded      ctermbg=NONE guibg=NONE
+endfunction
+autocmd ColorScheme * call s:TransparentBg()
+call s:TransparentBg()
+
 " クリップボード
 " SSH 接続中(リモート: Ubuntu 等)は OSC 52 経由でローカル端末
 " (WezTerm)のクリップボードに同期する。ローカル実行時は OS の
