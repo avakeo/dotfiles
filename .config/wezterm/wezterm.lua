@@ -119,8 +119,8 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 -- ===== キーバインド =====
 --
 --  Leader (CTRL+\) + ...
---    v  → 左右に分割
---    s  → 上下に分割
+--    v / % → 左右に分割
+--    s / " → 上下に分割
 --    z  → ペインをズーム/解除
 --    x  → ペインを閉じる
 --    h/j/k/l → ペイン移動
@@ -145,13 +145,21 @@ config.keys = {
 		action = act.SendString("\x1b\r"),
 	},
 
-	-- ===== ペイン分割 (Leader + v/s) =====
+	-- ===== ペイン分割 (Leader + v/s または tmux 風の %/") =====
 	{
 		key = "v", mods = "LEADER",
 		action = act.SplitHorizontal { domain = "CurrentPaneDomain" },
 	},
 	{
+		key = "%", mods = "LEADER|SHIFT",
+		action = act.SplitHorizontal { domain = "CurrentPaneDomain" },
+	},
+	{
 		key = "s", mods = "LEADER",
+		action = act.SplitVertical { domain = "CurrentPaneDomain" },
+	},
+	{
+		key = '"', mods = "LEADER|SHIFT",
 		action = act.SplitVertical { domain = "CurrentPaneDomain" },
 	},
 
