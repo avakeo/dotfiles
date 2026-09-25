@@ -5,5 +5,5 @@
 # デフォルトは ${EDITOR:-vi}。EDITOR をグローバルに設定すると git 等にも波及するので
 # yazi 側で nvim を直接指定する
 edit = [
-  { run = 'nvim "$@"', block = true, desc = "nvim", for = "unix" },
+  { run = "nvim %s", block = true, desc = "nvim", for = "unix" },
 ]
