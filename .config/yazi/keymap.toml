@@ -14,3 +14,9 @@ prepend_keymap = [
   { on = [ "g", "." ], run = "cd ~/dotfiles", desc = "Go to ~/dotfiles" },
   { on = [ "g", "w" ], run = "cd ~/work",     desc = "Go to ~/work" },
 ]
+
+[confirm]
+prepend_keymap = [
+  # 削除などの確認は y でのみ実行する。Enter は普段ディレクトリに入るキーなので、反射で押して消えないようキャンセル扱いにする
+  { on = "<Enter>", run = "close", desc = "Cancel the confirm (press y to submit)" },
+]
