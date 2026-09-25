@@ -6,6 +6,9 @@ case $- in
       *) return;;
 esac
 
+# bash / zsh 共通の設定 (OS 判定・エイリアス・PATH など) — Homebrew の PATH もここで通すので最初に読む
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/init.sh" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/init.sh"
+
 # Set colorful prompt if terminal supports it
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     color_prompt=yes
@@ -15,65 +18,6 @@ fi
 
 PS1='\u@\h:\w\$ '
 unset color_prompt
-
-# Enable color support for ls and add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# Some useful aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-alias c='clear'
-alias ..='cd ..'
-
-# Avoid overwriting files with mv and cp
-alias mv='mv -i'
-alias cp='cp -i'
-
-# ディレクトリを作成して移動する
-mkdirc() {
-  mkdir -p -- "$1" && cd -- "$1"
-}
-
-# ディレクトリを作成して main.py を作成する
-mkdirpy() {
-  mkdir -p -- "$1" && touch -- "$1/main.py"
-}
-
-# ディレクトリを作成して main.py を作成し、そのディレクトリに移動する
-mkdircpy() {
-  mkdir -p -- "$1" && touch -- "$1/main.py" && cd -- "$1"
-}
-
-# Git aliases
-alias g='git'
-alias gs='git status'
-alias gf='git fetch'
-alias gfa='git fetch --all --prune'
-alias gc='git commit'
-alias gcm='git commit -m'
-alias gca='git commit --amend'
-alias gco='git checkout'
-alias gcb='git checkout -b'
-alias gb='git branch'
-alias ga='git add'
-alias gaa='git add -A'
-alias gl='git pull'
-alias gp='git push'
-alias gd='git diff'
-
-# nautilus
-alias explore='nautilus'
-
-# pbcopy
-alias clip='xsel --clipboard --input'
-
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -91,45 +35,12 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# WSL環境ではstarshipのパレットをwslに切り替え
-if grep -qi microsoft /proc/version 2>/dev/null; then
-  _starship_src="${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
-  export STARSHIP_CONFIG="/tmp/starship-${USER}.toml"
-  sed 's/^palette = "windows"/palette = "wsl"/' "$_starship_src" > "$STARSHIP_CONFIG"
-fi
-eval "$(starship init bash)"
-
 # Notify WezTerm (and other terminals) of the current working directory via OSC 7.
 # This keeps tab titles in sync whenever the prompt renders (after every cd/command).
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }printf '\e]7;file://%s%s\a' \"\$HOSTNAME\" \"\$PWD\""
 
-# . "$HOME/.local/bin/env"
+# bash / zsh 共通のツール初期化 (starship / fzf / zoxide / yazi) — 補完の初期化より後に読む
+[ -n "$DOTFILES_SHELL_DIR" ] && . "$DOTFILES_SHELL_DIR/tools.sh"
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-[ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
-export PATH="$HOME/.local/bin:$PATH"
-
-alias vi='/usr/bin/vim.basic'
-alias vim='/usr/bin/vim.basic'
-
-
-# pyenv settings
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
-
-
-
-# yazi: y で起動し、q で終了すると最後のディレクトリへ移動 (Q なら移動しない)
-if command -v yazi &>/dev/null; then
-  y() {
-    local tmp cwd
-    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
-    command yazi "$@" --cwd-file="$tmp"
-    IFS= read -r -d '' cwd < "$tmp"
-    [[ -n "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
-    rm -f -- "$tmp"
-  }
-fi
+# Machine-local overrides (not committed to git)
+[ -f ~/.bashrc.local ] && . ~/.bashrc.local

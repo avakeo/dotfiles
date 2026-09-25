@@ -1,8 +1,8 @@
 # ~/.zshrc file for zsh interactive shells.
 # see /usr/share/doc/zsh/examples/zshrc for examples
 
-# Homebrew (macOS) — must be first so brew-installed tools are in PATH
-[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+# bash / zsh 共通の設定 (OS 判定・エイリアス・PATH など) — Homebrew の PATH もここで通すので最初に読む
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/init.sh" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/shell/init.sh"
 
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
@@ -213,95 +213,6 @@ precmd() {
     fi
 }
 
-# Load LS_COLORS from ~/.dircolors (cross-platform)
-if [ -f "$HOME/.dircolors" ]; then
-    if command -v dircolors >/dev/null 2>&1; then
-        eval "$(dircolors "$HOME/.dircolors")"
-    elif command -v gdircolors >/dev/null 2>&1; then
-        eval "$(gdircolors "$HOME/.dircolors")"
-    else
-        # Fallback: parse .dircolors manually (macOS without coreutils)
-        # Convert full names (DIR, LINK...) to two-letter codes (di, ln...) as dircolors does
-        typeset -A _dc_map
-        _dc_map=(RESET rs FILE fi DIR di LINK ln MULTIHARDLINK mh FIFO pi SOCK so DOOR do BLK bd CHR cd ORPHAN or MISSING mi SETUID su SETGID sg STICKY_OTHER_WRITABLE tw OTHER_WRITABLE ow STICKY st EXEC ex)
-        _lsc=""
-        while IFS= read -r _line; do
-            [[ "$_line" =~ ^[[:space:]]*(#|$) ]] && continue
-            [[ "$_line" =~ ^(TERM|COLORTERM|COLOR|OPTIONS|EIGHTBIT) ]] && continue
-            _key="${_line%% *}"
-            _val="${_line#* }"; _val="${_val%% #*}"; _val="${_val%% }"
-            [[ -z "$_key" || -z "$_val" ]] && continue
-            _code="${_dc_map[$_key]:-$_key}"
-            _lsc+="${_code}=${_val}:"
-        done < "$HOME/.dircolors"
-        export LS_COLORS="${_lsc%:}"
-        unset _lsc _line _key _val _code _dc_map
-    fi
-fi
-
-# eza as ls replacement (fallback to ls -G on macOS)
-if command -v eza >/dev/null 2>&1; then
-    alias ls='eza --color=auto'
-    alias ll='eza -alF'
-    alias la='eza -a'
-    alias l='eza -F'
-else
-    alias ls='ls -G'
-    alias ll='ls -alF'
-    alias la='ls -A'
-    alias l='ls -CF'
-fi
-
-alias grep='grep --color=auto'
-alias fgrep='fgrep --color=auto'
-alias egrep='egrep --color=auto'
-alias diff='diff --color=auto'
-
-alias c='clear'
-alias ..='cd ..'
-
-alias mv='mv -i'
-alias cp='cp -i'
-
-# ディレクトリを作成して移動する
-mkdirc() {
-  mkdir -p -- "$1" && cd -- "$1"
-}
-
-# ディレクトリを作成して main.py を作成する
-mkdirpy() {
-  mkdir -p -- "$1" && touch -- "$1/main.py"
-}
-
-# ディレクトリを作成して main.py を作成し、そのディレクトリに移動する
-mkdircpy() {
-  mkdir -p -- "$1" && touch -- "$1/main.py" && cd -- "$1"
-}
-
-alias nivm='nvim'
-
-alias clip='pbcopy'
-alias explore='open .'
-
-# Git aliases
-alias g='git'
-alias gs='git status'
-alias gf='git fetch'
-alias gfa='git fetch --all --prune'
-alias gc='git commit'
-alias gcm='git commit -m'
-alias gca='git commit --amend'
-alias gco='git checkout'
-alias gcb='git checkout -b'
-alias gb='git branch'
-alias ga='git add'
-alias gaa='git add -A'
-alias gl='git pull'
-alias gp='git push'
-alias gd='git diff'
-
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
 # enable auto-suggestions based on the history
 if [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
     . /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -313,18 +224,6 @@ fi
 if [ -f /etc/zsh_command_not_found ]; then
     . /etc/zsh_command_not_found
 fi
-
-# OS別にstarshipパレットを切り替え
-_starship_src="${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml"
-if [[ "$(uname)" == "Darwin" ]]; then
-  export STARSHIP_CONFIG="/tmp/starship-${USER}.toml"
-  sed 's/^palette = "windows"/palette = "macos"/' "$_starship_src" > "$STARSHIP_CONFIG"
-elif grep -qi microsoft /proc/version 2>/dev/null; then
-  export STARSHIP_CONFIG="/tmp/starship-${USER}.toml"
-  sed 's/^palette = "windows"/palette = "wsl"/' "$_starship_src" > "$STARSHIP_CONFIG"
-fi
-eval "$(starship init zsh)"
-
 
 # コマンド履歴を１万行保存する
 HISTFILE=~/.zsh_history
@@ -340,46 +239,8 @@ zle -N history-beginning-search-forward-end history-search-end
 bindkey "^N" history-beginning-search-forward-end
 bindkey "^P" history-beginning-search-backward-end
 
-export PATH="$HOME/.cargo/bin:$PATH"
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-
-# pyenv settings
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv &>/dev/null; then
-  eval "$(pyenv init - zsh)"
-fi
-
-# fzf
-if command -v fzf &>/dev/null; then
-  eval "$(fzf --zsh)"
-fi
-
-# zoxide (smart cd)
-if command -v zoxide &>/dev/null; then
-  eval "$(zoxide init zsh)"
-  alias cd='z'
-fi
-
-# yazi: y で起動し、q で終了すると最後のディレクトリへ移動 (Q なら移動しない)
-# cd は z にエイリアスされているため builtin cd を使う (zoxide の履歴は chpwd フックで記録される)
-if command -v yazi &>/dev/null; then
-  y() {
-    local tmp cwd
-    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
-    command yazi "$@" --cwd-file="$tmp"
-    IFS= read -r -d '' cwd < "$tmp"
-    [[ -n "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
-    rm -f -- "$tmp"
-  }
-fi
+# bash / zsh 共通のツール初期化 (starship / fzf / zoxide / yazi) — compinit より後に読む
+[ -n "$DOTFILES_SHELL_DIR" ] && . "$DOTFILES_SHELL_DIR/tools.sh"
 
 # Machine-local overrides (not committed to git)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-. "$HOME/.local/bin/env"

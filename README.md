@@ -239,8 +239,9 @@ Leader = `Space`
 
 ```
 dotfiles/
-├── .bashrc
-├── .zshrc
+├── .bashrc            # bash 固有 (プロンプト・補完)。共通部分は .config/shell/
+├── .zshrc             # zsh 固有 (オプション・補完・キー)。共通部分は .config/shell/
+├── .tmux.conf
 ├── .vimrc
 ├── .dircolors
 ├── .gitconfig_shared
@@ -248,7 +249,13 @@ dotfiles/
 ├── install.sh          # Linux / WSL / macOS 用
 ├── install.ps1         # Windows 用
 └── .config/
+    ├── shell/          # bash / zsh 共通
+    │   ├── init.sh     #   OS 判定 → os/<OS>.sh → common.sh (rc の先頭で読む)
+    │   ├── common.sh   #   全 OS 共通のエイリアス・関数・PATH
+    │   ├── tools.sh    #   starship / fzf / zoxide / yazi の初期化 (rc の末尾で読む)
+    │   └── os/         #   macos.sh / linux.sh (Ubuntu・Kali) / wsl.sh
     ├── nvim/           # Neovim (lazy.nvim)
+    ├── yazi/           # yazi (プラグインは package.toml から ya pkg install)
     ├── wezterm/        # WezTerm
     ├── fish/           # Fish shell
     ├── git/            # Git global settings
@@ -256,3 +263,5 @@ dotfiles/
     ├── neofetch/       # neofetch
     └── starship.toml   # Starship prompt
 ```
+
+マシン固有の設定 (git に入れない) は `~/.zshrc.local` / `~/.bashrc.local` に書く。
