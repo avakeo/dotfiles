@@ -127,7 +127,7 @@ install_tools() {
   # yazi (TUI file manager) + プレビュー用の依存
   if ! command -v yazi &>/dev/null; then
     if command -v brew &>/dev/null; then
-      brew install yazi ffmpeg sevenzip jq poppler fd ripgrep resvg imagemagick
+      brew install yazi ffmpeg sevenzip jq poppler fd ripgrep resvg imagemagick glow
     else
       warn "yazi: apt には無いので https://yazi-rs.github.io/docs/installation を参照"
     fi
