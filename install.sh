@@ -110,6 +110,20 @@ install_tools() {
     info "zoxide already installed"
   fi
 
+  # tmux
+  if ! command -v tmux &>/dev/null; then
+    if command -v apt &>/dev/null; then
+      sudo apt install -y tmux
+    elif command -v brew &>/dev/null; then
+      brew install tmux
+    else
+      warn "tmux: no supported package manager, install manually"
+    fi
+    command -v tmux &>/dev/null && success "tmux installed"
+  else
+    info "tmux already installed"
+  fi
+
   # fastfetch (system info)
   if ! command -v fastfetch &>/dev/null; then
     if command -v apt &>/dev/null; then
