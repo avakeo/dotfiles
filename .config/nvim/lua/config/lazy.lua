@@ -18,6 +18,8 @@ require("lazy").setup("plugins", {
   },
   checker = {
     enabled = true,
+    -- 起動のたびに更新通知が出て yazi 等のポップアップと重なるので、確認は :Lazy で行う
+    notify = false,
   },
   diff = {
     cmd = "delta",
