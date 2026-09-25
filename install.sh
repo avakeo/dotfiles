@@ -71,7 +71,7 @@ link_config() {
   mkdir -p "$HOME/.config"
 
   # 全プラットフォーム共通
-  local entries=(nvim fish git gh starship.toml wezterm)
+  local entries=(nvim fish git gh starship.toml wezterm yazi)
   for name in "${entries[@]}"; do
     backup_and_link "$DOTDIR/.config/$name" "$HOME/.config/$name"
   done
@@ -122,6 +122,18 @@ install_tools() {
     command -v tmux &>/dev/null && success "tmux installed"
   else
     info "tmux already installed"
+  fi
+
+  # yazi (TUI file manager) + プレビュー用の依存
+  if ! command -v yazi &>/dev/null; then
+    if command -v brew &>/dev/null; then
+      brew install yazi ffmpeg sevenzip jq poppler fd ripgrep resvg imagemagick
+    else
+      warn "yazi: apt には無いので https://yazi-rs.github.io/docs/installation を参照"
+    fi
+    command -v yazi &>/dev/null && success "yazi installed"
+  else
+    info "yazi already installed"
   fi
 
   # fastfetch (system info)

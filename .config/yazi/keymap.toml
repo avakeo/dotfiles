@@ -1,0 +1,10 @@
+# yazi キーマップ — デフォルトを丸ごとコピーせず prepend_keymap で差分だけ足す
+# (コピーするとアップデートで追加されたキーが使えなくなる)
+#
+# 注意: 以下は外側で先に消費されるので yazi 内では割り当てない
+#   Ctrl+h/j/k/l  … WezTerm のペイン移動 (smart_move)
+#   Alt+h/j/k/l   … tmux のペイン移動
+#   Ctrl+\        … WezTerm の Leader
+
+[mgr]
+prepend_keymap = []

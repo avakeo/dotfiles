@@ -1,0 +1,9 @@
+# yazi 設定 — デフォルトとの差分だけを書く (未指定の項目は組み込み値が使われる)
+# 組み込み値: https://github.com/sxyazi/yazi/tree/main/yazi-config/preset
+
+[opener]
+# デフォルトは ${EDITOR:-vi}。EDITOR をグローバルに設定すると git 等にも波及するので
+# yazi 側で nvim を直接指定する
+edit = [
+  { run = 'nvim "$@"', block = true, desc = "nvim", for = "unix" },
+]
