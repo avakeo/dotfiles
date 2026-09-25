@@ -364,6 +364,19 @@ if command -v zoxide &>/dev/null; then
   alias cd='z'
 fi
 
+# yazi: y で起動し、q で終了すると最後のディレクトリへ移動 (Q なら移動しない)
+# cd は z にエイリアスされているため builtin cd を使う (zoxide の履歴は chpwd フックで記録される)
+if command -v yazi &>/dev/null; then
+  y() {
+    local tmp cwd
+    tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+    command yazi "$@" --cwd-file="$tmp"
+    IFS= read -r -d '' cwd < "$tmp"
+    [[ -n "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
+    rm -f -- "$tmp"
+  }
+fi
+
 # Machine-local overrides (not committed to git)
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
