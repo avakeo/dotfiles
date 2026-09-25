@@ -10,3 +10,7 @@ Thumbs.db
 *.swo
 *~
 .claude
+
+# yazi: プラグイン/フレーバー本体は package.toml から `ya pkg install` で復元する
+.config/yazi/plugins/
+.config/yazi/flavors/

@@ -7,4 +7,7 @@
 #   Ctrl+\        … WezTerm の Leader
 
 [mgr]
-prepend_keymap = []
+prepend_keymap = [
+  # Enter: ディレクトリなら入る / ファイルなら開く (デフォルトはディレクトリも nvim で開く)
+  { on = "<Enter>", run = "plugin smart-enter", desc = "Enter the child directory, or open the file" },
+]

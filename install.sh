@@ -135,6 +135,8 @@ install_tools() {
   else
     info "yazi already installed"
   fi
+  # package.toml に記録したプラグインを取得
+  command -v ya &>/dev/null && ya pkg install >/dev/null && success "yazi plugins synced"
 
   # fastfetch (system info)
   if ! command -v fastfetch &>/dev/null; then
