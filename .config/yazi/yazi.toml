@@ -12,3 +12,14 @@ edit = [
 [[plugin.prepend_previewers]]
 url = "*.md"
 run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s="$([ "$t" = "light" ] && echo light || echo dark)" "$1"'
+
+# git の状態を取得 (git.yazi プラグイン、表示は init.lua で設定)
+[[plugin.prepend_fetchers]]
+url   = "*"
+run   = "git"
+group = "git"
+
+[[plugin.prepend_fetchers]]
+url   = "*/"
+run   = "git"
+group = "git"
