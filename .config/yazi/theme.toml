@@ -1,0 +1,51 @@
+#:schema https://yazi-rs.github.io/schemas/theme.json
+# WezTerm の Pop Candy に合わせた配色
+# 背景色 (app.overall など) は指定せず、ターミナルの透過をそのまま活かす
+
+[mgr]
+cwd = { fg = "#06D6A0" }
+
+find_keyword  = { fg = "#FFD93D", bold = true, underline = true }
+find_position = { fg = "#C084FC", bold = true }
+
+marker_copied   = { fg = "#6BCB77", bg = "#6BCB77" }
+marker_cut      = { fg = "#FF6B6B", bg = "#FF6B6B" }
+marker_marked   = { fg = "#06D6A0", bg = "#06D6A0" }
+marker_selected = { fg = "#FFD93D", bg = "#FFD93D" }
+
+count_copied   = { fg = "#1A1B2F", bg = "#6BCB77" }
+count_cut      = { fg = "#1A1B2F", bg = "#FF6B6B" }
+count_selected = { fg = "#1A1B2F", bg = "#FFD93D" }
+
+# WezTerm のペイン境界 (colors.split) と同じ色
+border_style = { fg = "#00CED1" }
+
+[tabs]
+active   = { fg = "#1A1B2F", bg = "#4D96FF", bold = true }
+inactive = { fg = "#4D96FF", bg = "#3D3E5C" }
+
+[mode]
+normal_main = { fg = "#1A1B2F", bg = "#4D96FF", bold = true }
+normal_alt  = { fg = "#4D96FF", bg = "#3D3E5C" }
+select_main = { fg = "#1A1B2F", bg = "#C084FC", bold = true }
+select_alt  = { fg = "#C084FC", bg = "#3D3E5C" }
+unset_main  = { fg = "#1A1B2F", bg = "#FF6B6B", bold = true }
+unset_alt   = { fg = "#FF6B6B", bg = "#3D3E5C" }
+
+[indicator]
+parent  = { fg = "#4D96FF", bg = "#3D3E5C", bold = true }
+current = { fg = "#1A1B2F", bg = "#4D96FF", bold = true }
+
+[status]
+perm_type  = { fg = "#6BCB77" }
+perm_read  = { fg = "#FFD93D" }
+perm_write = { fg = "#FF6B6B" }
+perm_exec  = { fg = "#06D6A0" }
+
+progress_normal = { fg = "#4D96FF", bg = "#3D3E5C" }
+progress_error  = { fg = "#FFD93D", bg = "#FF6B6B" }
+
+[which]
+border = { fg = "#4D96FF" }
+cand   = { fg = "#06D6A0" }
+desc   = { fg = "#C084FC" }

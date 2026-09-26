@@ -1,0 +1,8 @@
+#:schema https://yazi-rs.github.io/schemas/keymap.json
+# 既定のキーマップに追加する分だけを書く (既定値: yazi-config/preset/keymap-default.toml)
+
+[mgr]
+prepend_keymap = [
+	{ on = [ "g", "D" ], run = "cd ~/dotfiles",  desc = "Go to ~/dotfiles" },
+	{ on = [ "g", "p" ], run = "cd ~/Documents", desc = "Go to ~/Documents" },
+]

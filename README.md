@@ -54,7 +54,7 @@ brew install zsh git neovim fish starship fastfetch
 - PowerShell プロファイルは `$PROFILE` から dotfiles をドットソースする形式
 
 ### Windows 追加パッケージ (scoop)
-`install.ps1` が自動インストール: `7zip` `neovim` `vim` `starship` `fzf` `zoxide` `win32yank`
+`install.ps1` が自動インストール: `7zip` `neovim` `vim` `starship` `fzf` `zoxide` `win32yank` `yazi` `fd` `ripgrep` `jq` `poppler` `resvg` `imagemagick`
 
 > `win32yank` は vim / nvim のヤンクをシステムクリップボードに連携するために必要
 

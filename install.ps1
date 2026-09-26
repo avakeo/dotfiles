@@ -94,6 +94,11 @@ function Link-Config {
     $dest = Join-Path $configDir $name
     New-Symlink $src $dest
   }
+
+  # yazi は Windows だと %APPDATA%\yazi\config を読む
+  $yaziDir = Join-Path $env:APPDATA "yazi"
+  New-Item -ItemType Directory -Path $yaziDir -Force | Out-Null
+  New-Symlink (Join-Path $DotDir ".config\yazi") (Join-Path $yaziDir "config")
 }
 
 function Install-VimPlug {
@@ -124,7 +129,11 @@ function Install-Tools {
     Write-Info "scoop already installed"
   }
 
-  $packages = @("7zip", "neovim", "vim", "starship", "fzf", "zoxide", "win32yank")
+  $packages = @(
+    "7zip", "neovim", "vim", "starship", "fzf", "zoxide", "win32yank",
+    # yazi と、そのプレビュー・検索に使うツール
+    "yazi", "fd", "ripgrep", "jq", "poppler", "resvg", "imagemagick"
+  )
   foreach ($pkg in $packages) {
     $installed = scoop list $pkg 2>$null | Select-String $pkg
     if ($installed) {
