@@ -7,6 +7,16 @@
 edit = [
   { run = "nvim %s", block = true, desc = "nvim", for = "unix" },
 ]
+# ディレクトリを GUI ファイルマネージャ Marta で開く (macOS のみ。他 OS では候補に出ない)
+marta = [
+  { run = "open -a Marta %s", desc = "Marta", for = "macos" },
+]
+
+[open]
+# ディレクトリの o / O は Marta を優先 (Enter は smart-enter でディレクトリに入る)
+prepend_rules = [
+  { mime = "folder/*", use = [ "marta", "edit", "open", "reveal" ] },
+]
 
 # markdown は glow で軽く整形してプレビュー (piper プラグイン経由)
 [[plugin.prepend_previewers]]

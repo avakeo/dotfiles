@@ -13,6 +13,8 @@ prepend_keymap = [
   # デフォルトの gh (~) / gc (~/.config) / gd (~/Downloads) に並べて追加
   { on = [ "g", "." ], run = "cd ~/dotfiles", desc = "Go to ~/dotfiles" },
   { on = [ "g", "w" ], run = "cd ~/work",     desc = "Go to ~/work" },
+  # 今いるディレクトリを Marta で開く (ドラッグ & ドロップしたいとき用。macOS のみ)
+  { on = [ "g", "m" ], run = "shell -- open -a Marta .", desc = "Open cwd in Marta" },
 ]
 
 [confirm]
