@@ -25,12 +25,13 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 # yazi: y で起動し、q で終了すると最後のディレクトリへ移動 (Q なら移動しない)
+# 起動時のディレクトリを YAZI_START_DIR に入れておき、yazi 内の gs で戻れるようにする
 # cd は z にエイリアスされているため builtin cd を使う (zoxide の履歴は cd のフックで記録される)
 if command -v yazi >/dev/null 2>&1; then
   y() {
     local tmp cwd
     tmp="$(mktemp -t yazi-cwd.XXXXXX)"
-    command yazi "$@" --cwd-file="$tmp"
+    YAZI_START_DIR="$PWD" command yazi "$@" --cwd-file="$tmp"
     IFS= read -r -d '' cwd < "$tmp"
     [[ -n "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
     rm -f -- "$tmp"
