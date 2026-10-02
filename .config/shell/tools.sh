@@ -33,7 +33,8 @@ if command -v yazi >/dev/null 2>&1; then
     tmp="$(mktemp -t yazi-cwd.XXXXXX)"
     YAZI_START_DIR="$PWD" command yazi "$@" --cwd-file="$tmp"
     IFS= read -r -d '' cwd < "$tmp"
-    [[ -n "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
+    # SFTP (sftp://...) で終了した場合などローカルに無い場所へは移動しない
+    [[ -d "$cwd" && "$cwd" != "$PWD" ]] && builtin cd -- "$cwd"
     rm -f -- "$tmp"
   }
 fi
