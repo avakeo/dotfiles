@@ -15,6 +15,9 @@ prepend_keymap = [
   { on = [ "g", "w" ], run = "cd ~/work",     desc = "Go to ~/work" },
   # SFTP 接続先 (vfs.toml に定義。マシン固有なので vfs.toml は git 管理外)
   { on = [ "g", "v" ], run = "cd sftp://viber", desc = "Go to viber (SFTP)" },
+  # nvim (yazi.nvim) から開いているとき、今のディレクトリを nvim の作業ディレクトリにする。
+  # yazi.nvim が nvim-cd メッセージを nvim に転送して :cd する (nvim 外で押しても何も起きない)
+  { on = "C", run = 'shell -- ya pub-to 0 nvim-cd --str "$PWD"', desc = "Set nvim cwd to this directory" },
   # 起動したディレクトリへ戻る (YAZI_START_DIR はシェルの y 関数が設定する)
   { on = [ "g", "s" ], run = 'shell -- ya emit cd "${YAZI_START_DIR:-$HOME}"', desc = "Go to the start directory" },
   # 今いるディレクトリを Marta で開く (ドラッグ & ドロップしたいとき用。macOS のみ)
