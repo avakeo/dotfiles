@@ -13,5 +13,12 @@ use = "yazi-rs/plugins:git"
 rev = "f703392"
 hash = "347cc6b190eb0c2fd60513cc7ae37412"
 
-[flavor]
-deps = []
+[[flavor.deps]]
+use = "hankertrix/bluloco-yazi:bluloco-dark"
+rev = "5c4b7c9"
+hash = "883fc8dff11288d1666dda1ca7d22fde"
+
+[[flavor.deps]]
+use = "hankertrix/bluloco-yazi:bluloco-light"
+rev = "5c4b7c9"
+hash = "644dce0654f66f8389900c138bfdbf28"

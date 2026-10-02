@@ -1,0 +1,5 @@
+# yazi の配色 (flavor) — 端末が dark / light のどちらかで自動で切り替わる
+# flavor 本体は package.toml から `ya pkg install` で復元する (flavors/ は git 管理外)
+[flavor]
+dark  = "bluloco-dark"
+light = "bluloco-light"
