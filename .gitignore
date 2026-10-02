@@ -14,3 +14,5 @@ Thumbs.db
 # yazi: プラグイン/フレーバー本体は package.toml から `ya pkg install` で復元する
 .config/yazi/plugins/
 .config/yazi/flavors/
+# yazi の SFTP 接続先はマシン固有 (IP・ユーザー・鍵のパス)
+.config/yazi/vfs.toml
