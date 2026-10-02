@@ -11,9 +11,10 @@ return {
     -- nvim <dir> で起動したとき netrw の代わりに yazi を開く
     open_for_directories = true,
     keymaps = {
-      -- WezTerm が先に消費する (CTRL+t: 新規タブ / CTRL+\: Leader) ので無効化
+      -- WezTerm が先に消費する (CTRL+t: 新規タブ) ので無効化
       open_file_in_tab = false,
-      change_working_directory = false,
+      -- yazi で表示中のディレクトリを nvim の cwd にする (:cd)。デフォルトの <c-\> は WezTerm の Leader なので隣の <c-]> に
+      change_working_directory = "<c-]>",
     },
   },
   init = function()
