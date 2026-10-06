@@ -2,6 +2,7 @@
 function ll  { Get-ChildItem -Force @args }
 function la  { Get-ChildItem -Force @args }
 function l   { Get-ChildItem @args }
+function .. { Set-Location .. }
 
 # ===== ファイル操作 =====
 function touch {
@@ -15,6 +16,15 @@ function mkdirp { New-Item -ItemType Directory -Path @args -Force | Out-Null }
 
 # rm -rf 相当
 function rmrf { Remove-Item -Recurse -Force @args }
+
+# ディレクトリを作成して移動する
+function mkdirc { param([string]$Path) New-Item -ItemType Directory -Path $Path -Force | Out-Null; Set-Location $Path }
+
+# uv init で Python プロジェクトを作成する (既存プロジェクトがあれば uv がエラーで止める)
+function mkdirpy { param([string]$Path) uv init $Path }
+
+# uv init で Python プロジェクトを作成し、そのディレクトリに移動する
+function mkdircpy { param([string]$Path) uv init $Path; if ($LASTEXITCODE -eq 0) { Set-Location $Path } }
 
 # ===== テキスト処理 =====
 function grep {
@@ -57,19 +67,23 @@ function open { Invoke-Item @args }
 function c    { Clear-Host }
 
 # ===== git エイリアス =====
+function g    { git @args }
 function gs   { git status @args }
 function ga   { git add @args }
 function gaa  { git add -A @args }
 function gc   { git commit @args }
 function gcm  { git commit -m @args }
+function gca  { git commit --amend @args }
 function gacm { git add -A; git commit -m @args }
 function gp   { git push @args }
 function gpl  { git pull @args }
 function gf   { git fetch @args }
+function gfa  { git fetch --all --prune @args }
 function gd   { git diff @args }
 function gds  { git diff --staged @args }
 function gl   { git log --oneline --graph --decorate @args }
 function gco  { git checkout @args }
+function gcb  { git checkout -b @args }
 function gb   { git branch @args }
 function gba  { git branch -a @args }
 function gst  { git stash @args }
@@ -83,6 +97,9 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
   Set-PSReadLineOption -HistorySearchCursorMovesToEnd
   Set-PSReadLineKeyHandler -Key UpArrow   -Function HistorySearchBackward
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+  # mac / Linux のシェルと同じく Ctrl+A で行頭、Ctrl+E で行末へ (Windows 既定の Ctrl+A は全選択)
+  Set-PSReadLineKeyHandler -Key Ctrl+a -Function BeginningOfLine
+  Set-PSReadLineKeyHandler -Key Ctrl+e -Function EndOfLine
 }
 
 # ===== zoxide (smart cd) =====
