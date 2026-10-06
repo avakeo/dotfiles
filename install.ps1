@@ -144,6 +144,12 @@ function Install-Tools {
       Write-Success $pkg
     }
   }
+
+  # yazi のプラグイン / flavor は .gitignore 対象なので package.toml から取得する
+  if (Get-Command ya -ErrorAction SilentlyContinue) {
+    ya pkg install | Out-Null
+    Write-Success "yazi plugins synced"
+  }
 }
 
 function Post-Install {
