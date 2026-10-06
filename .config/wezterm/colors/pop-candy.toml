@@ -1,0 +1,19 @@
+[colors]
+foreground = "#E8E8E8"
+background = "#1A1B2F"
+cursor_bg = "#4D96FF"
+cursor_fg = "#FFFFFF"
+cursor_border = "#4D96FF"
+selection_bg = "#3D3E5C"
+selection_fg = "#E8E8E8"
+ansi = [
+  "#1A1B2F", "#FF6B6B", "#6BCB77", "#FFD93D",
+  "#4D96FF", "#C084FC", "#06D6A0", "#E8E8E8",
+]
+brights = [
+  "#3D3E5C", "#FF8C42", "#6BCB77", "#FFD93D",
+  "#4D96FF", "#C084FC", "#06D6A0", "#FFFFFF",
+]
+
+[metadata]
+name = "Pop Candy"

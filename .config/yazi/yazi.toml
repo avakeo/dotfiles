@@ -1,11 +1,26 @@
 # yazi 設定 — デフォルトとの差分だけを書く (未指定の項目は組み込み値が使われる)
 # 組み込み値: https://github.com/sxyazi/yazi/tree/main/yazi-config/preset
 
+[mgr]
+ratio          = [ 1, 3, 4 ]
+sort_by        = "natural"
+sort_dir_first = true
+linemode       = "size"
+show_hidden    = true
+
+[preview]
+tab_size   = 2
+max_width  = 1000
+max_height = 1000
+
 [opener]
 # デフォルトは ${EDITOR:-vi}。EDITOR をグローバルに設定すると git 等にも波及するので
 # yazi 側で nvim を直接指定する
 edit = [
   { run = "nvim %s", block = true, desc = "nvim", for = "unix" },
+  # Windows の既定は VS Code なので nvim に寄せる
+  { run = "nvim %s", block = true, desc = "nvim", for = "windows" },
+  { run = "code %s", orphan = true, desc = "code", for = "windows" },
 ]
 # ディレクトリを GUI ファイルマネージャ Marta で開く (macOS のみ。他 OS では候補に出ない)
 marta = [

@@ -100,6 +100,28 @@ if (Get-Command fzf -ErrorAction SilentlyContinue) {
   }
 }
 
+# ===== yazi =====
+if (Get-Command yazi -ErrorAction SilentlyContinue) {
+  # Windows には file コマンドがないので Git for Windows 同梱のものを使う
+  # (git.exe は <Git>\cmd\git.exe にあるので 2 階層上が Git のルート)
+  if (-not $env:YAZI_FILE_ONE -and (Get-Command git -ErrorAction SilentlyContinue)) {
+    $gitRoot = Split-Path (Split-Path (Get-Command git).Source -Parent) -Parent
+    $gitFile = Join-Path $gitRoot "usr\bin\file.exe"
+    if (Test-Path $gitFile) { $env:YAZI_FILE_ONE = $gitFile }
+  }
+
+  # 終了時に yazi で開いていたディレクトリへ移動する
+  function y {
+    $tmp = (New-TemporaryFile).FullName
+    yazi @args --cwd-file="$tmp"
+    $cwd = Get-Content -Path $tmp -Encoding UTF8
+    if (-not [string]::IsNullOrEmpty($cwd) -and $cwd -ne $PWD.Path) {
+      Set-Location -LiteralPath (Resolve-Path -LiteralPath $cwd).Path
+    }
+    Remove-Item -Path $tmp
+  }
+}
+
 # ===== starship =====
 if (Get-Command starship -ErrorAction SilentlyContinue) {
   Invoke-Expression (&starship init powershell)
