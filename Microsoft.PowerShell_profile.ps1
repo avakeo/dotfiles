@@ -20,11 +20,11 @@ function rmrf { Remove-Item -Recurse -Force @args }
 # ディレクトリを作成して移動する
 function mkdirc { param([string]$Path) New-Item -ItemType Directory -Path $Path -Force | Out-Null; Set-Location $Path }
 
-# ディレクトリを作成して main.py を作成する
-function mkdirpy { param([string]$Path) New-Item -ItemType Directory -Path $Path -Force | Out-Null; New-Item -ItemType File -Path (Join-Path $Path "main.py") -Force | Out-Null }
+# uv init で Python プロジェクトを作成する (既存プロジェクトがあれば uv がエラーで止める)
+function mkdirpy { param([string]$Path) uv init $Path }
 
-# ディレクトリを作成して main.py を作成し、そのディレクトリに移動する
-function mkdircpy { param([string]$Path) New-Item -ItemType Directory -Path $Path -Force | Out-Null; New-Item -ItemType File -Path (Join-Path $Path "main.py") -Force | Out-Null; Set-Location $Path }
+# uv init で Python プロジェクトを作成し、そのディレクトリに移動する
+function mkdircpy { param([string]$Path) uv init $Path; if ($LASTEXITCODE -eq 0) { Set-Location $Path } }
 
 # ===== テキスト処理 =====
 function grep {
