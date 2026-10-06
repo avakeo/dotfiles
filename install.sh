@@ -151,6 +151,33 @@ install_tools() {
   fi
 }
 
+setup_claude() {
+  echo ""
+  echo "Claude Code:"
+  mkdir -p "$HOME/.claude"
+  backup_and_link "$DOTDIR/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+
+  if ! command -v claude &>/dev/null; then
+    warn "claude not found, skip plugins"
+    return
+  fi
+
+  # <GitHub リポジトリ>:<plugin>@<marketplace>
+  local plugins=(ayghri/i-have-adhd:i-have-adhd@i-have-adhd nanaism/yomiyasu:yomiyasu@yomiyasu)
+  local entry repo plugin
+  for entry in "${plugins[@]}"; do
+    repo="${entry%%:*}"
+    plugin="${entry#*:}"
+    claude plugin marketplace list 2>/dev/null | grep -q "($repo)" \
+      || claude plugin marketplace add "$repo" >/dev/null
+    claude plugin install "$plugin" >/dev/null && success "$plugin"
+  done
+
+  # i-have-adhd を毎セッション有効にする (SessionStart フックがこのファイルを見る)
+  touch "$HOME/.claude/.i-have-adhd-always"
+  success "i-have-adhd always-on"
+}
+
 post_install() {
   echo ""
   echo "Git config:"
@@ -180,6 +207,7 @@ link_home
 link_config "$OS"
 install_vim_plug
 install_tools
+setup_claude
 post_install
 
 echo ""

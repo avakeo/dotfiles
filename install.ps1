@@ -152,6 +152,38 @@ function Install-Tools {
   }
 }
 
+function Setup-Claude {
+  Write-Host ""
+  Write-Host "Claude Code:"
+
+  $claudeDir = Join-Path $HOME ".claude"
+  New-Item -ItemType Directory -Path $claudeDir -Force | Out-Null
+  New-Symlink (Join-Path $DotDir "claude\CLAUDE.md") (Join-Path $claudeDir "CLAUDE.md")
+
+  if (-not (Get-Command claude -ErrorAction SilentlyContinue)) {
+    Write-Warn "claude not found, skip plugins"
+    return
+  }
+
+  # GitHub リポジトリ = <plugin>@<marketplace>
+  $plugins = [ordered]@{
+    "ayghri/i-have-adhd" = "i-have-adhd@i-have-adhd"
+    "nanaism/yomiyasu"   = "yomiyasu@yomiyasu"
+  }
+  $marketplaces = claude plugin marketplace list 2>$null | Out-String
+  foreach ($repo in $plugins.Keys) {
+    if (-not $marketplaces.Contains("($repo)")) {
+      claude plugin marketplace add $repo | Out-Null
+    }
+    claude plugin install $plugins[$repo] | Out-Null
+    Write-Success $plugins[$repo]
+  }
+
+  # i-have-adhd を毎セッション有効にする (SessionStart フックがこのファイルを見る)
+  New-Item -ItemType File -Path (Join-Path $claudeDir ".i-have-adhd-always") -Force | Out-Null
+  Write-Success "i-have-adhd always-on"
+}
+
 function Post-Install {
   Write-Host ""
   Write-Host "Git config:"
@@ -183,6 +215,7 @@ Link-Home
 Link-Config
 Install-VimPlug
 Install-Tools
+Setup-Claude
 Post-Install
 
 Write-Host ""
