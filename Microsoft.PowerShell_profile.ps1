@@ -97,6 +97,9 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
   Set-PSReadLineOption -HistorySearchCursorMovesToEnd
   Set-PSReadLineKeyHandler -Key UpArrow   -Function HistorySearchBackward
   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+  # mac / Linux のシェルと同じく Ctrl+A で行頭、Ctrl+E で行末へ (Windows 既定の Ctrl+A は全選択)
+  Set-PSReadLineKeyHandler -Key Ctrl+a -Function BeginningOfLine
+  Set-PSReadLineKeyHandler -Key Ctrl+e -Function EndOfLine
 }
 
 # ===== zoxide (smart cd) =====
