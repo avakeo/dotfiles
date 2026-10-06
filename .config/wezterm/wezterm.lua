@@ -17,8 +17,9 @@ if wezterm.target_triple:find("windows") then
 	config.window_decorations = "RESIZE"
 	config.win32_system_backdrop = "Acrylic"
 	-- ConPTY が vim 等のデフォルト背景を明示的な黒に書き換えて透過を殺すため、
-	-- 明示的な背景色のセルにも同じ透明度をかける
-	config.text_background_opacity = 0.75
+	-- 明示的な背景色のセルにも透明度をかける
+	-- (window 側と二重にかかって暗くなるため、差を縮めるよう少し高めに)
+	config.text_background_opacity = 0.85
 elseif wezterm.target_triple:find("darwin") then
 	config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
 else
