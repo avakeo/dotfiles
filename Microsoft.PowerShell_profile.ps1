@@ -102,6 +102,34 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
   Set-PSReadLineKeyHandler -Key Ctrl+e -Function EndOfLine
 }
 
+# ===== PSReadLine: 配色 =====
+# 既定の DarkGray (ESC[90m) は Pop Candy では背景とほぼ同色で、
+# -Force / --flag などが見えなくなるため 24bit 色で明示指定する
+if (Get-Module -ListAvailable -Name PSReadLine) {
+  $esc = [char]27
+  function rgb([string]$hex) {
+    $r = [Convert]::ToInt32($hex.Substring(1, 2), 16)
+    $g = [Convert]::ToInt32($hex.Substring(3, 2), 16)
+    $b = [Convert]::ToInt32($hex.Substring(5, 2), 16)
+    "$esc[38;2;${r};${g};${b}m"
+  }
+  Set-PSReadLineOption -Colors @{
+    Default          = rgb '#E8E8E8'
+    Command          = rgb '#4D96FF'
+    Parameter        = rgb '#06D6A0'
+    Operator         = rgb '#FF8C42'
+    Variable         = rgb '#C084FC'
+    String           = rgb '#FFD93D'
+    Number           = rgb '#FF8C42'
+    Keyword          = rgb '#FF6B6B'
+    Type             = rgb '#6BCB77'
+    Member           = rgb '#E8E8E8'
+    Comment          = rgb '#9A9EC0'
+    InlinePrediction = rgb '#8A8EB0'
+  }
+  Remove-Item Function:\rgb
+}
+
 # ===== zoxide (smart cd) =====
 if (Get-Command zoxide -ErrorAction SilentlyContinue) {
   Invoke-Expression (& { (zoxide init powershell | Out-String) })
