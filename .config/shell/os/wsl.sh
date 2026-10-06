@@ -2,7 +2,5 @@
 
 . "$DOTFILES_SHELL_DIR/os/linux.sh"
 
-STARSHIP_PALETTE=wsl
-
 alias clip='clip.exe'
 alias explore='explorer.exe .'

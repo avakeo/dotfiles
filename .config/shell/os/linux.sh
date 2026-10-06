@@ -1,5 +1,7 @@
 # Linux (Ubuntu / Kali など) 固有 — init.sh から読み込まれる (WSL でも wsl.sh の先頭で読み込む)
 
+STARSHIP_PALETTE=wsl  # WSL / Ubuntu 共通の寒色パレット
+
 alias ls='ls --color=auto'  # GNU ls (eza があれば common.sh で上書き)
 alias clip='xsel --clipboard --input'
 alias explore='xdg-open .'
