@@ -169,5 +169,12 @@ if (Get-Command yazi -ErrorAction SilentlyContinue) {
 
 # ===== starship =====
 if (Get-Command starship -ErrorAction SilentlyContinue) {
+  # プロンプト表示のたびに今のディレクトリを WezTerm へ通知する (OSC 7)。タブ名の更新に使う
+  # (pwsh は cd してもプロセスのカレントディレクトリが変わらないため、明示的に送る必要がある)
+  function Invoke-Starship-PreCommand {
+    if ($PWD.Provider.Name -eq 'FileSystem') {
+      $host.UI.Write("`e]7;$([System.Uri]::new($PWD.ProviderPath).AbsoluteUri)`a")
+    }
+  }
   Invoke-Expression (&starship init powershell)
 }
