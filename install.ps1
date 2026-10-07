@@ -167,8 +167,9 @@ function Setup-Claude {
 
   # GitHub リポジトリ = <plugin>@<marketplace>
   $plugins = [ordered]@{
-    "ayghri/i-have-adhd" = "i-have-adhd@i-have-adhd"
-    "nanaism/yomiyasu"   = "yomiyasu@yomiyasu"
+    "ayghri/i-have-adhd"        = "i-have-adhd@i-have-adhd"
+    "nanaism/yomiyasu"          = "yomiyasu@yomiyasu"
+    "nwiizo/rust-learning-lab"  = "rust-learning-lab@rust-learning-lab"
   }
   $marketplaces = claude plugin marketplace list 2>$null | Out-String
   foreach ($repo in $plugins.Keys) {

@@ -163,7 +163,7 @@ setup_claude() {
   fi
 
   # <GitHub リポジトリ>:<plugin>@<marketplace>
-  local plugins=(ayghri/i-have-adhd:i-have-adhd@i-have-adhd nanaism/yomiyasu:yomiyasu@yomiyasu)
+  local plugins=(ayghri/i-have-adhd:i-have-adhd@i-have-adhd nanaism/yomiyasu:yomiyasu@yomiyasu nwiizo/rust-learning-lab:rust-learning-lab@rust-learning-lab)
   local entry repo plugin
   for entry in "${plugins[@]}"; do
     repo="${entry%%:*}"
