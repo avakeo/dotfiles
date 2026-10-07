@@ -469,24 +469,113 @@ local ACTIVE_FG   = "#21232C"
 local INACTIVE_BG = "#2C313A"   -- 非アクティブタブ背景
 local INACTIVE_FG = "#8F9AAE"
 
-wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
+-- タブ名は starship の表示 (truncate_to_repo) から、~ やドライブ名を除いた先頭の階層にする
+-- 例: ~/dotfiles/.config → dotfiles (リポジトリ名) / C:\Windows\System32 → Windows
+local IS_WINDOWS = wezterm.target_triple:find("windows") ~= nil
+
+-- 区切りを "/" に揃え、"/C:/Users" のような URI 由来の形も "C:/Users" にする
+local function normalize_path(p)
+	p = p:gsub("\\", "/"):gsub("^/(%a:)", "%1")
+	if p:match("^%a:/?$") then
+		return p:sub(1, 2) .. "/"
+	end
+	if #p > 1 then
+		p = p:gsub("/$", "")
+	end
+	return p
+end
+
+-- path が prefix 配下なら残り（"" か "/..."）を返す。Windows は大文字小文字を区別しない
+local function strip_prefix(path, prefix)
+	if prefix == "" then
+		return nil
+	end
+	local head = path:sub(1, #prefix)
+	local same
+	if IS_WINDOWS then
+		same = head:lower() == prefix:lower()
+	else
+		same = head == prefix
+	end
+	local rest = path:sub(#prefix + 1)
+	if same and (rest == "" or rest:sub(1, 1) == "/") then
+		return rest
+	end
+	return nil
+end
+
+-- .git を親方向に探してリポジトリのルートを返す（タブ描画のたびに走るのでキャッシュ）
+local repo_root_cache = {}
+local function find_repo_root(path)
+	local cached = repo_root_cache[path]
+	if cached ~= nil then
+		return cached or nil
+	end
+	local root = false
+	local dir = path
+	while true do
+		local ok, found = pcall(wezterm.glob, ".git", dir)
+		if ok and #found > 0 then
+			root = dir
+			break
+		end
+		local parent = dir:match("^(.*)/[^/]+$")
+		if not parent then
+			break
+		end
+		if parent == "" then
+			parent = "/"
+		elseif parent:match("^%a:$") then
+			parent = parent .. "/"
+		end
+		dir = parent
+	end
+	repo_root_cache[path] = root
+	return root or nil
+end
+
+local function tab_dir_name(path, check_repo)
+	path = normalize_path(path)
+	local home = normalize_path(os.getenv("USERPROFILE") or os.getenv("HOME") or "")
+
+	-- リポジトリ内ならリポジトリ名
+	local repo = check_repo and find_repo_root(path) or nil
+	if repo and repo:lower() ~= home:lower() then
+		return repo:match("([^/]+)$") or repo
+	end
+
+	-- それ以外は ~ やドライブ名 (C:) を除いた先頭の階層
+	local rest = strip_prefix(path, home)
+	if rest == "" then
+		return "~"
+	end
+	local first = (rest or path):gsub("^%a:", ""):match("^/*([^/]+)")
+	if first then
+		return first
+	end
+	-- ルート直下 (C:\ や /) はそのまま出す
+	return IS_WINDOWS and (path:gsub("/", "\\")) or path
+end
+
+wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
 	local cwd_uri = tab.active_pane.current_working_dir
 	local short
 
 	if cwd_uri then
 		local path = cwd_uri.file_path or cwd_uri.path or tostring(cwd_uri)
-		local home = os.getenv("HOME") or os.getenv("USERPROFILE") or ""
-		path = path:gsub("^" .. home:gsub("([\\^$()%.%[%]*+?|])", "%%%1"), "~")
-		path = path:gsub("[/\\]$", "")
-		short = path:match("[/\\]([^/\\]+)$") or path
+		-- リモート (ssh 先など) のパスはローカルに .git を探しに行かない
+		local host = cwd_uri.host or ""
+		-- Mac は $HOST が "xxx.local" になることがあるので、最初の "." より前だけで比べる
+		local function short_host(h) return (h:lower():match("^[^.]*")) end
+		local is_local = host == "" or host == "localhost" or short_host(host) == short_host(wezterm.hostname())
+		short = tab_dir_name(path, is_local)
 	else
 		short = tab.active_pane.title:match("[/\\]([^/\\]+)%s*$")
 			or tab.active_pane.title
 	end
 
-	if #short > 16 then
-		short = "…" .. short:sub(-15)
-	end
+	-- 両端のキャップ + 末尾スペース分を差し引いて、はみ出すなら先頭側を削る
+	short = wezterm.truncate_left(short, max_width - 3)
 
 	local tab_bg = tab.is_active and ACTIVE_BG or INACTIVE_BG
 	local tab_fg = tab.is_active and ACTIVE_FG or INACTIVE_FG
