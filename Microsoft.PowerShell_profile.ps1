@@ -4,6 +4,28 @@ function la  { Get-ChildItem -Force @args }
 function l   { Get-ChildItem @args }
 function .. { Set-Location .. }
 
+# ls の色を .dircolors (Mac/Linux の ls と共通、bluloco 配色) から読む
+# $PSStyle.FileInfo は PowerShell 7.2 以降
+$dircolors = Join-Path $PSScriptRoot ".dircolors"
+if ((Test-Path $dircolors) -and $PSStyle -and $PSStyle.PSObject.Properties['FileInfo']) {
+  $esc = [char]27
+  $fileInfo = $PSStyle.FileInfo
+  $fileInfo.Extension.Clear()
+  foreach ($line in Get-Content $dircolors) {
+    $line = ($line -replace '#.*$', '').Trim()
+    if ($line -notmatch '^(\S+)\s+(\S+)$') { continue }
+    $key, $sgr = $Matches[1], "$esc[$($Matches[2])m"
+    switch -Regex ($key) {
+      '^DIR$'  { $fileInfo.Directory = $sgr }
+      '^LINK$' { $fileInfo.SymbolicLink = $sgr }
+      '^EXEC$' { $fileInfo.Executable = $sgr }
+      '^\.'    { $fileInfo.Extension[$key] = $sgr }
+    }
+  }
+  Remove-Variable esc, fileInfo, line, key, sgr -ErrorAction SilentlyContinue
+}
+Remove-Variable dircolors
+
 # ===== ファイル操作 =====
 function touch {
   foreach ($f in $args) {
@@ -103,8 +125,8 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
 }
 
 # ===== PSReadLine: 配色 =====
-# 既定の DarkGray (ESC[90m) は Pop Candy では背景とほぼ同色で、
-# -Force / --flag などが見えなくなるため 24bit 色で明示指定する
+# nvim の bluloco (dark) の構文色にそろえる
+# 既定の DarkGray (ESC[90m) は透過背景だと -Force / --flag などが見えにくいため 24bit 色で明示指定する
 if (Get-Module -ListAvailable -Name PSReadLine) {
   $esc = [char]27
   function rgb([string]$hex) {
@@ -114,18 +136,20 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
     "$esc[38;2;${r};${g};${b}m"
   }
   Set-PSReadLineOption -Colors @{
-    Default          = rgb '#E8E8E8'
-    Command          = rgb '#4D96FF'
-    Parameter        = rgb '#06D6A0'
-    Operator         = rgb '#FF8C42'
-    Variable         = rgb '#C084FC'
-    String           = rgb '#FFD93D'
-    Number           = rgb '#FF8C42'
-    Keyword          = rgb '#FF6B6B'
-    Type             = rgb '#6BCB77'
-    Member           = rgb '#E8E8E8'
-    Comment          = rgb '#9A9EC0'
-    InlinePrediction = rgb '#8A8EB0'
+    Default          = rgb '#ABB2BF'   # fg
+    Command          = rgb '#3FC56B'   # method
+    Parameter        = rgb '#8BCDEF'   # parameter
+    Operator         = rgb '#7A82DA'   # punctuation
+    Variable         = rgb '#9F7EFE'   # constant
+    String           = rgb '#F9C859'   # string
+    Number           = rgb '#FF78F8'   # number
+    Keyword          = rgb '#10B1FE'   # keyword
+    Type             = rgb '#FF6480'   # type
+    Member           = rgb '#CE9887'   # property
+    # nvim の comment (#636D83) は透過背景だと沈むので、少し明るい lualine の fg にする
+    Comment          = rgb '#8691A3'
+    InlinePrediction = rgb '#8691A3'
+    Error            = rgb '#FF2E3F'   # error
   }
   Remove-Item Function:\rgb
 }
