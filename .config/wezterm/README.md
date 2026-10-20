@@ -4,7 +4,7 @@
 
 | 設定 | 値 |
 |---|---|
-| カラースキーム | Pop Candy |
+| カラースキーム | BlulocoDark (nvim の bluloco に合わせる) |
 | フォント | Cica (Medium) / 14pt |
 | 背景透明度 | 0.75 |
 | ペイン境界線 | `#FF6B6B` (赤系アクセント) |
