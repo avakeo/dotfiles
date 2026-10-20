@@ -7,7 +7,8 @@ if wezterm.config_builder then
 end
 
 -- ===== 外観 =====
-config.color_scheme = "Pop Candy"
+-- nvim の bluloco と色をそろえる (WezTerm 組み込みの配色。以前の Pop Candy は colors/pop-candy.toml に残している)
+config.color_scheme = "BlulocoDark"
 config.font = wezterm.font("Cica", { weight = "Medium" })
 config.font_size = 14.0
 config.window_background_opacity = 0.75
@@ -30,28 +31,37 @@ config.show_new_tab_button_in_tab_bar = false
 
 -- ===== ペイン境界 / タブバー色 =====
 config.colors = {
-	split = "#00CED1",
+	split = "#10B3FE",
+	-- BlulocoDark の選択色は明るい灰色で文字が読みにくいので、nvim の Visual と同じ色にする
+	selection_bg = "#284671",
+	selection_fg = "#ABB2BF",
+	-- カーソルは通常時も IME 変換中も BlulocoDark の黄色にそろえる
+	-- (compose_cursor を決めておくと、opencode などがカーソル色を白に変えても変換文字が見える)
+	cursor_bg = "#FFCC00",
+	cursor_border = "#FFCC00",
+	cursor_fg = "#282C34",
+	compose_cursor = "#FFCC00",
 	tab_bar = {
-		background = "#0D3B47",       -- 空白部分（タブのない領域）
+		background = "#21232C",       -- 空白部分（タブのない領域）
 		active_tab = {
-			bg_color = "#00B4D8",     -- アクティブタブ: 明るい水色で目立たせる
-			fg_color = "#FFFFFF",
+			bg_color = "#10B3FE",     -- アクティブタブ: 明るい水色で目立たせる
+			fg_color = "#21232C",     -- 水色の上で白は読みにくいので暗い色にする
 			intensity = "Bold",
 		},
 		inactive_tab = {
-			bg_color = "#164E63",     -- 非アクティブタブ
-			fg_color = "#8ECAE6",
+			bg_color = "#2C313A",     -- 非アクティブタブ
+			fg_color = "#8F9AAE",
 		},
 		inactive_tab_hover = {
-			bg_color = "#0077A8",
+			bg_color = "#3C495D",
 			fg_color = "#FFFFFF",
 		},
 		new_tab = {
-			bg_color = "#0D3B47",
-			fg_color = "#8ECAE6",
+			bg_color = "#21232C",
+			fg_color = "#8F9AAE",
 		},
 		new_tab_hover = {
-			bg_color = "#0077A8",
+			bg_color = "#3C495D",
 			fg_color = "#FFFFFF",
 		},
 	},
@@ -397,17 +407,17 @@ local leader_hints = {
 }
 
 local function separator(elements)
-	table.insert(elements, { Background = { Color = "#0D3B47" } })
-	table.insert(elements, { Foreground = { Color = "#00B4D8" } })
+	table.insert(elements, { Background = { Color = "#21232C" } })
+	table.insert(elements, { Foreground = { Color = "#10B3FE" } })
 	table.insert(elements, { Text = " ┃ " })
-	table.insert(elements, { Background = { Color = "#0D3B47" } })
+	table.insert(elements, { Background = { Color = "#21232C" } })
 end
 
 -- ===== 左ステータス (INTEGRATED_BUTTONS の右隣) =====
 wezterm.on("update-left-status", function(window, _)
 	window:set_left_status(wezterm.format({
-		{ Background = { Color = "#0D3B47" } },
-		{ Foreground = { Color = "#8ECAE6" } },
+		{ Background = { Color = "#21232C" } },
+		{ Foreground = { Color = "#8F9AAE" } },
 		{ Text = "  " .. wezterm.hostname() .. "  " },
 	}))
 end)
@@ -424,7 +434,7 @@ wezterm.on("update-right-status", function(window, _)
 			table.insert(elements, e)
 		end
 		table.insert(elements, { Text = " " })
-		table.insert(elements, { Background = { Color = "#FF6B6B" } })
+		table.insert(elements, { Background = { Color = "#FF2E3F" } })
 		table.insert(elements, { Foreground = { Color = "#FFFFFF" } })
 		table.insert(elements, { Attribute = { Intensity = "Bold" } })
 		table.insert(elements, { Text = " " .. info.label .. " " })
@@ -438,7 +448,7 @@ wezterm.on("update-right-status", function(window, _)
 			table.insert(elements, e)
 		end
 		table.insert(elements, { Text = " " })
-		table.insert(elements, { Background = { Color = "#FFD93D" } })
+		table.insert(elements, { Background = { Color = "#F9C958" } })
 		table.insert(elements, { Foreground = { Color = "#333333" } })
 		table.insert(elements, { Attribute = { Intensity = "Bold" } })
 		table.insert(elements, { Text = " LEADER " })
@@ -453,11 +463,11 @@ end)
 
 -- ===== タブタイトル (台形・Chrome 風) =====
 -- Nerd Font の斜めキャップ文字でタブを台形に見せる
-local TAB_BG      = "#0D3B47"   -- バー背景（タブ外側）
-local ACTIVE_BG   = "#00B4D8"   -- アクティブタブ背景
-local ACTIVE_FG   = "#FFFFFF"
-local INACTIVE_BG = "#164E63"   -- 非アクティブタブ背景
-local INACTIVE_FG = "#8ECAE6"
+local TAB_BG      = "#21232C"   -- バー背景（タブ外側）
+local ACTIVE_BG   = "#10B3FE"   -- アクティブタブ背景
+local ACTIVE_FG   = "#21232C"
+local INACTIVE_BG = "#2C313A"   -- 非アクティブタブ背景
+local INACTIVE_FG = "#8F9AAE"
 
 wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 	local cwd_uri = tab.active_pane.current_working_dir
