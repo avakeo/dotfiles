@@ -116,15 +116,20 @@ local close_pane_or_tab = wezterm.action_callback(function(window, pane)
 	end
 end)
 
--- ===== 新規タブを開いたら英数入力に切り替える =====
+-- ===== 新規タブ・ペイン分割の後に英数入力に切り替える =====
 -- macOS では install.sh がビルドした ~/.local/bin/to-abc を呼ぶ
 local to_abc = (os.getenv("HOME") or "") .. "/.local/bin/to-abc"
-local spawn_tab = wezterm.action_callback(function(window, pane)
-	window:perform_action(act.SpawnTab("CurrentPaneDomain"), pane)
-	if wezterm.target_triple:find("darwin") and file_exists(to_abc) then
-		wezterm.background_child_process({ to_abc })
-	end
-end)
+local function then_abc(action)
+	return wezterm.action_callback(function(window, pane)
+		window:perform_action(action, pane)
+		if wezterm.target_triple:find("darwin") and file_exists(to_abc) then
+			wezterm.background_child_process({ to_abc })
+		end
+	end)
+end
+local spawn_tab = then_abc(act.SpawnTab("CurrentPaneDomain"))
+local split_h = then_abc(act.SplitHorizontal { domain = "CurrentPaneDomain" })
+local split_v = then_abc(act.SplitVertical { domain = "CurrentPaneDomain" })
 
 -- ===== Leader キー =====
 -- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
@@ -133,8 +138,8 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 -- ===== キーバインド =====
 --
 --  Leader (CTRL+\) + ...
---    v / % → 左右に分割
---    s / " → 上下に分割
+--    v / % → 左右に分割 (英数入力に切り替える)
+--    s / " → 上下に分割 (英数入力に切り替える)
 --    z  → ペインをズーム/解除
 --    x  → ペインを閉じる
 --    h/j/k/l → ペイン移動
@@ -162,19 +167,19 @@ config.keys = {
 	-- ===== ペイン分割 (Leader + v/s または tmux 風の %/") =====
 	{
 		key = "v", mods = "LEADER",
-		action = act.SplitHorizontal { domain = "CurrentPaneDomain" },
+		action = split_h,
 	},
 	{
 		key = "%", mods = "LEADER|SHIFT",
-		action = act.SplitHorizontal { domain = "CurrentPaneDomain" },
+		action = split_h,
 	},
 	{
 		key = "s", mods = "LEADER",
-		action = act.SplitVertical { domain = "CurrentPaneDomain" },
+		action = split_v,
 	},
 	{
 		key = '"', mods = "LEADER|SHIFT",
-		action = act.SplitVertical { domain = "CurrentPaneDomain" },
+		action = split_v,
 	},
 
 	-- ===== ペイン操作 (Leader) =====
