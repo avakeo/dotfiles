@@ -28,7 +28,10 @@ function Assert-SymlinkPrivilege {
     [Security.Principal.WindowsBuiltInRole]::Administrator
   )
 
-  if (-not $isAdmin -and ($devMode.AllowDevelopmentWithoutDevLicense -ne 1)) {
+  # 値がないと $devMode は $null になる (StrictMode でプロパティを直接読むと落ちる)
+  $devModeOn = $devMode -and ($devMode.PSObject.Properties.Name -contains "AllowDevelopmentWithoutDevLicense") `
+    -and ($devMode.AllowDevelopmentWithoutDevLicense -eq 1)
+  if (-not $isAdmin -and -not $devModeOn) {
     Write-Warn "Symlinks require either:"
     Write-Warn "  - Run as Administrator, OR"
     Write-Warn "  - Enable Developer Mode (Settings > Privacy & Security > For developers)"
