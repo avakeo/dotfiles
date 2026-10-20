@@ -174,6 +174,8 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    s / " → 上下に分割 (英数入力に切り替える)
 --    z  → ペインをズーム/解除
 --    x  → ペインを閉じる
+--    < / > → タブを左 / 右に動かす
+--    !  → 今のペインを新しいウィンドウに切り離す
 --    h/j/k/l → ペイン移動 (英数入力に切り替える)
 --    r  → リサイズモード (hjkl連打でリサイズ、Escで抜ける)
 --    o  → 透明度モード   (k/l=上げる j/h=下げる、Escで抜ける)
@@ -223,6 +225,22 @@ config.keys = {
 	{
 		key = "x", mods = "LEADER",
 		action = act.CloseCurrentPane { confirm = true },
+	},
+
+	-- ===== タブの並び替え・切り離し (Leader + < / > / !) =====
+	{
+		key = "<", mods = "LEADER|SHIFT",
+		action = act.MoveTabRelative(-1),
+	},
+	{
+		key = ">", mods = "LEADER|SHIFT",
+		action = act.MoveTabRelative(1),
+	},
+	{
+		key = "!", mods = "LEADER|SHIFT",
+		action = wezterm.action_callback(function(_, pane)
+			pane:move_to_new_window()
+		end),
 	},
 
 	-- ===== リサイズモード (Leader + r → hjkl連打) =====
