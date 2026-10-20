@@ -35,8 +35,12 @@ config.colors = {
 	-- BlulocoDark の選択色は明るい灰色で文字が読みにくいので、nvim の Visual と同じ色にする
 	selection_bg = "#284671",
 	selection_fg = "#ABB2BF",
-	-- IME 変換中のカーソル色。opencode などがカーソル色を白に変えても変換文字が見えるようにする
-	compose_cursor = "#10B3FE",
+	-- カーソルは通常時も IME 変換中も BlulocoDark の黄色にそろえる
+	-- (compose_cursor を決めておくと、opencode などがカーソル色を白に変えても変換文字が見える)
+	cursor_bg = "#FFCC00",
+	cursor_border = "#FFCC00",
+	cursor_fg = "#282C34",
+	compose_cursor = "#FFCC00",
 	tab_bar = {
 		background = "#21232C",       -- 空白部分（タブのない領域）
 		active_tab = {
