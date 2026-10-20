@@ -116,6 +116,16 @@ local close_pane_or_tab = wezterm.action_callback(function(window, pane)
 	end
 end)
 
+-- ===== 新規タブを開いたら英数入力に切り替える =====
+-- macOS では install.sh がビルドした ~/.local/bin/to-abc を呼ぶ
+local to_abc = (os.getenv("HOME") or "") .. "/.local/bin/to-abc"
+local spawn_tab = wezterm.action_callback(function(window, pane)
+	window:perform_action(act.SpawnTab("CurrentPaneDomain"), pane)
+	if wezterm.target_triple:find("darwin") and file_exists(to_abc) then
+		wezterm.background_child_process({ to_abc })
+	end
+end)
+
 -- ===== Leader キー =====
 -- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
 config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -137,7 +147,7 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --  CTRL + SHIFT + h/j/k/l → ペイン移動 (CTRL+SHIFT+矢印 と同じ。CTRL+SHIFT+L のデバッグオーバーレイは無効化)
 --  CTRL + w / CMD + w → ペインを閉じる (分割あり) / タブを閉じる (分割なし)
 --  CTRL + Tab     → 次のタブ
---  CTRL + t       → 新規タブ
+--  CTRL + t / CMD + t → 新規タブ (英数入力に切り替える)
 --  CTRL + ←/→    → 単語単位で移動
 --  CTRL + BS      → 単語削除
 --
@@ -223,11 +233,15 @@ config.keys = {
 	-- ===== タブ =====
 	{
 		key = "c", mods = "LEADER",
-		action = act.SpawnTab("CurrentPaneDomain"),
+		action = spawn_tab,
 	},
 	{
 		key = "t", mods = "CTRL",
-		action = act.SpawnTab("CurrentPaneDomain"),
+		action = spawn_tab,
+	},
+	{
+		key = "t", mods = "CMD",
+		action = spawn_tab,
 	},
 	{
 		key = "w", mods = "CTRL",

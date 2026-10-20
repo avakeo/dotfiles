@@ -151,6 +151,18 @@ install_tools() {
   fi
 }
 
+build_to_abc() {
+  echo ""
+  echo "to-abc (WezTerm 新規タブで英数入力に切り替える):"
+  if ! command -v swiftc &>/dev/null; then
+    warn "swiftc not found, skip (xcode-select --install で入る)"
+    return
+  fi
+  mkdir -p "$HOME/.local/bin"
+  swiftc -O "$DOTDIR/.config/wezterm/to-abc.swift" -o "$HOME/.local/bin/to-abc" \
+    && success "to-abc built"
+}
+
 setup_claude() {
   echo ""
   echo "Claude Code:"
@@ -207,6 +219,7 @@ link_home
 link_config "$OS"
 install_vim_plug
 install_tools
+[[ "$OS" == "macos" ]] && build_to_abc
 setup_claude
 post_install
 
