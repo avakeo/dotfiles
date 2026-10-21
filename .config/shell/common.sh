@@ -12,9 +12,11 @@ export NVM_DIR="$HOME/.nvm"
 
 export PYENV_ROOT="$HOME/.pyenv"
 [ -d "$PYENV_ROOT/bin" ] && export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv >/dev/null 2>&1; then
-  eval "$(pyenv init - "$DOTFILES_SHELL")"
-fi
+# WSL では Windows 側の pyenv-win (/mnt/c/...) が PATH で見つかるが動かないので使わない
+case "$(command -v pyenv 2>/dev/null)" in
+  ""|/mnt/*) ;;
+  *) eval "$(pyenv init - "$DOTFILES_SHELL")" ;;
+esac
 
 # ===== エイリアス =====
 

@@ -155,6 +155,21 @@ function Install-Tools {
   }
 }
 
+function Build-ImeOff {
+  Write-Host ""
+  Write-Host "ime-off (WezTerm のタブ・ペイン切り替えで半角英数入力にする):"
+  # .NET Framework 4.x の csc.exe は Windows に標準で入っている
+  $csc = Join-Path $env:WINDIR "Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+  if (-not (Test-Path $csc)) {
+    Write-Warn "csc.exe not found, skip"
+    return
+  }
+  $binDir = Join-Path $HOME ".local\bin"
+  New-Item -ItemType Directory -Path $binDir -Force | Out-Null
+  & $csc /nologo /target:winexe "/out:$(Join-Path $binDir 'ime-off.exe')" (Join-Path $DotDir ".config\wezterm\ime-off.cs")
+  if ($LASTEXITCODE -eq 0) { Write-Success "ime-off built" } else { Write-Warn "ime-off build failed" }
+}
+
 function Setup-Claude {
   Write-Host ""
   Write-Host "Claude Code:"
@@ -219,6 +234,7 @@ Link-Home
 Link-Config
 Install-VimPlug
 Install-Tools
+Build-ImeOff
 Setup-Claude
 Post-Install
 

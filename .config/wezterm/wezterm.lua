@@ -103,6 +103,25 @@ else
 	config.default_prog = { "/bin/zsh" }
 end
 
+-- ===== 新規タブ・ペイン分割・タブやペインの移動の後に英数入力に切り替える =====
+-- macOS では install.sh がビルドした ~/.local/bin/to-abc を、
+-- Windows では install.ps1 がビルドした %USERPROFILE%\.local\bin\ime-off.exe を呼ぶ
+local to_abc = (os.getenv("HOME") or "") .. "/.local/bin/to-abc"
+local ime_off = (os.getenv("USERPROFILE") or "") .. "\\.local\\bin\\ime-off.exe"
+local function switch_to_abc()
+	if wezterm.target_triple:find("darwin") and file_exists(to_abc) then
+		wezterm.background_child_process({ to_abc })
+	elseif wezterm.target_triple:find("windows") and file_exists(ime_off) then
+		wezterm.background_child_process({ ime_off })
+	end
+end
+local function then_abc(action)
+	return wezterm.action_callback(function(window, pane)
+		window:perform_action(action, pane)
+		switch_to_abc()
+	end)
+end
+
 -- ===== スマートナビゲーション (vim/nvim ↔ WezTerm ペイン) =====
 -- vim/nvim が動いているときは CTRL+hjkl をそのまま渡し、
 -- それ以外のときは WezTerm のペイン移動として扱う
@@ -124,6 +143,7 @@ local function smart_move(direction)
 			window:perform_action(act.SendKey({ key = keys[direction], mods = "CTRL" }), pane)
 		else
 			window:perform_action(act.ActivatePaneDirection(direction), pane)
+			switch_to_abc()
 		end
 	end)
 end
@@ -138,17 +158,6 @@ local close_pane_or_tab = wezterm.action_callback(function(window, pane)
 	end
 end)
 
--- ===== 新規タブ・ペイン分割の後に英数入力に切り替える =====
--- macOS では install.sh がビルドした ~/.local/bin/to-abc を呼ぶ
-local to_abc = (os.getenv("HOME") or "") .. "/.local/bin/to-abc"
-local function then_abc(action)
-	return wezterm.action_callback(function(window, pane)
-		window:perform_action(action, pane)
-		if wezterm.target_triple:find("darwin") and file_exists(to_abc) then
-			wezterm.background_child_process({ to_abc })
-		end
-	end)
-end
 local spawn_tab = then_abc(act.SpawnTab("CurrentPaneDomain"))
 local split_h = then_abc(act.SplitHorizontal { domain = "CurrentPaneDomain" })
 local split_v = then_abc(act.SplitVertical { domain = "CurrentPaneDomain" })
@@ -165,17 +174,17 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    s / " → 上下に分割 (英数入力に切り替える)
 --    z  → ペインをズーム/解除
 --    x  → ペインを閉じる
---    h/j/k/l → ペイン移動
+--    h/j/k/l → ペイン移動 (英数入力に切り替える)
 --    r  → リサイズモード (hjkl連打でリサイズ、Escで抜ける)
 --    o  → 透明度モード   (k/l=上げる j/h=下げる、Escで抜ける)
 --    f  → フォントサイズモード (k=大きく j=小さく 0=リセット、Escで抜ける)
 --    [  → コピーモード (vim風: hjkl移動, v選択, y コピー, Escで抜ける)
 --    w  → local ドメインで新規タブ (Windows では PowerShell。既定の Ubuntu ではなく)
 --
---  CTRL + h/j/k/l → ペイン移動 (Leader なしで素早く移動)
+--  CTRL + h/j/k/l → ペイン移動 (Leader なしで素早く移動。英数入力に切り替える)
 --  CTRL + SHIFT + h/j/k/l → ペイン移動 (CTRL+SHIFT+矢印 と同じ。CTRL+SHIFT+L のデバッグオーバーレイは無効化)
 --  CTRL + w / CMD + w → ペインを閉じる (分割あり) / タブを閉じる (分割なし)
---  CTRL + Tab     → 次のタブ
+--  CTRL + Tab     → 次のタブ (英数入力に切り替える)
 --  CTRL + t / CMD + t → 新規タブ (英数入力に切り替える)
 --  CTRL + ←/→    → 単語単位で移動
 --  CTRL + BS      → 単語削除
@@ -241,10 +250,10 @@ config.keys = {
 	},
 
 	-- ===== ペイン移動 (Leader + hjkl) =====
-	{ key = "h", mods = "LEADER", action = act.ActivatePaneDirection("Left")  },
-	{ key = "j", mods = "LEADER", action = act.ActivatePaneDirection("Down")  },
-	{ key = "k", mods = "LEADER", action = act.ActivatePaneDirection("Up")    },
-	{ key = "l", mods = "LEADER", action = act.ActivatePaneDirection("Right") },
+	{ key = "h", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Left"))  },
+	{ key = "j", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Down"))  },
+	{ key = "k", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Up"))    },
+	{ key = "l", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Right")) },
 
 	-- ===== ペイン移動 (CTRL+hjkl: vim/nvim 内はウィンドウ移動、それ以外はペイン移動) =====
 	{ key = "h", mods = "CTRL", action = smart_move("Left")  },
@@ -254,10 +263,10 @@ config.keys = {
 
 	-- ===== ペイン移動 (CTRL+SHIFT+hjkl: 矢印キー版と同じ) =====
 	-- CTRL+SHIFT+L はデフォルトでデバッグオーバーレイが開くが、この割り当てで上書き無効化される
-	{ key = "h", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Left")  },
-	{ key = "j", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Down")  },
-	{ key = "k", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Up")    },
-	{ key = "l", mods = "CTRL|SHIFT", action = act.ActivatePaneDirection("Right") },
+	{ key = "h", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Left"))  },
+	{ key = "j", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Down"))  },
+	{ key = "k", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Up"))    },
+	{ key = "l", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Right")) },
 
 	-- ===== タブ =====
 	{
@@ -286,11 +295,11 @@ config.keys = {
 	},
 	{
 		key = "Tab", mods = "CTRL",
-		action = act.ActivateTabRelative(1),
+		action = then_abc(act.ActivateTabRelative(1)),
 	},
 	{
 		key = "Tab", mods = "CTRL|SHIFT",
-		action = act.ActivateTabRelative(-1),
+		action = then_abc(act.ActivateTabRelative(-1)),
 	},
 
 	-- ===== 単語単位の移動・削除 =====
