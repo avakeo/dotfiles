@@ -162,7 +162,7 @@ install_tools() {
     elif command -v brew &>/dev/null; then
       brew install fastfetch
     fi
-    command -v fastfetch &>/dev/null && success "fastfetch installed"
+    if command -v fastfetch &>/dev/null; then success "fastfetch installed"; fi
   else
     info "fastfetch already installed"
   fi
