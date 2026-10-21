@@ -16,6 +16,8 @@ prepend_keymap = [
   { on = [ "g", "w" ], run = "cd ~/work",     desc = "Go to ~/work" },
   # SFTP 接続先 (vfs.toml に定義。マシン固有なので vfs.toml は git 管理外)
   { on = [ "g", "v" ], run = "cd sftp://viber", desc = "Go to viber (SFTP)" },
+  # WSL ⇄ Windows のホームを行き来する (WSL なら /mnt/c/Users/<名前>、Windows なら \\wsl.localhost\...)
+  { on = [ "g", "W" ], run = "plugin wsl-hop", desc = "Go to the other side's home (WSL <-> Windows)" },
   # nvim (yazi.nvim) から開いているとき、今のディレクトリを nvim の作業ディレクトリにする。
   # yazi.nvim が nvim-cd メッセージを nvim に転送して :cd する (nvim 外で押しても何も起きない)
   { on = "C", run = 'shell -- ya pub-to 0 nvim-cd --str "$PWD"', desc = "Set nvim cwd to this directory" },
