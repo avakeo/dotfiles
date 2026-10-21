@@ -128,8 +128,25 @@ install_tools() {
   if ! command -v yazi &>/dev/null; then
     if command -v brew &>/dev/null; then
       brew install yazi ffmpeg sevenzip jq poppler fd ripgrep resvg imagemagick glow
+    elif command -v apt &>/dev/null; then
+      # yazi / glow / resvg は apt に無いので GitHub のリリースバイナリを ~/.local/bin に入れる
+      sudo apt install -y ffmpeg 7zip jq poppler-utils fd-find ripgrep imagemagick unzip \
+        || warn "yazi deps: apt install に失敗したので手動で入れる"
+      mkdir -p "$HOME/.local/bin"
+      command -v fdfind &>/dev/null && ln -snf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+      local tmp; tmp="$(mktemp -d)"
+      curl -fsSL -o "$tmp/yazi.zip" https://github.com/sxyazi/yazi/releases/latest/download/yazi-x86_64-unknown-linux-gnu.zip \
+        && unzip -q "$tmp/yazi.zip" -d "$tmp" \
+        && install -m755 "$tmp"/yazi-x86_64-unknown-linux-gnu/{yazi,ya} "$HOME/.local/bin/"
+      curl -fsSL https://github.com/linebender/resvg/releases/latest/download/resvg-linux-x86_64.tar.gz \
+        | tar xz -C "$HOME/.local/bin" resvg
+      local glow_ver; glow_ver="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/charmbracelet/glow/releases/latest)"
+      glow_ver="${glow_ver##*/v}"
+      curl -fsSL "https://github.com/charmbracelet/glow/releases/download/v${glow_ver}/glow_${glow_ver}_Linux_x86_64.tar.gz" \
+        | tar xz -C "$tmp" && install -m755 "$(find "$tmp" -type f -name glow)" "$HOME/.local/bin/"
+      rm -rf "$tmp"
     else
-      warn "yazi: apt には無いので https://yazi-rs.github.io/docs/installation を参照"
+      warn "yazi: https://yazi-rs.github.io/docs/installation を参照"
     fi
     command -v yazi &>/dev/null && success "yazi installed"
   else
