@@ -77,11 +77,23 @@ end
 local target = wezterm.target_triple
 
 if target:find("windows") then
+	-- local ドメイン (PowerShell) のシェル。Leader+w やランチャーから開く
 	config.default_prog = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }
+	local local_domain = { DomainName = "local" }
 	config.launch_menu = {
-		{ label = "PowerShell 7",           args = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" } },
-		{ label = "Windows PowerShell 5.1", args = { "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" } },
+		{ label = "PowerShell 7",           args = { "C:\\Program Files\\PowerShell\\7\\pwsh.exe", "-NoLogo" }, domain = local_domain },
+		{ label = "Windows PowerShell 5.1", args = { "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" }, domain = local_domain },
 	}
+	-- Ubuntu (WSL) があれば、起動・新規タブ・分割を Ubuntu で開く
+	-- (PowerShell の中で wsl と打ったペインは local 扱いなので、分割すると PowerShell になる)
+	local wsl_domains = wezterm.default_wsl_domains()
+	for _, dom in ipairs(wsl_domains) do
+		dom.default_cwd = "~"
+		if dom.name == "WSL:Ubuntu" then
+			config.default_domain = dom.name
+		end
+	end
+	config.wsl_domains = wsl_domains
 elseif target:find("linux") then
 	config.default_prog = file_exists("/usr/bin/zsh")
 		and { "/usr/bin/zsh" }
@@ -140,6 +152,7 @@ end
 local spawn_tab = then_abc(act.SpawnTab("CurrentPaneDomain"))
 local split_h = then_abc(act.SplitHorizontal { domain = "CurrentPaneDomain" })
 local split_v = then_abc(act.SplitVertical { domain = "CurrentPaneDomain" })
+local spawn_local_tab = then_abc(act.SpawnCommandInNewTab { domain = { DomainName = "local" } })
 
 -- ===== Leader キー =====
 -- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
@@ -157,6 +170,7 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    o  → 透明度モード   (k/l=上げる j/h=下げる、Escで抜ける)
 --    f  → フォントサイズモード (k=大きく j=小さく 0=リセット、Escで抜ける)
 --    [  → コピーモード (vim風: hjkl移動, v選択, y コピー, Escで抜ける)
+--    w  → local ドメインで新規タブ (Windows では PowerShell。既定の Ubuntu ではなく)
 --
 --  CTRL + h/j/k/l → ペイン移動 (Leader なしで素早く移動)
 --  CTRL + SHIFT + h/j/k/l → ペイン移動 (CTRL+SHIFT+矢印 と同じ。CTRL+SHIFT+L のデバッグオーバーレイは無効化)
@@ -257,6 +271,10 @@ config.keys = {
 	{
 		key = "t", mods = "CMD",
 		action = spawn_tab,
+	},
+	{
+		key = "w", mods = "LEADER",
+		action = spawn_local_tab,
 	},
 	{
 		key = "w", mods = "CTRL",
@@ -546,6 +564,11 @@ local function tab_dir_name(path, check_repo)
 
 	-- それ以外は ~ やドライブ名 (C:) を除いた先頭の階層
 	local rest = strip_prefix(path, home)
+	-- WSL や ssh 先のホーム (/home/<user>, /root) も ~ として扱う
+	if not rest then
+		local linux_home = path:match("^/home/[^/]+") or path:match("^/root")
+		rest = linux_home and strip_prefix(path, linux_home)
+	end
 	if rest == "" then
 		return "~"
 	end
