@@ -109,7 +109,7 @@ set -ga update-environment TERM_PROGRAM
   ├─ 先頭: .config/shell/init.sh
   │    ├─ OS 判定 → DOTFILES_OS = macos | linux | wsl
   │    ├─ os/<OS>.sh   OS 固有 (brew の PATH、clip、ls の種類など)
-  │    └─ common.sh    全 OS 共通 (エイリアス、関数、PATH、nvm、pyenv)
+  │    └─ common.sh    全 OS 共通 (エイリアス、関数、PATH、nvm)
   ├─ 中盤: シェル固有 (zsh のオプション、補完、キー割り当て、プロンプト)
   ├─ 末尾: .config/shell/tools.sh (starship、fzf、zoxide、yazi の y)
   └─ 最後: ~/.zshrc.local / ~/.bashrc.local (マシン固有、git 管理外)
