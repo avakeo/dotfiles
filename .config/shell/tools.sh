@@ -40,3 +40,6 @@ if command -v yazi >/dev/null 2>&1; then
     rm -f -- "$tmp"
   }
 fi
+
+# dotfiles の更新を 1 日 1 回確認する (pull はしない。詳しくは update-check.sh)
+[ -f "$DOTFILES_SHELL_DIR/update-check.sh" ] && . "$DOTFILES_SHELL_DIR/update-check.sh"
