@@ -110,6 +110,14 @@ install_tools() {
     info "zoxide already installed"
   fi
 
+  # ax (エージェント向けの curl。apply-digital-agency-design-system スキルが公式資料の取得に使う)
+  if ! command -v ax &>/dev/null; then
+    curl -fsSL https://ax.yusuke.run/install | sh
+    success "ax installed"
+  else
+    info "ax already installed"
+  fi
+
   # tmux
   if ! command -v tmux &>/dev/null; then
     if command -v apt &>/dev/null; then
@@ -172,6 +180,20 @@ setup_claude() {
       || claude plugin marketplace add "$repo" >/dev/null
     claude plugin install "$plugin" >/dev/null && success "$plugin"
   done
+
+  # skills CLI で入れるスキル (<リポジトリ or URL>)
+  if command -v npx &>/dev/null; then
+    local skills=(
+      yusukebe/ax
+      https://github.com/Hideki-Kobayashi/apply-digital-agency-design-system/tree/main/skills/apply-digital-agency-design-system
+    )
+    local src
+    for src in "${skills[@]}"; do
+      npx -y skills add "$src" -g -a claude-code -a codex -y >/dev/null && success "${src##*/}"
+    done
+  else
+    warn "npx not found, skip skills"
+  fi
 
   # i-have-adhd を毎セッション有効にする (SessionStart フックがこのファイルを見る)
   touch "$HOME/.claude/.i-have-adhd-always"
