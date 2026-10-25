@@ -55,6 +55,11 @@ if (-not $registered) {
   exit 1
 }
 
+# Obsidian が動いていないのにリンクが残っていたら、前回の後始末ができていない (再起動など) ので先に消す
+if (-not (Get-Process Obsidian -ErrorAction SilentlyContinue)) {
+  Get-VaultLinks | ForEach-Object { $_.Delete() }
+}
+
 # 同じフォルダへのリンクがあれば使い回し、名前だけ重なるなら -2, -3 ... を付ける
 $name = Split-Path $dir -Leaf
 $link = Join-Path $vault $name
@@ -91,14 +96,16 @@ if ($file) {
 }
 Start-Process $uri
 
-# Obsidian の終了を待ってリンクを消すプロセスを1つだけ起動する (起動を待つため最初に 10 秒置く)
+# Obsidian の終了を待ってリンクを消すプロセスを1つだけ起動する
+# 起動に時間がかかっても終了と取り違えないよう、Obsidian が現れるまで最大 60 秒待ってから終了を待つ
 # 起動済みかを見分けるため、コマンドラインに obs-tmp-watcher という文字列を入れておく
 $running = Get-CimInstance Win32_Process -Filter "Name = 'powershell.exe' OR Name = 'pwsh.exe'" |
   Where-Object { $_.CommandLine -like '*obs-tmp-watcher*' }
 if (-not $running) {
   $quoted = $vault.Replace("'", "''")
   $watcher = "'obs-tmp-watcher' | Out-Null; " +
-    "Start-Sleep 10; while (Get-Process Obsidian -ErrorAction SilentlyContinue) { Start-Sleep 5 }; " +
+    "for (`$i = 0; `$i -lt 60 -and -not (Get-Process Obsidian -ErrorAction SilentlyContinue); `$i++) { Start-Sleep 1 }; " +
+    "while (Get-Process Obsidian -ErrorAction SilentlyContinue) { Start-Sleep 5 }; " +
     "Get-ChildItem -LiteralPath '$quoted' -Force | " +
     "Where-Object { `$_.Attributes -band [IO.FileAttributes]::ReparsePoint } | ForEach-Object { `$_.Delete() }"
   Start-Process (Get-Process -Id $PID).Path -WindowStyle Hidden `
