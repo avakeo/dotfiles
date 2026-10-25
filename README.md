@@ -239,6 +239,35 @@ Leader = `Space`
 | `gb` / `gba` | `git branch` / `git branch -a` |
 | `gst` / `gstp` | `git stash` / `git stash pop` |
 
+### obs (Obsidian で好きなフォルダを一時的に開く)
+
+macOS / WSL / PowerShell で使える。一時用 vault の中にリンクを作って開くので、開いたフォルダには `.obsidian/` を作らない。
+
+| コマンド | 説明 |
+|---|---|
+| `obs [パス]` | パス (省略時はカレント) を一時用 vault にリンクして開く。ファイルなら新しいタブで開く |
+| `obs-clean` | 一時用 vault のリンクをすべて消す (リンク先は消さない) |
+
+Obsidian を終了すると、裏で待っているプロセスがリンクを自動で消す。
+
+**最初に一度だけ: 一時用 vault を登録する**
+
+一時用 vault が Obsidian に登録されていないと、`obs` は「vault として未登録」と表示して止まる。マシンごとに一度だけ次の手順で登録する。
+
+1. 一時用 vault のフォルダを作る
+   - macOS: `mkdir -p ~/work/obsidian/tmp`
+   - Windows (WSL から使う場合も): PowerShell で `mkdirp ~\work\obsidian\tmp`
+2. Obsidian の「フォルダを保管庫として開く」で、手順 1 のフォルダを選ぶ
+
+WSL の `obs` も Windows 側の Obsidian で開くので、登録するのは Windows 側の `~\work\obsidian\tmp` になる (WSL 側のフォルダではない)。
+
+場所を変えたいときは、環境変数 `OBS_TMP_VAULT` に別のフォルダを指定し、そのフォルダを登録する。WSL から使う場合は、Windows 側の環境変数に設定する。
+
+**Windows での注意**
+
+- `C:\` などローカルのフォルダはジャンクションでリンクするので、権限は要らない
+- WSL 側のフォルダ (`\\wsl.localhost\...`) はシンボリックリンクになるので、開発者モードか管理者権限が要る
+
 ---
 
 ## Structure

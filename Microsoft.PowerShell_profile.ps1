@@ -84,6 +84,12 @@ function find {
 function env  { Get-ChildItem Env: | Sort-Object Name }
 function df   { Get-PSDrive -PSProvider FileSystem }
 
+# ===== Obsidian で好きなフォルダを一時的に開く =====
+# 本体は .config/shell/obs.ps1 (WSL の obs と共通)。使い方はそちらの先頭を参照
+$ObsScript = Join-Path $PSScriptRoot ".config\shell\obs.ps1"
+function obs       { & $ObsScript @args }
+function obs-clean { & $ObsScript -Clean }
+
 # ===== その他 =====
 function open { Invoke-Item @args }
 function c    { Clear-Host }
