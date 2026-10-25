@@ -31,3 +31,55 @@ if [ -f "$HOME/.dircolors" ]; then
     unset _lsc _line _key _val _code _dc_map
   fi
 fi
+
+# ===== Obsidian で好きなフォルダを一時的に開く =====
+# 一時用 vault の中にシンボリックリンクを作って開く。開いたフォルダには .obsidian/ を作らない
+#   obs [パス]  → パス (省略時はカレント) を一時用 vault にリンクして開く。ファイルならそのファイルを新しいタブで開く
+#   obs-clean   → 一時用 vault のリンクをすべて消す (リンク先は消さない)
+# Obsidian を終了すると、裏で待っているプロセスが obs-clean と同じようにリンクを消す
+# 一時用 vault は最初に一度だけ Obsidian の「フォルダを保管庫として開く」で登録する
+OBS_TMP_VAULT="${OBS_TMP_VAULT:-$HOME/work/obsidian/tmp}"
+
+obs() {
+  local target dir file name link i=2
+  target="$(cd "$(dirname "${1:-.}")" && pwd)/$(basename "${1:-.}")" || return 1
+  if [ -d "$target" ]; then
+    dir="$(cd "$target" && pwd)"; file=""
+  elif [ -f "$target" ]; then
+    dir="$(dirname "$target")"; file="$(basename "$target")"
+  else
+    echo "obs: $1 が見つからない" >&2; return 1
+  fi
+
+  mkdir -p "$OBS_TMP_VAULT"
+  if ! grep -qF "\"$OBS_TMP_VAULT\"" "$HOME/Library/Application Support/obsidian/obsidian.json" 2>/dev/null; then
+    echo "obs: $OBS_TMP_VAULT が vault として未登録。Obsidian の「フォルダを保管庫として開く」で一度だけ登録して" >&2
+    return 1
+  fi
+
+  # 同じフォルダへのリンクがあれば使い回し、名前だけ重なるなら -2, -3 ... を付ける
+  name="$(basename "$dir")"; link="$OBS_TMP_VAULT/$name"
+  while [ -e "$link" ] || [ -L "$link" ]; do
+    [ "$(readlink "$link")" = "$dir" ] && break
+    link="$OBS_TMP_VAULT/$name-$i"; i=$((i + 1))
+  done
+  [ -L "$link" ] || ln -s "$dir" "$link"
+
+  # ファイルは path で指定して新しいタブで開く。フォルダを path で渡すと「見つかりません」になるので vault 名だけで開く
+  local enc='import sys, urllib.parse; print(urllib.parse.quote(sys.argv[1], safe=""))'
+  if [ -n "$file" ]; then
+    open "obsidian://open?path=$(python3 -c "$enc" "$link/$file")&paneType=tab"
+  else
+    open "obsidian://open?vault=$(python3 -c "$enc" "$(basename "$OBS_TMP_VAULT")")"
+  fi
+
+  # Obsidian の終了を待ってリンクを消すプロセスを1つだけ起動する (起動を待つため最初に 10 秒置く)
+  if ! pgrep -qf obs-tmp-watcher; then
+    (nohup sh -c 'sleep 10; while pgrep -xq Obsidian; do sleep 5; done; find "$1" -maxdepth 1 -type l -delete' \
+      obs-tmp-watcher "$OBS_TMP_VAULT" >/dev/null 2>&1 &)
+  fi
+}
+
+obs-clean() {
+  find "$OBS_TMP_VAULT" -maxdepth 1 -type l -print -delete
+}
