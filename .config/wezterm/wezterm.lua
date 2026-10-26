@@ -122,6 +122,56 @@ local function then_abc(action)
 	end)
 end
 
+-- ===== ペイン移動 (端まで行ったら反対側の端に回り込む) =====
+-- 移動先が無いときは、今のペインと同じ行 (左右移動) または同じ列 (上下移動) に
+-- かかるペインのうち、反対側の端にあるものへ移る
+local function wrap_target(tab, direction)
+	local panes = tab:panes_with_info()
+	local cur
+	for _, p in ipairs(panes) do
+		if p.is_active then cur = p end
+	end
+	local horizontal = direction == "Left" or direction == "Right"
+	local best
+	for _, p in ipairs(panes) do
+		local overlaps
+		if horizontal then
+			overlaps = p.top < cur.top + cur.height and cur.top < p.top + p.height
+		else
+			overlaps = p.left < cur.left + cur.width and cur.left < p.left + p.width
+		end
+		if overlaps then
+			local pos = horizontal and p.left or p.top
+			local best_pos = best and (horizontal and best.left or best.top)
+			-- 右・下へ回り込むときは最も左・上、左・上へは最も右・下のペインを選ぶ
+			local to_start = direction == "Right" or direction == "Down"
+			if best == nil or (to_start and pos < best_pos) or (not to_start and pos > best_pos) then
+				best = p
+			end
+		end
+	end
+	if best and best.pane:pane_id() ~= cur.pane:pane_id() then
+		return best.pane
+	end
+end
+
+local function move_pane(window, pane, direction)
+	local tab = pane:tab()
+	if tab:get_pane_direction(direction) then
+		window:perform_action(act.ActivatePaneDirection(direction), pane)
+	else
+		local target = wrap_target(tab, direction)
+		if target then target:activate() end
+	end
+	switch_to_abc()
+end
+
+local function wrap_move(direction)
+	return wezterm.action_callback(function(window, pane)
+		move_pane(window, pane, direction)
+	end)
+end
+
 -- ===== スマートナビゲーション (vim/nvim ↔ WezTerm ペイン) =====
 -- vim/nvim が動いているときは CTRL+hjkl をそのまま渡し、
 -- それ以外のときは WezTerm のペイン移動として扱う
@@ -142,8 +192,7 @@ local function smart_move(direction)
 		if is_vim(pane) then
 			window:perform_action(act.SendKey({ key = keys[direction], mods = "CTRL" }), pane)
 		else
-			window:perform_action(act.ActivatePaneDirection(direction), pane)
-			switch_to_abc()
+			move_pane(window, pane, direction)
 		end
 	end)
 end
@@ -268,10 +317,10 @@ config.keys = {
 	},
 
 	-- ===== ペイン移動 (Leader + hjkl) =====
-	{ key = "h", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Left"))  },
-	{ key = "j", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Down"))  },
-	{ key = "k", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Up"))    },
-	{ key = "l", mods = "LEADER", action = then_abc(act.ActivatePaneDirection("Right")) },
+	{ key = "h", mods = "LEADER", action = wrap_move("Left")  },
+	{ key = "j", mods = "LEADER", action = wrap_move("Down")  },
+	{ key = "k", mods = "LEADER", action = wrap_move("Up")    },
+	{ key = "l", mods = "LEADER", action = wrap_move("Right") },
 
 	-- ===== ペイン移動 (CTRL+hjkl: vim/nvim 内はウィンドウ移動、それ以外はペイン移動) =====
 	{ key = "h", mods = "CTRL", action = smart_move("Left")  },
@@ -281,10 +330,10 @@ config.keys = {
 
 	-- ===== ペイン移動 (CTRL+SHIFT+hjkl: 矢印キー版と同じ) =====
 	-- CTRL+SHIFT+L はデフォルトでデバッグオーバーレイが開くが、この割り当てで上書き無効化される
-	{ key = "h", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Left"))  },
-	{ key = "j", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Down"))  },
-	{ key = "k", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Up"))    },
-	{ key = "l", mods = "CTRL|SHIFT", action = then_abc(act.ActivatePaneDirection("Right")) },
+	{ key = "h", mods = "CTRL|SHIFT", action = wrap_move("Left")  },
+	{ key = "j", mods = "CTRL|SHIFT", action = wrap_move("Down")  },
+	{ key = "k", mods = "CTRL|SHIFT", action = wrap_move("Up")    },
+	{ key = "l", mods = "CTRL|SHIFT", action = wrap_move("Right") },
 
 	-- ===== タブ =====
 	{
