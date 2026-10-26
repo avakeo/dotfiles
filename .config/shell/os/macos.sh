@@ -57,6 +57,9 @@ obs() {
     return 1
   fi
 
+  # Obsidian が動いていないのにリンクが残っていたら、前回の後始末ができていない (再起動など) ので先に消す
+  pgrep -xq Obsidian || find "$OBS_TMP_VAULT" -maxdepth 1 -type l -delete
+
   # 同じフォルダへのリンクがあれば使い回し、名前だけ重なるなら -2, -3 ... を付ける
   name="$(basename "$dir")"; link="$OBS_TMP_VAULT/$name"
   while [ -e "$link" ] || [ -L "$link" ]; do
@@ -73,9 +76,11 @@ obs() {
     open "obsidian://open?vault=$(python3 -c "$enc" "$(basename "$OBS_TMP_VAULT")")"
   fi
 
-  # Obsidian の終了を待ってリンクを消すプロセスを1つだけ起動する (起動を待つため最初に 10 秒置く)
+  # Obsidian の終了を待ってリンクを消すプロセスを1つだけ起動する
+  # 起動に時間がかかっても終了と取り違えないよう、Obsidian が現れるまで最大 60 秒待ってから終了を待つ
   if ! pgrep -qf obs-tmp-watcher; then
-    (nohup sh -c 'sleep 10; while pgrep -xq Obsidian; do sleep 5; done; find "$1" -maxdepth 1 -type l -delete' \
+    (nohup sh -c 'i=0; until pgrep -xq Obsidian || [ $i -ge 60 ]; do sleep 1; i=$((i + 1)); done
+      while pgrep -xq Obsidian; do sleep 5; done; find "$1" -maxdepth 1 -type l -delete' \
       obs-tmp-watcher "$OBS_TMP_VAULT" >/dev/null 2>&1 &)
   fi
 }
