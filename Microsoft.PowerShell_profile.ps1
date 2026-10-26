@@ -197,6 +197,10 @@ if (Get-Command yazi -ErrorAction SilentlyContinue) {
   }
 }
 
+# ===== dotfiles の更新チェック =====
+# 1 日 1 回裏で fetch し、結果を次のプロンプトで知らせる。本体は .config/shell/update-check.ps1
+. (Join-Path $PSScriptRoot ".config\shell\update-check.ps1")
+
 # ===== starship =====
 if (Get-Command starship -ErrorAction SilentlyContinue) {
   # プロンプト表示のたびに今のディレクトリを WezTerm へ通知する (OSC 7)。タブ名の更新に使う
@@ -205,6 +209,7 @@ if (Get-Command starship -ErrorAction SilentlyContinue) {
     if ($PWD.Provider.Name -eq 'FileSystem') {
       $host.UI.Write("`e]7;$([System.Uri]::new($PWD.ProviderPath).AbsoluteUri)`a")
     }
+    if (Test-Path Function:\Show-DotfilesNotice) { Show-DotfilesNotice }
   }
   Invoke-Expression (&starship init powershell)
 }

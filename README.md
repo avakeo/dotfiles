@@ -281,6 +281,20 @@ WSL の `obs` も Windows 側の Obsidian で開くので、登録するのは W
 - 一時用 vault では「Obsidian のゴミ箱」にしておく。この設定は vault ごとなので、ほかの vault には影響しない
 - vault 直下にあるリンクのフォルダ (`obs` で開いたフォルダそのもの) は Obsidian で削除しない。リンクを外すときは `obs-clean` を使う
 
+### dotfiles の更新チェック
+
+zsh / bash (macOS・Linux・WSL) と PowerShell で使える。シェルを起動したとき、その日まだ確認していなければ裏で `git fetch` し、次のプロンプトで 1 回だけ結果を知らせる。知らせるのは次の 2 つ。pull は自動でしない。
+
+- main が origin/main より遅れている
+- main にまだ入っていないブランチがある
+
+| コマンド | 説明 |
+|---|---|
+| `dotfiles-check` | 今の状態をすぐ表示する (fetch はしない) |
+| `dotfiles-check -f` | fetch してから表示する |
+
+止めたいときは `DOTFILES_UPDATE_CHECK=0` にする。zsh / bash は `~/.shell.local` に書き、PowerShell は Windows の環境変数に設定する。
+
 ---
 
 ## Structure
