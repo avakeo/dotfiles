@@ -41,5 +41,11 @@ if command -v yazi >/dev/null 2>&1; then
   }
 fi
 
+# dufs: 設定ファイル (port 8888・認証など) は -c か DUFS_CONFIG で渡さないと読まれない。
+# 何も付けずに起動すると既定の 5000 番になり、nanj_poster の管理画面とぶつかる
+if command -v dufs >/dev/null 2>&1 && [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/dufs/config.yaml" ]; then
+  export DUFS_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/dufs/config.yaml"
+fi
+
 # dotfiles の更新を 1 日 1 回確認する (pull はしない。詳しくは update-check.sh)
 [ -f "$DOTFILES_SHELL_DIR/update-check.sh" ] && . "$DOTFILES_SHELL_DIR/update-check.sh"

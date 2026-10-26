@@ -75,6 +75,7 @@ vim +'Copilot setup'
 `claude` が入っていれば、install スクリプトが次をまとめて行う:
 - `claude/CLAUDE.md` を `~/.claude/CLAUDE.md` にリンクする (日本語の文章は yomiyasu のルールで書く)
 - プラグイン [i-have-adhd](https://github.com/ayghri/i-have-adhd)、[yomiyasu](https://github.com/nanaism/yomiyasu)、[rust-learning-lab](https://github.com/nwiizo/rust-learning-lab) を入れる
+- スキル [ax](https://github.com/yusukebe/ax) と [apply-digital-agency-design-system](https://github.com/Hideki-Kobayashi/apply-digital-agency-design-system) を `npx skills add` で入れる (Codex にも入る)
 - `~/.claude/.i-have-adhd-always` を作り、i-have-adhd を毎セッション有効にする
 
 ### Claude 統合 (codecompanion.nvim)
