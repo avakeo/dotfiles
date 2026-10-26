@@ -10,14 +10,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
-export PYENV_ROOT="$HOME/.pyenv"
-[ -d "$PYENV_ROOT/bin" ] && export PATH="$PYENV_ROOT/bin:$PATH"
-# WSL では Windows 側の pyenv-win (/mnt/c/...) が PATH で見つかるが動かないので使わない
-case "$(command -v pyenv 2>/dev/null)" in
-  ""|/mnt/*) ;;
-  *) eval "$(pyenv init - "$DOTFILES_SHELL")" ;;
-esac
-
 # ===== エイリアス =====
 
 # ls: eza があれば優先。無ければ os/*.sh で定義した ls を使う
