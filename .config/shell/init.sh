@@ -26,3 +26,6 @@ esac
 
 [ -f "$DOTFILES_SHELL_DIR/os/$DOTFILES_OS.sh" ] && . "$DOTFILES_SHELL_DIR/os/$DOTFILES_OS.sh"
 . "$DOTFILES_SHELL_DIR/common.sh"
+
+# マシン固有の上書き (git 管理外) — 例: STARSHIP_PALETTE=wsl3 / DOTFILES_PROMPT_USER=wsl
+[ -f "$HOME/.shell.local" ] && . "$HOME/.shell.local"

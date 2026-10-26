@@ -28,7 +28,10 @@ function Assert-SymlinkPrivilege {
     [Security.Principal.WindowsBuiltInRole]::Administrator
   )
 
-  if (-not $isAdmin -and ($devMode.AllowDevelopmentWithoutDevLicense -ne 1)) {
+  # 値がないと $devMode は $null になる (StrictMode でプロパティを直接読むと落ちる)
+  $devModeOn = $devMode -and ($devMode.PSObject.Properties.Name -contains "AllowDevelopmentWithoutDevLicense") `
+    -and ($devMode.AllowDevelopmentWithoutDevLicense -eq 1)
+  if (-not $isAdmin -and -not $devModeOn) {
     Write-Warn "Symlinks require either:"
     Write-Warn "  - Run as Administrator, OR"
     Write-Warn "  - Enable Developer Mode (Settings > Privacy & Security > For developers)"
@@ -152,6 +155,21 @@ function Install-Tools {
   }
 }
 
+function Build-ImeOff {
+  Write-Host ""
+  Write-Host "ime-off (WezTerm のタブ・ペイン切り替えで半角英数入力にする):"
+  # .NET Framework 4.x の csc.exe は Windows に標準で入っている
+  $csc = Join-Path $env:WINDIR "Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+  if (-not (Test-Path $csc)) {
+    Write-Warn "csc.exe not found, skip"
+    return
+  }
+  $binDir = Join-Path $HOME ".local\bin"
+  New-Item -ItemType Directory -Path $binDir -Force | Out-Null
+  & $csc /nologo /target:winexe "/out:$(Join-Path $binDir 'ime-off.exe')" (Join-Path $DotDir ".config\wezterm\ime-off.cs")
+  if ($LASTEXITCODE -eq 0) { Write-Success "ime-off built" } else { Write-Warn "ime-off build failed" }
+}
+
 function Setup-Claude {
   Write-Host ""
   Write-Host "Claude Code:"
@@ -216,6 +234,7 @@ Link-Home
 Link-Config
 Install-VimPlug
 Install-Tools
+Build-ImeOff
 Setup-Claude
 Post-Install
 

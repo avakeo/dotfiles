@@ -2,10 +2,12 @@
 # init.sh で DOTFILES_SHELL / DOTFILES_OS が設定済みであること
 
 # starship: OS ごとにパレットを切り替える (os/*.sh で STARSHIP_PALETTE を設定)
+# DOTFILES_PROMPT_USER を設定すると、ユーザー名の代わりにその文字列を表示する (~/.shell.local で設定)
 if command -v starship >/dev/null 2>&1; then
-  if [ -n "$STARSHIP_PALETTE" ]; then
+  if [ -n "$STARSHIP_PALETTE" ] || [ -n "$DOTFILES_PROMPT_USER" ]; then
     export STARSHIP_CONFIG="/tmp/starship-${USER}.toml"
-    sed "s/^palette = \"windows\"/palette = \"$STARSHIP_PALETTE\"/" \
+    sed -e "s/^palette = \"windows\"/palette = \"${STARSHIP_PALETTE:-windows}\"/" \
+      ${DOTFILES_PROMPT_USER:+-e "s/\[\[ \\\$user \]/[[ $DOTFILES_PROMPT_USER ]/"} \
       "${XDG_CONFIG_HOME:-$HOME/.config}/starship.toml" > "$STARSHIP_CONFIG"
   fi
   eval "$(starship init "$DOTFILES_SHELL")"
@@ -44,3 +46,6 @@ fi
 if command -v dufs >/dev/null 2>&1 && [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/dufs/config.yaml" ]; then
   export DUFS_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/dufs/config.yaml"
 fi
+
+# dotfiles の更新を 1 日 1 回確認する (pull はしない。詳しくは update-check.sh)
+[ -f "$DOTFILES_SHELL_DIR/update-check.sh" ] && . "$DOTFILES_SHELL_DIR/update-check.sh"
