@@ -42,7 +42,7 @@ TCP 22 番ポート ── SSH (暗号化・認証) ── viber の sshd
 
 ### viber の IP アドレス (100.x.x.x) は Tailscale
 
-- `~/.ssh/config` の viber は `100.111.233.57` になっている。`100.64.0.0/10` は CGNAT 用に予約された範囲で、Tailscale はここから各端末にアドレスを割り当てる。
+- `~/.ssh/config` の viber は `100.x.x.x` のアドレスになっている (実際の値は public リポジトリに書かない)。`100.64.0.0/10` は CGNAT 用に予約された範囲で、Tailscale はここから各端末にアドレスを割り当てる。
 - Tailscale は WireGuard を使ったオーバーレイ VPN。家の外からでも、この 100.x のアドレスで直接 SSH できる。
 
 ### 鍵ファイルと SSH エージェント
@@ -214,6 +214,29 @@ yazi でゴミ箱に送ったフォルダを探したときに使った知識。
 - **opener の引数**: yazi 26 では `"$@"` ではなく `%s` と書く。古い書き方のままだと、nvim がファイルを受け取れずに空のバッファで開いた。
 - **SFTP の設定**: `[sftp.<名前>]` と書く。推測で `[services.<名前>]` や `type` / `kind` と書いて 2 回失敗した。公式ドキュメント (https://yazi-rs.github.io/docs/configuration/vfs) を先に読むべきだった。
 - **`y` の cd**: SFTP の場所で yazi を終了すると `sftp://...` へ `cd` しようとして失敗していた。ローカルに実在するディレクトリのときだけ移動するよう修正した。
+
+### 端末が増えたときの vfs.toml
+
+今は `vfs.toml` を端末ごとに手で作っている。このリポジトリは public なので、接続先のホスト名・ユーザー・鍵のパスを書いた `vfs.toml` はコミットしない。
+
+端末が増えて手作業がつらくなったら、次の形にする。
+
+1. 値を伏せたひな形 `.config/yazi/vfs.toml.example` をコミットする。
+   ```toml
+   [sftp.viber]
+   host     = "<Tailscale のホスト名>"
+   user     = "<ユーザー名>"
+   port     = 22
+   key_file = "~/.ssh/id_ed25519"
+   ```
+2. `install.sh` と `install.ps1` で、`vfs.toml` が無いときだけひな形をコピーする。上書きはしない。
+3. コピーしたあと、`<...>` の部分を手で埋める。
+
+決めておくこと:
+
+- `host` は IP アドレスではなく Tailscale のホスト名 (MagicDNS) にする。WSL からも Windows からも同じ名前で届くので、値を全端末で同じにできる。
+- Windows の yazi が `key_file` の `~` をホームに展開するかはまだ確かめていない。展開しないなら、Windows だけ `C:\\Users\\<名前>\\.ssh\\id_ed25519` と書く。
+- 鍵は端末ごとに別のものを作り、それぞれ接続先の `~/.ssh/authorized_keys` に登録する。秘密鍵を端末間でコピーしない。
 
 ---
 
