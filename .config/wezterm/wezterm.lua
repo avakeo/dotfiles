@@ -100,7 +100,8 @@ elseif target:find("linux") then
 		or  { "/usr/bin/bash" }
 else
 	-- macOS
-	config.default_prog = { "/bin/zsh" }
+	-- ログインシェルで起動し、/etc/zprofile (path_helper の /usr/local/bin) と ~/.zprofile を読ませる
+	config.default_prog = { "/bin/zsh", "-l" }
 end
 
 -- ===== 新規タブ・ペイン分割・タブやペインの移動の後に英数入力に切り替える =====
@@ -212,6 +213,13 @@ local split_h = then_abc(act.SplitHorizontal { domain = "CurrentPaneDomain" })
 local split_v = then_abc(act.SplitVertical { domain = "CurrentPaneDomain" })
 local spawn_local_tab = then_abc(act.SpawnCommandInNewTab { domain = { DomainName = "local" } })
 
+-- 他のアプリから WezTerm のウィンドウに戻ったとき
+wezterm.on("window-focus-changed", function(window, _)
+	if window:is_focused() then
+		switch_to_abc()
+	end
+end)
+
 -- ===== Leader キー =====
 -- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
 config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
@@ -223,6 +231,8 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    s / " → 上下に分割 (英数入力に切り替える)
 --    z  → ペインをズーム/解除
 --    x  → ペインを閉じる
+--    {  → ペインを選んで入れ替え (ラベルのキーを押す)
+--    }  → ペインを時計回りにずらす (2分割なら入れ替え)
 --    < / > → タブを左 / 右に動かす
 --    !  → 今のペインを新しいウィンドウに切り離す
 --    h/j/k/l → ペイン移動 (英数入力に切り替える)
@@ -230,12 +240,14 @@ config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
 --    o  → 透明度モード   (k/l=上げる j/h=下げる、Escで抜ける)
 --    f  → フォントサイズモード (k=大きく j=小さく 0=リセット、Escで抜ける)
 --    [  → コピーモード (vim風: hjkl移動, v選択, y コピー, Escで抜ける)
+--    c  → 新規タブ (英数入力に切り替える)
 --    w  → local ドメインで新規タブ (Windows では PowerShell。既定の Ubuntu ではなく)
+--    p  → クリップボードから貼り付け
 --
 --  CTRL + h/j/k/l → ペイン移動 (Leader なしで素早く移動。英数入力に切り替える)
 --  CTRL + SHIFT + h/j/k/l → ペイン移動 (CTRL+SHIFT+矢印 と同じ。CTRL+SHIFT+L のデバッグオーバーレイは無効化)
 --  CTRL + w / CMD + w → ペインを閉じる (分割あり) / タブを閉じる (分割なし)
---  CTRL + Tab     → 次のタブ (英数入力に切り替える)
+--  CTRL + Tab / CTRL + SHIFT + Tab → 次 / 前のタブ (英数入力に切り替える)
 --  CTRL + t / CMD + t → 新規タブ (英数入力に切り替える)
 --  CTRL + ←/→    → 単語単位で移動
 --  CTRL + BS      → 単語削除
@@ -274,6 +286,16 @@ config.keys = {
 	{
 		key = "x", mods = "LEADER",
 		action = act.CloseCurrentPane { confirm = true },
+	},
+
+	-- ===== ペイン入れ替え (Leader + { / }) =====
+	{
+		key = "{", mods = "LEADER|SHIFT",
+		action = act.PaneSelect { mode = "SwapWithActive" },
+	},
+	{
+		key = "}", mods = "LEADER|SHIFT",
+		action = act.RotatePanes("Clockwise"),
 	},
 
 	-- ===== タブの並び替え・切り離し (Leader + < / > / !) =====
@@ -493,11 +515,21 @@ local function format_hints(hints)
 end
 
 -- Leader キーが押されたときに表示するヒント
+-- (config.keys の LEADER 割り当てを変えたらここも直す)
 local leader_hints = {
-	{ key = "r", desc = "resize" },
-	{ key = "o", desc = "opacity" },
-	{ key = "f", desc = "font" },
-	{ key = "[", desc = "copy" },
+	{ key = "v/s",     desc = "split" },
+	{ key = "h/j/k/l", desc = "move" },
+	{ key = "z",       desc = "zoom" },
+	{ key = "x",       desc = "close" },
+	{ key = "{/}",     desc = "swap" },
+	{ key = "</>",     desc = "tab move" },
+	{ key = "!",       desc = "detach" },
+	{ key = "c/w",     desc = "tab/local" },
+	{ key = "p",       desc = "paste" },
+	{ key = "r",       desc = "resize" },
+	{ key = "o",       desc = "opacity" },
+	{ key = "f",       desc = "font" },
+	{ key = "[",       desc = "copy" },
 }
 
 local function separator(elements)
@@ -660,7 +692,10 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
 	local cwd_uri = tab.active_pane.current_working_dir
 	local short
 
-	if cwd_uri then
+	-- wn (wezterm cli set-tab-title) で名前を付けたタブはその名前を出す
+	if tab.tab_title and tab.tab_title ~= "" then
+		short = tab.tab_title
+	elseif cwd_uri then
 		local path = cwd_uri.file_path or cwd_uri.path or tostring(cwd_uri)
 		-- リモート (ssh 先など) のパスはローカルに .git を探しに行かない
 		local host = cwd_uri.host or ""
