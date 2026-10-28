@@ -99,6 +99,14 @@ end
 
 -- termguicolors / colorscheme
 opt.termguicolors = true
+-- bluloco はカーソルを黄色 (#FFCC00) にするため、WezTerm (Pop Candy) の青にそろえる
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    for _, group in ipairs({ "Cursor", "lCursor", "CursorIM", "TermCursor" }) do
+      vim.api.nvim_set_hl(0, group, { fg = "#FFFFFF", bg = "#4D96FF" })
+    end
+  end,
+})
 vim.cmd("colorscheme bluloco")
 
 -- ポップアップメニューの不要な項目を削除
