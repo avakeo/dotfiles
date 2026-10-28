@@ -164,6 +164,13 @@ local split_h = then_abc(act.SplitHorizontal { domain = "CurrentPaneDomain" })
 local split_v = then_abc(act.SplitVertical { domain = "CurrentPaneDomain" })
 local spawn_local_tab = then_abc(act.SpawnCommandInNewTab { domain = { DomainName = "local" } })
 
+-- 他のアプリから WezTerm のウィンドウに戻ったとき
+wezterm.on("window-focus-changed", function(window, _)
+	if window:is_focused() then
+		switch_to_abc()
+	end
+end)
+
 -- ===== Leader キー =====
 -- CTRL+\ をプレフィックスに。1秒以内に次のキーを押す
 config.leader = { key = "\\", mods = "CTRL", timeout_milliseconds = 1000 }
