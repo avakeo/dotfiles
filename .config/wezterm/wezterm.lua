@@ -100,7 +100,8 @@ elseif target:find("linux") then
 		or  { "/usr/bin/bash" }
 else
 	-- macOS
-	config.default_prog = { "/bin/zsh" }
+	-- ログインシェルで起動し、/etc/zprofile (path_helper の /usr/local/bin) と ~/.zprofile を読ませる
+	config.default_prog = { "/bin/zsh", "-l" }
 end
 
 -- ===== 新規タブ・ペイン分割・タブやペインの移動の後に英数入力に切り替える =====
