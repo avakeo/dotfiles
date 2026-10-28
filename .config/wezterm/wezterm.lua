@@ -643,7 +643,10 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, max_width)
 	local cwd_uri = tab.active_pane.current_working_dir
 	local short
 
-	if cwd_uri then
+	-- wn (wezterm cli set-tab-title) で名前を付けたタブはその名前を出す
+	if tab.tab_title and tab.tab_title ~= "" then
+		short = tab.tab_title
+	elseif cwd_uri then
 		local path = cwd_uri.file_path or cwd_uri.path or tostring(cwd_uri)
 		-- リモート (ssh 先など) のパスはローカルに .git を探しに行かない
 		local host = cwd_uri.host or ""

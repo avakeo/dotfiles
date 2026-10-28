@@ -78,3 +78,11 @@ mkdirpy() {
 mkdircpy() {
   mkdir -p -- "$1" && touch -- "$1/main.py" && cd -- "$1"
 }
+
+# WezTerm の今のタブ名を変える。引数なしならディレクトリ名の表示に戻す
+# WSL では wezterm が無いので Windows 側の wezterm.exe を使う
+wn() {
+  local wez=wezterm
+  command -v wezterm >/dev/null 2>&1 || wez=wezterm.exe
+  "$wez" cli set-tab-title "$*"
+}
