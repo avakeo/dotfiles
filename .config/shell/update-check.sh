@@ -13,7 +13,7 @@ _dotfiles_cache="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles-update-check"
 
 # ローカルの ref だけで状態をまとめる (ネットワークには出ない)
 _dotfiles_report() {
-  local behind branches count
+  local behind branches gone count
   behind="$(git -C "$DOTFILES_REPO" rev-list --count main..origin/main 2>/dev/null)"
   if [ "${behind:-0}" -gt 0 ]; then
     echo "dotfiles: main が origin/main より ${behind} コミット遅れています (cd $DOTFILES_REPO && git pull --rebase --autostash)"
@@ -22,6 +22,12 @@ _dotfiles_report() {
   if [ -n "$branches" ]; then
     count="$(printf '%s\n' "$branches" | wc -l | tr -d ' ')"
     echo "dotfiles: main にまだ入っていないブランチが ${count} つあります: $(printf '%s\n' "$branches" | head -3 | paste -sd ' ' -)$([ "$count" -gt 3 ] && echo ' ...')"
+  fi
+  # GitHub 側で消えたのに、この PC に残っているブランチ (fetch --prune で upstream が gone になったもの)
+  gone="$(git -C "$DOTFILES_REPO" for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads 2>/dev/null | awk '$2 == "[gone]" { print $1 }')"
+  if [ -n "$gone" ]; then
+    count="$(printf '%s\n' "$gone" | wc -l | tr -d ' ')"
+    echo "dotfiles: GitHub 側で消えたブランチが ${count} つ残っています (cd $DOTFILES_REPO && git branch -d $(printf '%s\n' "$gone" | paste -sd ' ' -))"
   fi
 }
 
