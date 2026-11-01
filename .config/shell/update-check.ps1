@@ -27,6 +27,12 @@ function Get-DotfilesReport {
     $more = if ($branches.Count -gt 3) { ' ...' } else { '' }
     "dotfiles: main にまだ入っていないブランチが $($branches.Count) つあります: $(($branches | Select-Object -First 3) -join ' ')$more"
   }
+  # GitHub 側で消えたのに、この PC に残っているブランチ (fetch --prune で upstream が gone になったもの)
+  $gone = @(git -C $DotfilesRepo for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads 2>$null |
+    Where-Object { $_ -match '^(\S+) \[gone\]$' } | ForEach-Object { $_.Split(' ')[0] })
+  if ($gone.Count -gt 0) {
+    "dotfiles: GitHub 側で消えたブランチが $($gone.Count) つ残っています (cd $DotfilesRepo; git branch -d $($gone -join ' '))"
+  }
 }
 
 # fetch は別プロセスの PowerShell で動かす。$After は fetch が成功したあとに続けて実行するコード
